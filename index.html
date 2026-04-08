@@ -382,18 +382,14 @@
         }
         debounceTimer = setTimeout(async () => {
           try {
-            const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5&lang=en`;
+            const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=${encodeURIComponent(q)}`;
             const res = await fetch(url);
             const data = await res.json();
-            const items = (data.features || []).filter(f => {
-              const c = f.properties && f.properties.country;
-              return c === 'United States' || c === 'United States of America';
-            });
-            renderSuggestions(items);
+            renderSuggestions(Array.isArray(data) ? data : []);
           } catch (e) {
-            console.error('photon error', e);
+            console.error('nominatim error', e);
           }
-        }, 250);
+        }, 400);
       });
 
       function renderSuggestions(items) {
@@ -403,9 +399,7 @@
           return;
         }
         for (const item of items) {
-          const p = item.properties;
-          const display = [p.name, p.street, p.city, p.state, p.postcode]
-            .filter(Boolean).join(', ');
+          const display = item.display_name;
           const div = document.createElement('div');
           div.textContent = display;
           div.addEventListener('click', () => {
@@ -414,8 +408,8 @@
             onAnswer({
               display,
               coords: {
-                lat: item.geometry.coordinates[1],
-                lng: item.geometry.coordinates[0],
+                lat: Number(item.lat),
+                lng: Number(item.lon),
               },
             });
           });

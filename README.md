@@ -41,7 +41,7 @@ All rates, surcharges, and crew sizes live in the `CONFIG` object at the top of 
 ## How it works
 
 - **`pricing.js`** — pure pricing engine. CONFIG + `calculateQuote(answers)` + `distanceMiles(a, b)`. Importable in Node and browser. Zero DOM.
-- **`index.html`** — chat UI, Premium Concierge styling, conversation state machine driven by a `STEPS` array. Address autocomplete via the free Photon API (OSM).
+- **`index.html`** — chat UI, Premium Concierge styling, conversation state machine driven by a `STEPS` array. Address autocomplete via the free Nominatim API (OSM).
 - **`pricing.test.mjs`** — fast unit tests covering labor, floor surcharge, drive time, weekend surcharge, breakdown structure, and distance.
 
 ## Conventions used in the pricing model
