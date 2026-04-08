@@ -49,3 +49,11 @@ test('packing multiplier applies after base hours', () => {
   });
   assert.equal(r.laborHours, 3.75);
 });
+
+test('drive hours: 12 miles at 30 mph * 2 (double drive time) = 0.8 hours', () => {
+  const r = calculateQuote({
+    size: '1br', originFloor: 'ground', destFloor: 'ground',
+    miles: 12, specialItems: [], packing: 'self', date: '2026-04-15',
+  });
+  assert.equal(r.driveHours, 0.8);
+});

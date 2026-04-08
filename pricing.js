@@ -47,8 +47,12 @@ export function calculateQuote(answers) {
   let laborHours = (baseHours + floorExtra) * packing.hoursMultiplier;
   if (laborHours < CONFIG.minHours) laborHours = CONFIG.minHours;
 
+  let driveHours = answers.miles / CONFIG.truckSpeedMph;
+  if (CONFIG.doubleDriveTime) driveHours *= 2;
+
   return {
     laborHours,
+    driveHours,
     total: 0,        // filled in by later tasks
     breakdown: [],   // filled in by later tasks
   };
