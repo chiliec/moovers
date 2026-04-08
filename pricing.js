@@ -39,22 +39,70 @@ export const CONFIG = {
 
 export function calculateQuote(answers) {
   const sizeKey = answers.size;
+  const rateInfo = CONFIG.hourlyRates[sizeKey];
   const baseHours = CONFIG.baseHours[sizeKey];
   const floorExtra =
     CONFIG.floorSurcharge[answers.originFloor] +
     CONFIG.floorSurcharge[answers.destFloor];
   const packing = CONFIG.packing[answers.packing];
+
   let laborHours = (baseHours + floorExtra) * packing.hoursMultiplier;
   if (laborHours < CONFIG.minHours) laborHours = CONFIG.minHours;
+  laborHours = Math.round(laborHours * 10) / 10;
 
   let driveHours = answers.miles / CONFIG.truckSpeedMph;
   if (CONFIG.doubleDriveTime) driveHours *= 2;
+  driveHours = Math.round(driveHours * 10) / 10;
+
+  const totalHours = Math.round((laborHours + driveHours) * 10) / 10;
+  const laborCost = totalHours * rateInfo.rate;
+
+  const specialItemsCost = (answers.specialItems || []).reduce(
+    (sum, key) => sum + (CONFIG.specialItems[key] || 0),
+    0,
+  );
+
+  const extras = CONFIG.travelFee + specialItemsCost + packing.flat;
+  let subtotal = laborCost + extras;
+
+  const dayOfWeek = new Date(answers.date + 'T12:00:00').getDay(); // 0=Sun, 6=Sat
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  if (isWeekend) subtotal *= (1 + CONFIG.weekendSurcharge);
+
+  const total = Math.round(subtotal);
+
+  const breakdown = [
+    { label: `Labor (${totalHours} hr × $${rateInfo.rate})`, value: Math.round(laborCost) },
+    { label: 'Travel fee', value: CONFIG.travelFee },
+  ];
+  for (const key of (answers.specialItems || [])) {
+    if (CONFIG.specialItems[key]) {
+      breakdown.push({
+        label: `${key.charAt(0).toUpperCase() + key.slice(1)} handling`,
+        value: CONFIG.specialItems[key],
+      });
+    }
+  }
+  if (packing.flat > 0) {
+    breakdown.push({
+      label: `${answers.packing.charAt(0).toUpperCase() + answers.packing.slice(1)} packing`,
+      value: packing.flat,
+    });
+  }
+  if (isWeekend) {
+    breakdown.push({ label: 'Weekend surcharge', value: '+10%' });
+  }
 
   return {
+    crew: rateInfo.crew,
     laborHours,
     driveHours,
-    total: 0,        // filled in by later tasks
-    breakdown: [],   // filled in by later tasks
+    totalHours,
+    rate: rateInfo.rate,
+    miles: answers.miles,
+    isWeekend,
+    breakdown,
+    total,
   };
 }
 
