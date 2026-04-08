@@ -280,9 +280,59 @@
         input: 'address',
       },
       {
+        id: 'originFloor',
+        botText: "Which floor is the pickup on, and is there an elevator?",
+        input: 'buttons',
+        options: [
+          { value: 'ground', label: 'Ground floor' },
+          { value: '2-3-elev', label: '2nd–3rd, elevator' },
+          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
+          { value: '4+-elev', label: '4th+, elevator' },
+          { value: '4+-no-elev', label: '4th+, no elevator' },
+        ],
+      },
+      {
         id: 'destination',
         botText: "And where are you moving to?",
         input: 'address',
+      },
+      {
+        id: 'destFloor',
+        botText: "Which floor at the destination?",
+        input: 'buttons',
+        options: [
+          { value: 'ground', label: 'Ground floor' },
+          { value: '2-3-elev', label: '2nd–3rd, elevator' },
+          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
+          { value: '4+-elev', label: '4th+, elevator' },
+          { value: '4+-no-elev', label: '4th+, no elevator' },
+        ],
+      },
+      {
+        id: 'specialItems',
+        botText: "Are any of these items part of the move?",
+        input: 'multiselect',
+        options: [
+          { value: 'piano', label: 'Piano' },
+          { value: 'safe', label: 'Safe (>500 lb)' },
+          { value: 'pooltable', label: 'Pool table' },
+          { value: 'artwork', label: 'Large artwork' },
+        ],
+      },
+      {
+        id: 'packing',
+        botText: "Will you need packing service?",
+        input: 'buttons',
+        options: [
+          { value: 'self', label: "I'll pack myself" },
+          { value: 'partial', label: 'Partial packing' },
+          { value: 'full', label: 'Full packing' },
+        ],
+      },
+      {
+        id: 'date',
+        botText: "What's your preferred move date?",
+        input: 'date',
       },
     ];
 
@@ -373,6 +423,84 @@
         }
         suggestions.style.display = 'block';
       }
+    };
+
+    RENDERERS.multiselect = function (step, onAnswer) {
+      const area = appendInputArea();
+      const selected = new Set();
+
+      for (const opt of step.options) {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => {
+          if (selected.has(opt.value)) {
+            selected.delete(opt.value);
+            btn.classList.remove('selected');
+          } else {
+            selected.add(opt.value);
+            btn.classList.add('selected');
+          }
+        });
+        area.appendChild(btn);
+      }
+
+      const noneBtn = document.createElement('button');
+      noneBtn.className = 'choice-btn';
+      noneBtn.textContent = 'None of these';
+      noneBtn.addEventListener('click', () => {
+        area.remove();
+        appendBubble('user', 'None');
+        onAnswer([]);
+      });
+      area.appendChild(noneBtn);
+
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'submit-btn';
+      doneBtn.textContent = 'Continue';
+      doneBtn.addEventListener('click', () => {
+        if (selected.size === 0) {
+          area.remove();
+          appendBubble('user', 'None');
+          onAnswer([]);
+          return;
+        }
+        const labels = step.options
+          .filter(o => selected.has(o.value))
+          .map(o => o.label)
+          .join(', ');
+        area.remove();
+        appendBubble('user', labels);
+        onAnswer([...selected]);
+      });
+      area.appendChild(doneBtn);
+    };
+
+    RENDERERS.date = function (step, onAnswer) {
+      const area = appendInputArea();
+
+      const input = document.createElement('input');
+      input.type = 'date';
+      input.className = 'text-input';
+      const today = new Date().toISOString().slice(0, 10);
+      input.min = today;
+      input.value = today;
+
+      const btn = document.createElement('button');
+      btn.className = 'submit-btn';
+      btn.textContent = 'Continue';
+      btn.addEventListener('click', () => {
+        if (!input.value) return;
+        const pretty = new Date(input.value + 'T12:00:00').toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric',
+        });
+        area.remove();
+        appendBubble('user', pretty);
+        onAnswer(input.value);
+      });
+
+      area.appendChild(input);
+      area.appendChild(btn);
     };
 
     async function runConversation() {
