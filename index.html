@@ -274,7 +274,16 @@
           { value: '4br', label: '4+ BR' },
         ],
       },
-      // Other steps added in later tasks.
+      {
+        id: 'origin',
+        botText: "Got it. What's the pickup address?",
+        input: 'address',
+      },
+      {
+        id: 'destination',
+        botText: "And where are you moving to?",
+        input: 'address',
+      },
     ];
 
     const RENDERERS = {};
@@ -291,6 +300,78 @@
           onAnswer(opt.value);
         });
         area.appendChild(btn);
+      }
+    };
+
+    RENDERERS.address = function (step, onAnswer) {
+      const area = appendInputArea();
+      const wrapper = document.createElement('div');
+      wrapper.className = 'autocomplete';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'text-input';
+      input.placeholder = 'Start typing an address…';
+      wrapper.appendChild(input);
+
+      const suggestions = document.createElement('div');
+      suggestions.className = 'suggestions';
+      suggestions.style.display = 'none';
+      wrapper.appendChild(suggestions);
+
+      area.appendChild(wrapper);
+      input.focus();
+
+      let debounceTimer;
+      input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        const q = input.value.trim();
+        if (q.length < 3) {
+          suggestions.style.display = 'none';
+          return;
+        }
+        debounceTimer = setTimeout(async () => {
+          try {
+            const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5&lang=en`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const items = (data.features || []).filter(f => {
+              const c = f.properties && f.properties.country;
+              return c === 'United States' || c === 'United States of America';
+            });
+            renderSuggestions(items);
+          } catch (e) {
+            console.error('photon error', e);
+          }
+        }, 250);
+      });
+
+      function renderSuggestions(items) {
+        while (suggestions.firstChild) suggestions.removeChild(suggestions.firstChild);
+        if (items.length === 0) {
+          suggestions.style.display = 'none';
+          return;
+        }
+        for (const item of items) {
+          const p = item.properties;
+          const display = [p.name, p.street, p.city, p.state, p.postcode]
+            .filter(Boolean).join(', ');
+          const div = document.createElement('div');
+          div.textContent = display;
+          div.addEventListener('click', () => {
+            area.remove();
+            appendBubble('user', display);
+            onAnswer({
+              display,
+              coords: {
+                lat: item.geometry.coordinates[1],
+                lng: item.geometry.coordinates[0],
+              },
+            });
+          });
+          suggestions.appendChild(div);
+        }
+        suggestions.style.display = 'block';
       }
     };
 
