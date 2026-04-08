@@ -221,7 +221,9 @@
     import { calculateQuote, distanceMiles } from './pricing.js';
 
     const chatEl = document.getElementById('chat');
+    const answers = {};
 
+    // --- UI primitives ---
     function appendBubble(role, text) {
       const div = document.createElement('div');
       div.className = `bubble ${role}`;
@@ -230,7 +232,6 @@
       scrollToBottom();
       return div;
     }
-
     function appendTyping() {
       const div = document.createElement('div');
       div.className = 'typing';
@@ -241,7 +242,6 @@
       scrollToBottom();
       return div;
     }
-
     function appendInputArea() {
       const div = document.createElement('div');
       div.className = 'input-area';
@@ -249,15 +249,10 @@
       scrollToBottom();
       return div;
     }
-
     function scrollToBottom() {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
-
-    function delay(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
     async function botSay(text, typingMs = 600) {
       const t = appendTyping();
       await delay(typingMs);
@@ -265,12 +260,52 @@
       return appendBubble('bot', text);
     }
 
-    // Smoke test of UI primitives — replaced in Task 8.
-    (async function smoke() {
-      await botSay('Hi! I will help you get a moving quote.');
-      appendBubble('user', '2 BR');
-      await botSay('Got it. What is the pickup address?');
-    })();
+    // --- Conversation engine ---
+    const STEPS = [
+      {
+        id: 'size',
+        botText: "Hi! I'll help you get a quick moving quote. What size is your current home?",
+        input: 'buttons',
+        options: [
+          { value: 'studio', label: 'Studio' },
+          { value: '1br', label: '1 BR' },
+          { value: '2br', label: '2 BR' },
+          { value: '3br', label: '3 BR' },
+          { value: '4br', label: '4+ BR' },
+        ],
+      },
+      // Other steps added in later tasks.
+    ];
+
+    const RENDERERS = {};
+
+    RENDERERS.buttons = function (step, onAnswer) {
+      const area = appendInputArea();
+      for (const opt of step.options) {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => {
+          area.remove();
+          appendBubble('user', opt.label);
+          onAnswer(opt.value);
+        });
+        area.appendChild(btn);
+      }
+    };
+
+    async function runConversation() {
+      for (const step of STEPS) {
+        await botSay(step.botText);
+        const value = await new Promise(resolve => {
+          RENDERERS[step.input](step, resolve);
+        });
+        answers[step.id] = value;
+      }
+      console.log('answers so far:', answers);
+    }
+
+    runConversation();
   </script>
 </body>
 </html>
