@@ -219,8 +219,58 @@
 
   <script type="module">
     import { calculateQuote, distanceMiles } from './pricing.js';
-    // Conversation engine and UI logic added in next tasks.
-    console.log('moovers ready', { calculateQuote, distanceMiles });
+
+    const chatEl = document.getElementById('chat');
+
+    function appendBubble(role, text) {
+      const div = document.createElement('div');
+      div.className = `bubble ${role}`;
+      div.textContent = text;
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function appendTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing';
+      for (let i = 0; i < 3; i++) {
+        div.appendChild(document.createElement('span'));
+      }
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function appendInputArea() {
+      const div = document.createElement('div');
+      div.className = 'input-area';
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function botSay(text, typingMs = 600) {
+      const t = appendTyping();
+      await delay(typingMs);
+      t.remove();
+      return appendBubble('bot', text);
+    }
+
+    // Smoke test of UI primitives — replaced in Task 8.
+    (async function smoke() {
+      await botSay('Hi! I will help you get a moving quote.');
+      appendBubble('user', '2 BR');
+      await botSay('Got it. What is the pickup address?');
+    })();
   </script>
 </body>
 </html>
