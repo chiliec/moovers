@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateQuote } from './pricing.js';
+import { calculateQuote, distanceMiles } from './pricing.js';
 
 test('calculateQuote returns an object with total and breakdown', () => {
   const result = calculateQuote({
@@ -103,4 +103,17 @@ test('breakdown contains labor and travel rows summing toward total', () => {
   const labels = r.breakdown.map(row => row.label);
   assert.ok(labels.some(l => l.toLowerCase().includes('labor')));
   assert.ok(labels.some(l => l.toLowerCase().includes('travel')));
+});
+
+test('distanceMiles: NYC Times Square to Newark Penn ~ 8-14 miles', () => {
+  const d = distanceMiles(
+    { lat: 40.7580, lng: -73.9855 },
+    { lat: 40.7345, lng: -74.1644 },
+  );
+  assert.ok(d > 8 && d < 14, `expected 8-14, got ${d}`);
+});
+
+test('distanceMiles: identical points = 0', () => {
+  const d = distanceMiles({ lat: 40.7, lng: -74 }, { lat: 40.7, lng: -74 });
+  assert.equal(d, 0);
 });

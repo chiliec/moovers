@@ -37,6 +37,27 @@ export const CONFIG = {
   minHours: 2,
 };
 
+const EARTH_RADIUS_KM = 6371;
+const KM_PER_MILE = 1.609344;
+const ROAD_COEFFICIENT = 1.3;
+
+function toRadians(deg) {
+  return (deg * Math.PI) / 180;
+}
+
+export function distanceMiles(originCoords, destCoords) {
+  const dLat = toRadians(destCoords.lat - originCoords.lat);
+  const dLng = toRadians(destCoords.lng - originCoords.lng);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(originCoords.lat)) *
+      Math.cos(toRadians(destCoords.lat)) *
+      Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const km = EARTH_RADIUS_KM * c * ROAD_COEFFICIENT;
+  return Math.round((km / KM_PER_MILE) * 10) / 10;
+}
+
 export function calculateQuote(answers) {
   const sizeKey = answers.size;
   const rateInfo = CONFIG.hourlyRates[sizeKey];
@@ -110,4 +131,5 @@ export function calculateQuote(answers) {
 if (typeof window !== 'undefined') {
   window.CONFIG = CONFIG;
   window.calculateQuote = calculateQuote;
+  window.distanceMiles = distanceMiles;
 }
