@@ -503,6 +503,83 @@
       area.appendChild(btn);
     };
 
+    // --- Result screen helpers ---
+    function el(tag, opts = {}) {
+      const node = document.createElement(tag);
+      if (opts.className) node.className = opts.className;
+      if (opts.text != null) node.textContent = opts.text;
+      if (opts.children) {
+        for (const c of opts.children) node.appendChild(c);
+      }
+      return node;
+    }
+
+    function formatMoney(n) {
+      return '$ ' + n.toLocaleString('en-US');
+    }
+
+    function breakdownRow(label, value) {
+      return el('div', {
+        className: 'row',
+        children: [
+          el('span', { className: 'lbl', text: label }),
+          el('span', { text: typeof value === 'number' ? formatMoney(value) : value }),
+        ],
+      });
+    }
+
+    function renderResult(quote) {
+      const headerBlock = el('div', {
+        className: 'breakdown',
+        children: [
+          breakdownRow('Crew', `${quote.crew} movers`),
+          breakdownRow('Estimated labor', `${quote.laborHours} hours`),
+          breakdownRow('Drive time', `${quote.driveHours} hours (${quote.miles} mi × 2)`),
+        ],
+      });
+
+      const breakdownBlock = el('div', { className: 'breakdown' });
+      for (const row of quote.breakdown) {
+        breakdownBlock.appendChild(breakdownRow(row.label, row.value));
+      }
+
+      const totalRow = el('div', { className: 'row' });
+      const totalLabel = el('strong', { text: 'Total estimate' });
+      const totalValue = el('strong', { text: formatMoney(quote.total) });
+      totalRow.appendChild(totalLabel);
+      totalRow.appendChild(totalValue);
+      const totalBlock = el('div', { className: 'breakdown', children: [totalRow] });
+
+      const startOver = el('a', { className: 'start-over', text: 'Start Over' });
+      startOver.addEventListener('click', () => {
+        while (chatEl.firstChild) chatEl.removeChild(chatEl.firstChild);
+        for (const k of Object.keys(answers)) delete answers[k];
+        runConversation();
+      });
+
+      const result = el('div', {
+        className: 'result',
+        children: [
+          el('div', { className: 'label', text: 'Your moving estimate' }),
+          el('div', { className: 'total', text: formatMoney(quote.total) }),
+          el('hr'),
+          headerBlock,
+          el('hr'),
+          breakdownBlock,
+          el('hr'),
+          totalBlock,
+          el('div', {
+            className: 'disclaimer',
+            text: 'This is a non-binding estimate. Final price depends on actual move time.',
+          }),
+          startOver,
+        ],
+      });
+
+      chatEl.appendChild(result);
+      scrollToBottom();
+    }
+
     async function runConversation() {
       for (const step of STEPS) {
         await botSay(step.botText);
@@ -511,7 +588,22 @@
         });
         answers[step.id] = value;
       }
-      console.log('answers so far:', answers);
+
+      const miles = distanceMiles(answers.origin.coords, answers.destination.coords);
+
+      await botSay('One moment — calculating your estimate…', 1500);
+
+      const quote = calculateQuote({
+        size: answers.size,
+        originFloor: answers.originFloor,
+        destFloor: answers.destFloor,
+        miles,
+        specialItems: answers.specialItems,
+        packing: answers.packing,
+        date: answers.date,
+      });
+
+      renderResult(quote);
     }
 
     runConversation();
