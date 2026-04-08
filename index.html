@@ -218,7 +218,7 @@
   <div class="chat" id="chat"></div>
 
   <script type="module">
-    import { calculateQuote, distanceMiles } from './pricing.js';
+    import { calculateQuote, distanceMiles, CONFIG } from './pricing.js';
 
     const chatEl = document.getElementById('chat');
     const answers = {};
@@ -534,7 +534,12 @@
         children: [
           breakdownRow('Crew', `${quote.crew} movers`),
           breakdownRow('Estimated labor', `${quote.laborHours} hours`),
-          breakdownRow('Drive time', `${quote.driveHours} hours (${quote.miles} mi × 2)`),
+          breakdownRow(
+            'Drive time',
+            CONFIG.doubleDriveTime
+              ? `${quote.driveHours} hours (${quote.miles} mi, round trip)`
+              : `${quote.driveHours} hours (${quote.miles} mi)`
+          ),
         ],
       });
 
