@@ -64,6 +64,28 @@ export function distanceMiles(originCoords, destCoords) {
 }
 
 export function calculateQuote(answers) {
+  if (!answers || typeof answers !== 'object') {
+    throw new Error('calculateQuote: answers object required');
+  }
+  if (!CONFIG.hourlyRates[answers.size]) {
+    throw new Error(`calculateQuote: unknown size "${answers.size}"`);
+  }
+  if (!(answers.originFloor in CONFIG.floorSurcharge)) {
+    throw new Error(`calculateQuote: unknown originFloor "${answers.originFloor}"`);
+  }
+  if (!(answers.destFloor in CONFIG.floorSurcharge)) {
+    throw new Error(`calculateQuote: unknown destFloor "${answers.destFloor}"`);
+  }
+  if (!CONFIG.packing[answers.packing]) {
+    throw new Error(`calculateQuote: unknown packing "${answers.packing}"`);
+  }
+  if (typeof answers.miles !== 'number' || answers.miles < 0) {
+    throw new Error('calculateQuote: miles must be a non-negative number');
+  }
+  if (!answers.date || typeof answers.date !== 'string') {
+    throw new Error('calculateQuote: date string required (YYYY-MM-DD)');
+  }
+
   const sizeKey = answers.size;
   const rateInfo = CONFIG.hourlyRates[sizeKey];
   const baseHours = CONFIG.baseHours[sizeKey];
@@ -81,7 +103,7 @@ export function calculateQuote(answers) {
   driveHours = Math.round(driveHours * 10) / 10;
 
   const totalHours = Math.round((laborHours + driveHours) * 10) / 10;
-  const laborCost = totalHours * rateInfo.rate;
+  const hourlyCost = totalHours * rateInfo.rate;
 
   const specialItemsCost = (answers.specialItems || []).reduce(
     (sum, key) => sum + (CONFIG.specialItems[key] || 0),
@@ -89,9 +111,10 @@ export function calculateQuote(answers) {
   );
 
   const extras = CONFIG.travelFee + specialItemsCost + packing.flat;
-  let subtotal = laborCost + extras;
+  let subtotal = hourlyCost + extras;
 
-  const dayOfWeek = new Date(answers.date + 'T12:00:00').getDay(); // 0=Sun, 6=Sat
+  const [yr, mo, dy] = answers.date.split('-').map(Number);
+  const dayOfWeek = new Date(yr, mo - 1, dy).getDay(); // 0=Sun, 6=Sat
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
   if (isWeekend) subtotal *= (1 + CONFIG.weekendSurcharge);
 
@@ -105,7 +128,7 @@ export function calculateQuote(answers) {
   const totalHigh = Math.ceil((total * (1 + pct)) / 5) * 5;
 
   const breakdown = [
-    { label: `Labor (${totalHours} hr × $${rateInfo.rate})`, value: Math.round(laborCost) },
+    { label: `Crew time (${totalHours} hr × $${rateInfo.rate})`, value: Math.round(hourlyCost) },
     { label: 'Travel fee', value: CONFIG.travelFee },
   ];
   for (const key of (answers.specialItems || [])) {

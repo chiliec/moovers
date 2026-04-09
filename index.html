@@ -169,7 +169,8 @@
       font-size: 13px;
       color: var(--text);
     }
-    .autocomplete .suggestions div:hover { background: var(--bg); }
+    .autocomplete .suggestions div:hover,
+    .autocomplete .suggestions div.focused { background: var(--bg); }
     .submit-btn {
       padding: 10px 22px;
       background: var(--text);
@@ -544,7 +545,7 @@
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'text-input';
-      input.placeholder = 'Start typing an address…';
+      input.placeholder = 'Start typing an address\u2026';
       wrapper.appendChild(input);
 
       const suggestions = document.createElement('div');
@@ -552,27 +553,116 @@
       suggestions.style.display = 'none';
       wrapper.appendChild(suggestions);
 
+      // Manual submit button — escape hatch when autocomplete returns nothing
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'submit-btn';
+      submitBtn.textContent = 'Use this address';
+      submitBtn.style.display = 'none';
+
       area.appendChild(wrapper);
+      area.appendChild(submitBtn);
       input.focus();
 
       let debounceTimer;
+      let currentItems = [];
+      let focusedIdx = -1;
+
+      function selectItem(item) {
+        const display = item.display_name;
+        area.remove();
+        appendBubble('user', display);
+        onAnswer({
+          display,
+          coords: { lat: Number(item.lat), lng: Number(item.lon) },
+        });
+      }
+
+      function highlightFocused() {
+        const divs = suggestions.querySelectorAll('div');
+        divs.forEach((d, i) => {
+          if (i === focusedIdx) { d.classList.add('focused'); }
+          else { d.classList.remove('focused'); }
+        });
+      }
+
+      // Geocode the typed text and proceed if a result is found
+      async function geocodeAndSubmit() {
+        const q = input.value.trim();
+        if (q.length < 3) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Looking up\u2026';
+        try {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=1&q=${encodeURIComponent(q)}`;
+          const res = await fetch(url, {
+            headers: { 'User-Agent': 'BGMoving-QuoteBot/1.0 (https://bgmoving.com)' },
+          });
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            selectItem(data[0]);
+          } else {
+            submitBtn.textContent = 'Address not found \u2014 try again';
+            submitBtn.disabled = false;
+          }
+        } catch (e) {
+          console.error('nominatim error', e);
+          submitBtn.textContent = 'Lookup failed \u2014 try again';
+          submitBtn.disabled = false;
+        }
+      }
+
+      submitBtn.addEventListener('click', geocodeAndSubmit);
+
       input.addEventListener('input', () => {
         clearTimeout(debounceTimer);
+        focusedIdx = -1;
         const q = input.value.trim();
+        // Show manual submit when user has typed enough but might not get results
+        submitBtn.style.display = q.length >= 3 ? '' : 'none';
+        submitBtn.textContent = 'Use this address';
+        submitBtn.disabled = false;
         if (q.length < 3) {
           suggestions.style.display = 'none';
+          currentItems = [];
           return;
         }
         debounceTimer = setTimeout(async () => {
           try {
             const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=${encodeURIComponent(q)}`;
-            const res = await fetch(url);
+            const res = await fetch(url, {
+              headers: { 'User-Agent': 'BGMoving-QuoteBot/1.0 (https://bgmoving.com)' },
+            });
             const data = await res.json();
-            renderSuggestions(Array.isArray(data) ? data : []);
+            const items = Array.isArray(data) ? data : [];
+            currentItems = items;
+            renderSuggestions(items);
           } catch (e) {
             console.error('nominatim error', e);
           }
         }, 400);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (suggestions.style.display === 'none' || currentItems.length === 0) {
+          if (e.key === 'Enter') { e.preventDefault(); geocodeAndSubmit(); }
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          focusedIdx = Math.min(focusedIdx + 1, currentItems.length - 1);
+          highlightFocused();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          focusedIdx = Math.max(focusedIdx - 1, 0);
+          highlightFocused();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (focusedIdx >= 0 && focusedIdx < currentItems.length) {
+            selectItem(currentItems[focusedIdx]);
+          }
+        } else if (e.key === 'Escape') {
+          suggestions.style.display = 'none';
+          focusedIdx = -1;
+        }
       });
 
       function renderSuggestions(items) {
@@ -581,24 +671,19 @@
           suggestions.style.display = 'none';
           return;
         }
-        for (const item of items) {
+        items.forEach((item, idx) => {
           const display = item.display_name;
           const div = document.createElement('div');
           div.textContent = display;
-          div.addEventListener('click', () => {
-            area.remove();
-            appendBubble('user', display);
-            onAnswer({
-              display,
-              coords: {
-                lat: Number(item.lat),
-                lng: Number(item.lon),
-              },
-            });
+          div.addEventListener('click', () => selectItem(item));
+          div.addEventListener('mouseenter', () => {
+            focusedIdx = idx;
+            highlightFocused();
           });
           suggestions.appendChild(div);
-        }
+        });
         suggestions.style.display = 'block';
+        focusedIdx = -1;
       }
     };
 
@@ -658,6 +743,7 @@
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      const maxDate = new Date(today.getFullYear(), today.getMonth() + 6, 1);
       let viewYear = today.getFullYear();
       let viewMonth = today.getMonth();
       let selected = null;
@@ -713,7 +799,9 @@
 
         const next = document.createElement('button');
         next.className = 'cal-nav';
-        next.textContent = '›';
+        next.textContent = '\u203a';
+        const nextMonth = new Date(viewYear, viewMonth + 1, 1);
+        next.disabled = nextMonth >= maxDate;
         next.addEventListener('click', () => {
           viewMonth++;
           if (viewMonth > 11) { viewMonth = 0; viewYear++; }
@@ -916,6 +1004,7 @@
           input.focus();
           return;
         }
+        try { localStorage.setItem('bgmoving_phone', normalized); } catch (_) { /* private mode */ }
         while (block.firstChild) block.removeChild(block.firstChild);
         const success = el('div', { className: 'phone-success' });
         success.appendChild(el('strong', { text: 'Thanks! ' }));

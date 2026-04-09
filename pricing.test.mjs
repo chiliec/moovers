@@ -101,7 +101,7 @@ test('breakdown contains labor and travel rows summing toward total', () => {
   assert.equal(r.total, 620);
   assert.ok(r.breakdown.length >= 2);
   const labels = r.breakdown.map(row => row.label);
-  assert.ok(labels.some(l => l.toLowerCase().includes('labor')));
+  assert.ok(labels.some(l => l.toLowerCase().includes('crew')));
   assert.ok(labels.some(l => l.toLowerCase().includes('travel')));
 });
 
@@ -137,4 +137,81 @@ test('quote returns totalLow/totalHigh range bracketing total, rounded to $5', (
   const span = r.totalHigh - r.totalLow;
   assert.ok(span / r.total >= 0.22 && span / r.total <= 0.28,
     `range span ${span} should be ~24% of ${r.total}`);
+});
+
+// --- Edge case tests ---
+
+test('Sunday triggers weekend surcharge same as Saturday', () => {
+  const r = calculateQuote({
+    size: 'studio', originFloor: 'ground', destFloor: 'ground',
+    miles: 0, specialItems: [], packing: 'self', date: '2026-04-12', // Sunday
+  });
+  assert.ok(r.isWeekend, 'Sunday should be flagged as weekend');
+  // Same base as weekday test (445) + 10% = 489.5 → 490
+  assert.equal(r.total, 490);
+});
+
+test('zero miles produces zero drive hours', () => {
+  const r = calculateQuote({
+    size: '1br', originFloor: 'ground', destFloor: 'ground',
+    miles: 0, specialItems: [], packing: 'self', date: '2026-04-15',
+  });
+  assert.equal(r.driveHours, 0);
+  assert.equal(r.miles, 0);
+});
+
+test('all special items sum correctly', () => {
+  const r = calculateQuote({
+    size: '1br', originFloor: 'ground', destFloor: 'ground',
+    miles: 0, specialItems: ['piano', 'safe', 'pooltable', 'artwork'],
+    packing: 'self', date: '2026-04-15',
+  });
+  // piano 250 + safe 200 + pooltable 300 + artwork 100 = 850
+  // labor: 3.5h * 150 = 525, travel 95, specials 850 → 1470
+  assert.equal(r.total, 1470);
+  assert.equal(r.breakdown.length, 6); // crew time, travel, 4 specials
+});
+
+test('double 4+-no-elev floors stack surcharge', () => {
+  const r = calculateQuote({
+    size: 'studio', originFloor: '4+-no-elev', destFloor: '4+-no-elev',
+    miles: 0, specialItems: [], packing: 'self', date: '2026-04-15',
+  });
+  // base 2.5 + 1.5 + 1.5 = 5.5 hours
+  assert.equal(r.laborHours, 5.5);
+});
+
+// --- Validation tests ---
+
+test('throws on missing answers object', () => {
+  assert.throws(() => calculateQuote(null), /answers object required/);
+  assert.throws(() => calculateQuote(undefined), /answers object required/);
+});
+
+test('throws on unknown size', () => {
+  assert.throws(() => calculateQuote({
+    size: 'mansion', originFloor: 'ground', destFloor: 'ground',
+    miles: 0, specialItems: [], packing: 'self', date: '2026-04-15',
+  }), /unknown size/);
+});
+
+test('throws on unknown floor', () => {
+  assert.throws(() => calculateQuote({
+    size: 'studio', originFloor: 'basement', destFloor: 'ground',
+    miles: 0, specialItems: [], packing: 'self', date: '2026-04-15',
+  }), /unknown originFloor/);
+});
+
+test('throws on negative miles', () => {
+  assert.throws(() => calculateQuote({
+    size: 'studio', originFloor: 'ground', destFloor: 'ground',
+    miles: -5, specialItems: [], packing: 'self', date: '2026-04-15',
+  }), /miles must be a non-negative number/);
+});
+
+test('throws on missing date', () => {
+  assert.throws(() => calculateQuote({
+    size: 'studio', originFloor: 'ground', destFloor: 'ground',
+    miles: 0, specialItems: [], packing: 'self',
+  }), /date string required/);
 });
