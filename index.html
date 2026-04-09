@@ -225,9 +225,28 @@
       font-variant-numeric: tabular-nums;
     }
     .cal-day.blank { cursor: default; }
-    .cal-day:not(.blank):not(:disabled):hover { background: var(--bg); }
+    .cal-day:not(.blank):not(:disabled):not(.selected):hover { background: var(--bg); }
     .cal-day:disabled { color: var(--text-muted); opacity: 0.35; cursor: not-allowed; }
     .cal-day.selected { background: var(--user-bg); color: var(--user-text); }
+    .cal-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .cal-submit {
+      padding: 8px 18px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .cal-submit:disabled { opacity: 0.3; cursor: not-allowed; }
     .result {
       margin-top: 32px;
       padding: 32px 24px;
@@ -548,12 +567,16 @@
       let viewMonth = today.getMonth();
       let selected = null;
 
+      const wrap = document.createElement('div');
+      wrap.className = 'cal-wrap';
+      area.appendChild(wrap);
+
       const cal = document.createElement('div');
       cal.className = 'calendar';
-      area.appendChild(cal);
+      wrap.appendChild(cal);
 
       const doneBtn = document.createElement('button');
-      doneBtn.className = 'submit-btn';
+      doneBtn.className = 'cal-submit';
       doneBtn.textContent = 'Continue';
       doneBtn.disabled = true;
       doneBtn.addEventListener('click', () => {
@@ -566,7 +589,7 @@
         appendBubble('user', pretty);
         onAnswer(iso);
       });
-      area.appendChild(doneBtn);
+      wrap.appendChild(doneBtn);
 
       function renderCal() {
         while (cal.firstChild) cal.removeChild(cal.firstChild);
