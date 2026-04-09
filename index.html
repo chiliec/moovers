@@ -37,7 +37,9 @@
     .chat {
       max-width: 560px;
       margin: 0 auto;
-      padding: 24px 24px 80px;
+      /* generous bottom padding so the native date picker has room
+         to open below the input after scrollToBottom() */
+      padding: 24px 24px 360px;
       display: flex;
       flex-direction: column;
       gap: 12px;
