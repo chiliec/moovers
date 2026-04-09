@@ -349,6 +349,51 @@
       font-weight: 600;
     }
     .start-over:hover { color: var(--text); }
+    .phone-capture {
+      margin: 28px auto 0;
+      max-width: 420px;
+      padding: 22px 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      text-align: left;
+    }
+    .phone-capture h3 {
+      margin: 0 0 6px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .phone-capture p {
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .phone-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .phone-form .text-input {
+      flex: 1;
+      min-width: 180px;
+    }
+    .phone-error {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    .phone-success {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.55;
+    }
+    .phone-success strong { color: var(--accent); font-weight: 700; }
   </style>
 </head>
 <body>
@@ -786,6 +831,8 @@
       totalRow.appendChild(totalValue);
       const totalBlock = el('div', { className: 'breakdown', children: [totalRow] });
 
+      const phoneBlock = buildPhoneCapture();
+
       const startOver = el('a', { className: 'start-over', text: 'Start Over' });
       startOver.addEventListener('click', () => {
         while (chatEl.firstChild) chatEl.removeChild(chatEl.firstChild);
@@ -804,6 +851,7 @@
           breakdownBlock,
           el('hr'),
           totalBlock,
+          phoneBlock,
           el('div', {
             className: 'disclaimer',
             text: 'This is a non-binding estimate. Final price depends on actual move time.',
@@ -814,6 +862,79 @@
 
       chatEl.appendChild(result);
       scrollToBottom();
+    }
+
+    // Accepts 10-digit US numbers with any formatting, or 11 digits starting
+    // with a country-code 1. Returns the normalized 10-digit string, or null.
+    function validatePhone(raw) {
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length === 10) return digits;
+      if (digits.length === 11 && digits.startsWith('1')) return digits.slice(1);
+      return null;
+    }
+
+    function formatPhone(digits) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    function buildPhoneCapture() {
+      const block = el('div', { className: 'phone-capture' });
+      const title = el('h3', { text: 'Want a human to confirm this price?' });
+      const sub = el('p', {
+        text: "Leave your number and a coordinator will call within 15 minutes to lock in your date.",
+      });
+
+      const form = el('div', { className: 'phone-form' });
+      const input = document.createElement('input');
+      input.type = 'tel';
+      input.inputMode = 'numeric';
+      input.autocomplete = 'tel';
+      input.className = 'text-input';
+      input.placeholder = '(555) 123-4567';
+      input.setAttribute('aria-label', 'Phone number');
+
+      const btn = document.createElement('button');
+      btn.className = 'submit-btn';
+      btn.textContent = 'Request call';
+
+      form.appendChild(input);
+      form.appendChild(btn);
+
+      const errEl = el('div', { className: 'phone-error' });
+      errEl.style.display = 'none';
+
+      block.appendChild(title);
+      block.appendChild(sub);
+      block.appendChild(form);
+      block.appendChild(errEl);
+
+      function submit() {
+        const normalized = validatePhone(input.value);
+        if (!normalized) {
+          errEl.textContent = 'Please enter a valid US phone number.';
+          errEl.style.display = 'block';
+          input.focus();
+          return;
+        }
+        while (block.firstChild) block.removeChild(block.firstChild);
+        const success = el('div', { className: 'phone-success' });
+        success.appendChild(el('strong', { text: 'Thanks! ' }));
+        success.appendChild(document.createTextNode(
+          `We'll call you at ${formatPhone(normalized)} within 15 minutes.`
+        ));
+        block.appendChild(success);
+      }
+
+      btn.addEventListener('click', submit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); submit(); }
+      });
+      // Clear error as soon as the user starts fixing the input
+      input.addEventListener('input', () => {
+        if (errEl.style.display === 'block') errEl.style.display = 'none';
+      });
+
+      return block;
     }
 
     async function runConversation() {
