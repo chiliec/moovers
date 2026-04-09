@@ -35,6 +35,11 @@ export const CONFIG = {
   },
   weekendSurcharge: 0.10,
   minHours: 2,
+  // Fraction applied on either side of the central estimate to produce
+  // the displayed range (e.g. 0.12 → "±12%"). Moving quotes are inherently
+  // uncertain (traffic, stair difficulty, packing pace), so showing a range
+  // is standard industry practice and sets honest expectations.
+  estimateRangePct: 0.12,
 };
 
 const EARTH_RADIUS_KM = 6371;
@@ -92,6 +97,13 @@ export function calculateQuote(answers) {
 
   const total = Math.round(subtotal);
 
+  // Range: apply ± estimateRangePct, then round outward to the nearest $5
+  // so the displayed values feel like clean round quotes rather than
+  // algorithmic noise (e.g. $1,310 – $1,660 not $1,307 – $1,663).
+  const pct = CONFIG.estimateRangePct;
+  const totalLow = Math.floor((total * (1 - pct)) / 5) * 5;
+  const totalHigh = Math.ceil((total * (1 + pct)) / 5) * 5;
+
   const breakdown = [
     { label: `Labor (${totalHours} hr × $${rateInfo.rate})`, value: Math.round(laborCost) },
     { label: 'Travel fee', value: CONFIG.travelFee },
@@ -124,6 +136,8 @@ export function calculateQuote(answers) {
     isWeekend,
     breakdown,
     total,
+    totalLow,
+    totalHigh,
   };
 }
 

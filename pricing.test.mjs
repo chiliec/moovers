@@ -117,3 +117,24 @@ test('distanceMiles: identical points = 0', () => {
   const d = distanceMiles({ lat: 40.7, lng: -74 }, { lat: 40.7, lng: -74 });
   assert.equal(d, 0);
 });
+
+test('quote returns totalLow/totalHigh range bracketing total, rounded to $5', () => {
+  const r = calculateQuote({
+    size: '2br', originFloor: 'ground', destFloor: 'ground',
+    miles: 12, specialItems: ['piano'], packing: 'partial', date: '2026-04-11',
+  });
+  // Canonical case: total === 1966 (Saturday, weekend surcharge applied).
+  assert.equal(r.total, 1966);
+  assert.equal(typeof r.totalLow, 'number');
+  assert.equal(typeof r.totalHigh, 'number');
+  assert.ok(r.totalLow < r.total, 'totalLow must be < total');
+  assert.ok(r.totalHigh > r.total, 'totalHigh must be > total');
+  // Rounded outward to $5 multiples.
+  assert.equal(r.totalLow % 5, 0);
+  assert.equal(r.totalHigh % 5, 0);
+  // At ±12%, the range should span roughly 24% of total
+  // (with a little slack for the outward $5 rounding).
+  const span = r.totalHigh - r.totalLow;
+  assert.ok(span / r.total >= 0.22 && span / r.total <= 0.28,
+    `range span ${span} should be ~24% of ${r.total}`);
+});

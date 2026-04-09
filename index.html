@@ -306,11 +306,12 @@
     .result .total {
       font-family: 'Manrope', sans-serif;
       font-weight: 800;
-      font-size: 56px;
+      font-size: clamp(28px, 8vw, 44px);
       letter-spacing: -0.02em;
       color: var(--total);
       margin: 8px 0 24px;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
     .result hr {
       border: 0;
@@ -744,6 +745,10 @@
       return '$ ' + n.toLocaleString('en-US');
     }
 
+    function formatRange(low, high) {
+      return `${formatMoney(low)} – ${formatMoney(high)}`;
+    }
+
     function breakdownRow(label, value) {
       return el('div', {
         className: 'row',
@@ -776,7 +781,7 @@
 
       const totalRow = el('div', { className: 'row' });
       const totalLabel = el('strong', { text: 'Total estimate' });
-      const totalValue = el('strong', { text: formatMoney(quote.total) });
+      const totalValue = el('strong', { text: formatRange(quote.totalLow, quote.totalHigh) });
       totalRow.appendChild(totalLabel);
       totalRow.appendChild(totalValue);
       const totalBlock = el('div', { className: 'breakdown', children: [totalRow] });
@@ -792,7 +797,7 @@
         className: 'result',
         children: [
           el('div', { className: 'label', text: 'Your moving estimate' }),
-          el('div', { className: 'total', text: formatMoney(quote.total) }),
+          el('div', { className: 'total', text: formatRange(quote.totalLow, quote.totalHigh) }),
           el('hr'),
           headerBlock,
           el('hr'),
