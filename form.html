@@ -70,6 +70,13 @@
       border-bottom-right-radius: 6px;
       font-weight: 600;
     }
+    .bubble.user[data-step] {
+      cursor: pointer;
+      transition: opacity 200ms;
+    }
+    .bubble.user[data-step]:hover {
+      opacity: 0.7;
+    }
     .typing {
       align-self: flex-start;
       padding: 14px 20px;
@@ -413,6 +420,32 @@
 
     const chatEl = document.getElementById('chat');
     const answers = {};
+    const BACK = Symbol('back');
+    let stepIdx = 0;
+    let pendingResolve = null;
+
+    // --- Rewind ---
+    function rewindTo(targetIdx) {
+      for (const child of [...chatEl.children]) {
+        const s = child.dataset.step;
+        if (s !== undefined && Number(s) >= targetIdx) child.remove();
+      }
+      for (const sel of ['.input-area', '.typing', '.result']) {
+        const el = chatEl.querySelector(sel);
+        if (el) el.remove();
+      }
+      for (let i = targetIdx; i < STEPS.length; i++) {
+        delete answers[STEPS[i].id];
+      }
+      stepIdx = targetIdx;
+      if (pendingResolve) {
+        const r = pendingResolve;
+        pendingResolve = null;
+        r(BACK);
+      } else {
+        runConversation();
+      }
+    }
 
     // --- UI primitives ---
     function appendBubble(role, text) {
@@ -930,11 +963,7 @@
       const phoneBlock = buildPhoneCapture();
 
       const startOver = el('a', { className: 'start-over', text: 'Start Over' });
-      startOver.addEventListener('click', () => {
-        while (chatEl.firstChild) chatEl.removeChild(chatEl.firstChild);
-        for (const k of Object.keys(answers)) delete answers[k];
-        runConversation();
-      });
+      startOver.addEventListener('click', () => rewindTo(0));
 
       const result = el('div', {
         className: 'result',
@@ -956,6 +985,7 @@
         ],
       });
 
+      result.dataset.step = String(STEPS.length);
       chatEl.appendChild(result);
       scrollToBottom();
     }
@@ -1035,17 +1065,36 @@
     }
 
     async function runConversation() {
-      for (const step of STEPS) {
-        await botSay(step.botText);
+      while (stepIdx < STEPS.length) {
+        const step = STEPS[stepIdx];
+        const idx = stepIdx;
+
+        const botBubble = await botSay(step.botText);
+        botBubble.dataset.step = String(idx);
+
         const value = await new Promise(resolve => {
+          pendingResolve = resolve;
           RENDERERS[step.input](step, resolve);
         });
+        pendingResolve = null;
+
+        if (value === BACK) continue;
+
+        const userBubbles = chatEl.querySelectorAll('.bubble.user:not([data-step])');
+        const last = userBubbles[userBubbles.length - 1];
+        if (last) {
+          last.dataset.step = String(idx);
+          last.addEventListener('click', () => rewindTo(idx));
+        }
+
         answers[step.id] = value;
+        stepIdx++;
       }
 
       const miles = distanceMiles(answers.origin.coords, answers.destination.coords);
 
-      await botSay('One moment — calculating your estimate…', 1500);
+      const calcBubble = await botSay('One moment — calculating your estimate…', 1500);
+      calcBubble.dataset.step = String(STEPS.length);
 
       const quote = calculateQuote({
         size: answers.size,
