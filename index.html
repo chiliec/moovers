@@ -506,7 +506,7 @@
     @media (max-width: 640px) {
       .header {
         padding: 0 16px;
-        height: 56px;
+        height: calc(56px + env(safe-area-inset-top, 0px));
       }
       .header-nav { display: none; }
       .hero {
@@ -515,11 +515,30 @@
       .hero h1 { font-size: 24px; }
       .hero p { font-size: 14px; }
       .chatbot-card {
-        margin: -20px 12px 0;
-        padding: 16px;
+        margin: -20px 8px 0;
+        padding: 12px;
         border-radius: 16px;
       }
-      .chatbot-card h2 { font-size: 17px; }
+      .chatbot-card h2 { font-size: 17px; margin-bottom: 8px; }
+      .chat {
+        padding: 16px 8px 40px;
+        min-height: 0;
+      }
+      .bubble { max-width: 92%; padding: 12px 14px; font-size: 13px; }
+      .choice-btn { padding: 8px 14px; font-size: 12px; }
+      .text-input { min-width: 0; font-size: 16px; }
+      .autocomplete { min-width: 0; }
+      .autocomplete .suggestions { max-height: 180px; }
+      .autocomplete .suggestions div { padding: 10px 14px; }
+      .submit-btn { padding: 8px 16px; font-size: 12px; }
+      .calendar { max-width: 100%; padding: 14px; }
+      .cal-day { font-size: 12px; }
+      .result { padding: 24px 14px; border-radius: 18px; }
+      .result .total { font-size: 28px; }
+      .breakdown { max-width: 100%; }
+      .breakdown .row { font-size: 13px; }
+      .phone-capture { padding: 16px; margin-top: 20px; }
+      .phone-form .text-input { min-width: 0; }
       .footer { padding: 32px 16px; }
       .footer-grid {
         grid-template-columns: 1fr;
