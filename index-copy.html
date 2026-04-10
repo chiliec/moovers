@@ -577,7 +577,7 @@
       return div;
     }
     function scrollToBottom() {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      chatEl.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
     async function botSay(text, typingMs = 600) {
