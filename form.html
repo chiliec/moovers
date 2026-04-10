@@ -440,6 +440,7 @@
       return div;
     }
     function scrollToBottom() {
+      if (window.parent !== window) return; // iframe: parent page scrolls, not us
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
