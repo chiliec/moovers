@@ -37,7 +37,7 @@ jobs:
       - name: Stage site
         run: |
           mkdir _site
-          cp index.html form.html index-copy.html pricing.js Axveer-Moving-Automation.pptx _site/
+          cp index.html form.html index-iframe.html pricing.js Axveer-Moving-Automation.pptx _site/
 
       - uses: actions/configure-pages@v5
 
