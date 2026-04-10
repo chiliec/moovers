@@ -1054,6 +1054,17 @@
       renderResult(quote);
     }
 
+    // Report height to parent for iframe auto-resize
+    if (window.parent !== window) {
+      const ro = new ResizeObserver(function() {
+        window.parent.postMessage(
+          { type: 'moovers-resize', height: document.body.scrollHeight },
+          '*'
+        );
+      });
+      ro.observe(document.body);
+    }
+
     runConversation();
   </script>
 </body>
