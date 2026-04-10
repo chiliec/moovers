@@ -1066,8 +1066,10 @@
     // When embedded in an iframe, reduce padding and report height
     if (window.parent !== window) {
       document.documentElement.classList.add('embedded');
+      window.scrollTo(0, 0);
       let lastH = 0;
       function reportHeight() {
+        window.scrollTo(0, 0);
         const h = document.body.scrollHeight;
         if (h !== lastH) {
           lastH = h;
