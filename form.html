@@ -1056,13 +1056,17 @@
 
     // Report height to parent for iframe auto-resize
     if (window.parent !== window) {
-      const ro = new ResizeObserver(function() {
-        window.parent.postMessage(
-          { type: 'moovers-resize', height: document.body.scrollHeight },
-          '*'
-        );
-      });
-      ro.observe(document.body);
+      let lastH = 0;
+      function reportHeight() {
+        const h = document.body.scrollHeight;
+        if (h !== lastH) {
+          lastH = h;
+          window.parent.postMessage({ type: 'moovers-resize', height: h }, '*');
+        }
+      }
+      new ResizeObserver(reportHeight).observe(document.body);
+      new MutationObserver(reportHeight).observe(chatEl, { childList: true, subtree: true });
+      reportHeight();
     }
 
     runConversation();
