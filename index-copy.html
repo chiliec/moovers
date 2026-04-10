@@ -500,6 +500,31 @@
       line-height: 1.55;
     }
     .phone-success strong { color: var(--accent); font-weight: 700; }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .header {
+        padding: 0 16px;
+        height: 56px;
+      }
+      .header-nav { display: none; }
+      .hero {
+        padding: 36px 16px 48px;
+      }
+      .hero h1 { font-size: 24px; }
+      .hero p { font-size: 14px; }
+      .chatbot-card {
+        margin: -20px 12px 0;
+        padding: 16px;
+        border-radius: 16px;
+      }
+      .chatbot-card h2 { font-size: 17px; }
+      .footer { padding: 32px 16px; }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
   </style>
 </head>
 <body>
