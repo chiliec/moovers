@@ -577,7 +577,12 @@
       return div;
     }
     function scrollToBottom() {
-      chatEl.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      const el = chatEl.lastElementChild;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
     }
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
     async function botSay(text, typingMs = 600) {
