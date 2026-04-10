@@ -40,6 +40,10 @@
       gap: 12px;
       min-height: 70vh;
     }
+    html.embedded .chat {
+      padding-bottom: 24px;
+      min-height: 0;
+    }
     .bubble {
       max-width: 80%;
       padding: 14px 20px;
@@ -1054,8 +1058,9 @@
       renderResult(quote);
     }
 
-    // Report height to parent for iframe auto-resize
+    // When embedded in an iframe, reduce padding and report height
     if (window.parent !== window) {
+      document.documentElement.classList.add('embedded');
       let lastH = 0;
       function reportHeight() {
         const h = document.body.scrollHeight;
