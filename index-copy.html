@@ -737,7 +737,7 @@
         try {
           const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=1&q=${encodeURIComponent(q)}`;
           const res = await fetch(url, {
-            headers: { 'User-Agent': 'BGMoving-QuoteBot/1.0 (https://bgmoving.com)' },
+            headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
           });
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
@@ -772,7 +772,7 @@
           try {
             const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=${encodeURIComponent(q)}`;
             const res = await fetch(url, {
-              headers: { 'User-Agent': 'BGMoving-QuoteBot/1.0 (https://bgmoving.com)' },
+              headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
             });
             const data = await res.json();
             const items = Array.isArray(data) ? data : [];
@@ -1147,7 +1147,7 @@
           input.focus();
           return;
         }
-        try { localStorage.setItem('bgmoving_phone', normalized); } catch (_) { /* private mode */ }
+        try { localStorage.setItem('moovers_phone', normalized); } catch (_) { /* private mode */ }
         while (block.firstChild) block.removeChild(block.firstChild);
         const success = el('div', { className: 'phone-success' });
         success.appendChild(el('strong', { text: 'Thanks! ' }));
