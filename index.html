@@ -1,1303 +1,507 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Moovers — Free Moving Quote</title>
-  <meta name="format-detection" content="telephone=no" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #f5f5f5;
-      --surface: #ffffff;
-      --border: #e1e8ee;
-      --text: #15679b;
-      --text-muted: #6b8aa5;
-      --accent: #448cca;
-      --user-bg: #15679b;
-      --user-text: #f5f5f5;
-      --total: #15679b;
-      --shadow-card: 0 10px 25px rgba(21, 103, 155, 0.08);
-      --shadow-hover: 0 15px 25px rgba(41, 81, 106, 0.18);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Manrope', system-ui, Arial, sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: calc(64px + env(safe-area-inset-top, 0px));
-      padding: env(safe-area-inset-top, 0px) 32px 0;
-      background: var(--text);
-      color: var(--bg);
-    }
-    .header-logo {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .header-nav {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-    }
-    .header-nav a {
-      color: var(--bg);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      opacity: 0.85;
-      transition: opacity 200ms;
-    }
-    .header-nav a:hover { opacity: 1; }
-    .header-phone {
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, #15679b 0%, #448cca 100%);
-      color: var(--bg);
-      text-align: center;
-      padding: 56px 24px 64px;
-    }
-    .hero h1 {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-    .hero p {
-      font-size: 16px;
-      opacity: 0.85;
-      max-width: 500px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    /* Chatbot card */
-    .chatbot-card {
-      max-width: 640px;
-      margin: -32px auto 0;
-      padding: 32px;
-      background: var(--surface);
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-card);
-      position: relative;
-      z-index: 2;
-    }
-    .chatbot-card h2 {
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--text);
-    }
-
-    /* Footer */
-    .footer {
-      background: var(--text);
-      color: var(--bg);
-      padding: 40px 32px;
-      margin-top: 48px;
-    }
-    .footer-grid {
-      max-width: 900px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-    .footer-grid h4 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      opacity: 0.9;
-    }
-    .footer-grid p {
-      opacity: 0.7;
-    }
-    .footer-bottom {
-      max-width: 900px;
-      margin: 24px auto 0;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 12px;
-      opacity: 0.5;
-      text-align: center;
-    }
-
-    /* Chatbot styles */
-    .chat {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 24px 24px 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 70vh;
-    }
-    .bubble {
-      max-width: 80%;
-      padding: 14px 20px;
-      border-radius: 20px;
-      line-height: 1.5;
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      animation: slideUp 250ms ease-out both;
-    }
-    .bubble.bot {
-      align-self: flex-start;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-bottom-left-radius: 6px;
-      box-shadow: var(--shadow-card);
-    }
-    .bubble.user {
-      align-self: flex-end;
-      background: var(--user-bg);
-      color: var(--user-text);
-      border-bottom-right-radius: 6px;
-      font-weight: 600;
-    }
-    .bubble.user[data-step] {
-      cursor: pointer;
-      transition: opacity 200ms;
-    }
-    .bubble.user[data-step]:hover {
-      opacity: 0.7;
-    }
-    .typing {
-      align-self: flex-start;
-      padding: 14px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      border-bottom-left-radius: 6px;
-      display: inline-flex;
-      gap: 4px;
-      animation: slideUp 250ms ease-out both;
-      box-shadow: var(--shadow-card);
-    }
-    .typing span {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 1.2s ease-in-out infinite;
-    }
-    .typing span:nth-child(2) { animation-delay: 0.15s; }
-    .typing span:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes pulse {
-      0%, 80%, 100% { opacity: 0.3; }
-      40% { opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .input-area {
-      align-self: stretch;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
-      animation: slideUp 250ms ease-out both;
-    }
-    .choice-btn {
-      padding: 10px 20px;
-      background: var(--surface);
-      color: var(--accent);
-      border: 2px solid var(--border);
-      border-radius: 15px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 200ms ease-in-out;
-    }
-    .choice-btn:hover {
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-      box-shadow: var(--shadow-hover);
-    }
-    .choice-btn.selected {
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-    }
-    .text-input {
-      flex: 1; min-width: 280px;
-      padding: 12px 18px;
-      border: 2px solid var(--border);
-      background: var(--surface);
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      border-radius: 15px;
-      outline: none;
-      transition: border-color 200ms ease-in-out;
-    }
-    .text-input:focus { border-color: var(--accent); }
-    .autocomplete {
-      position: relative;
-      flex: 1;
-      min-width: 280px;
-    }
-    .autocomplete .suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0; right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      margin-top: 6px;
-      max-height: 240px;
-      overflow-y: auto;
-      z-index: 10;
-      box-shadow: var(--shadow-hover);
-    }
-    .autocomplete .suggestions div {
-      padding: 10px 18px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text);
-    }
-    .autocomplete .suggestions div:hover,
-    .autocomplete .suggestions div.focused { background: var(--bg); }
-    .submit-btn {
-      padding: 10px 22px;
-      background: var(--text);
-      color: var(--bg);
-      border: 2px solid var(--text);
-      border-radius: 15px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 200ms ease-in-out;
-    }
-    .submit-btn:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: var(--shadow-hover);
-    }
-    .calendar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
-      width: 100%;
-      max-width: 320px;
-      box-shadow: var(--shadow-card);
-    }
-    .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .cal-title {
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .cal-nav {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1;
-      font-family: 'Manrope', sans-serif;
-      font-weight: 600;
-      transition: all 200ms ease-in-out;
-    }
-    .cal-nav:hover:not(:disabled) { background: var(--text); color: var(--bg); border-color: var(--text); }
-    .cal-nav:disabled { opacity: 0.3; cursor: not-allowed; }
-    .cal-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      margin-bottom: 4px;
-    }
-    .cal-weekdays div {
-      text-align: center;
-      font-family: 'Manrope', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      padding: 4px 0;
-    }
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-    }
-    .cal-day {
-      background: transparent;
-      border: none;
-      aspect-ratio: 1;
-      border-radius: 10px;
-      cursor: pointer;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-      transition: background 150ms, color 150ms;
-    }
-    .cal-day.blank { cursor: default; }
-    .cal-day:not(.blank):not(:disabled):not(.selected):hover { background: var(--bg); }
-    .cal-day:disabled { color: var(--text-muted); opacity: 0.35; cursor: not-allowed; }
-    .cal-day.selected { background: var(--user-bg); color: var(--user-text); }
-    .cal-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      align-items: flex-start;
-    }
-    .cal-submit {
-      padding: 10px 22px;
-      background: var(--text);
-      color: var(--bg);
-      border: 2px solid var(--text);
-      border-radius: 15px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 200ms ease-in-out;
-    }
-    .cal-submit:hover:not(:disabled) {
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: var(--shadow-hover);
-    }
-    .cal-submit:disabled { opacity: 0.3; cursor: not-allowed; }
-    .result {
-      margin-top: 32px;
-      padding: 36px 28px;
-      text-align: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 25px;
-      box-shadow: var(--shadow-card);
-      animation: slideUp 400ms ease-out both;
-    }
-    .result .label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-    .result .total {
-      font-family: 'Manrope', sans-serif;
-      font-weight: 800;
-      font-size: clamp(28px, 8vw, 44px);
-      letter-spacing: -0.02em;
-      color: var(--total);
-      margin: 8px 0 24px;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-    .result hr {
-      border: 0;
-      border-top: 1px solid var(--border);
-      margin: 16px auto;
-      max-width: 320px;
-    }
-    .breakdown {
-      max-width: 360px;
-      margin: 0 auto;
-      font-variant-numeric: tabular-nums;
-    }
-    .breakdown .row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .breakdown .row .lbl { color: var(--text-muted); font-weight: 500; }
-    .breakdown .row strong { font-weight: 700; }
-    .disclaimer {
-      margin-top: 24px;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .start-over {
-      display: inline-block;
-      margin-top: 20px;
-      color: var(--accent);
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .start-over:hover { color: var(--text); }
-    .phone-capture {
-      margin: 28px auto 0;
-      max-width: 420px;
-      padding: 22px 24px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      text-align: left;
-    }
-    .phone-capture h3 {
-      margin: 0 0 6px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .phone-capture p {
-      margin: 0 0 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-      line-height: 1.5;
-    }
-    .phone-form {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .phone-form .text-input {
-      flex: 1;
-      min-width: 180px;
-    }
-    .phone-error {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #b91c1c;
-      font-weight: 600;
-    }
-    .phone-success {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 600;
-      line-height: 1.55;
-    }
-    .phone-success strong { color: var(--accent); font-weight: 700; }
-
-    /* ── Mobile ── */
-    @media (max-width: 640px) {
-      .header {
-        padding: 0 16px;
-        height: calc(56px + env(safe-area-inset-top, 0px));
-      }
-      .header-nav { display: none; }
-      .hero {
-        padding: 36px 16px 48px;
-      }
-      .hero h1 { font-size: 24px; }
-      .hero p { font-size: 14px; }
-      .chatbot-card {
-        margin: -20px 8px 0;
-        padding: 12px;
-        border-radius: 16px;
-      }
-      .chatbot-card h2 { font-size: 17px; margin-bottom: 8px; }
-      .chat {
-        padding: 16px 8px 40px;
-        min-height: 0;
-      }
-      .bubble { max-width: 92%; padding: 12px 14px; font-size: 13px; }
-      .choice-btn { padding: 8px 14px; font-size: 12px; }
-      .text-input { min-width: 0; font-size: 16px; }
-      .autocomplete { min-width: 0; }
-      .autocomplete .suggestions { max-height: 180px; }
-      .autocomplete .suggestions div { padding: 10px 14px; }
-      .submit-btn { padding: 8px 16px; font-size: 12px; }
-      .calendar { max-width: 100%; }
-      .result { padding: 24px 14px; border-radius: 18px; }
-      .result .total { font-size: 28px; }
-      .breakdown { max-width: 100%; }
-      .breakdown .row { font-size: 13px; }
-      .phone-capture { padding: 16px; margin-top: 20px; }
-      .phone-form .text-input { min-width: 0; }
-      .footer { padding: 32px 16px; }
-      .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Metro Relocators — Reliable Interstate Moving from New York</title>
+<meta name="description" content="Licensed and insured interstate moving company based in New York. Careful handling, on-time delivery, free quotes in minutes." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="header-logo">Moovers</div>
-    <nav>
-      <ul class="header-nav">
-        <li><a href="#">Moving</a></li>
-        <li><a href="#">Storage</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="#top" class="logo" aria-label="Metro Relocators home">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="10" width="18" height="12" rx="2" fill="#2F80ED"/>
+          <path d="M20 13h6l4 4v5h-10V13z" fill="#56CCF2"/>
+          <circle cx="8" cy="24" r="3" fill="#1C1C1C"/>
+          <circle cx="24" cy="24" r="3" fill="#1C1C1C"/>
+          <circle cx="8" cy="24" r="1.2" fill="#F7F9FC"/>
+          <circle cx="24" cy="24" r="1.2" fill="#F7F9FC"/>
+        </svg>
+      </span>
+      <span class="logo-text">
+        <span class="logo-name">Metro Relocators</span>
+        <span class="logo-sub">New York · Interstate Moving</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <a href="#services">Services</a>
+      <a href="#how">How It Works</a>
+      <a href="#why">Why Us</a>
+      <a href="#testimonials">Reviews</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <div class="header-phone">(555) 123-4567</div>
-  </header>
 
-  <section class="hero">
-    <h1>Get A Free Moving Quote</h1>
-    <p>Answer a few quick questions and get an instant estimate for your local move.</p>
-  </section>
+    <div class="header-cta">
+      <a href="tel:+18005550199" class="phone-link" aria-label="Call us at 1 800 555 0199">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>1 (800) 555-0199</span>
+      </a>
+      <a href="#quote" class="btn btn-primary">Get a Free Quote</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="#services">Services</a>
+    <a href="#how">How It Works</a>
+    <a href="#why">Why Us</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="#contact">Contact</a>
+    <a href="#quote" class="btn btn-primary full">Get a Free Quote</a>
+  </nav>
+</header>
 
-  <main class="chatbot-card">
-    <h2>Get Your Instant Quote</h2>
-    <div class="chat" id="chat"></div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <h4>Contact</h4>
-        <p>Moovers Inc.<br>123 Moving Lane<br>New York, NY 10001</p>
-        <p>(555) 123-4567</p>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="assets/images/hero.jpg"
+         alt="Professional movers loading furniture into a moving truck outside a New York brownstone" loading="eager" />
+    <div class="hero-overlay" aria-hidden="true"></div>
+  </div>
+  <div class="container hero-content">
+    <div class="hero-text reveal">
+      <div class="eyebrow">
+        <span class="dot"></span>Licensed · Insured · USDOT #3857210
       </div>
-      <div>
-        <h4>Hours</h4>
-        <p>Mon–Fri: 9 AM – 8 PM<br>Sat: 10 AM – 6 PM<br>Sun: Closed</p>
+      <h1>Reliable Interstate Moving <span class="accent">from New York</span></h1>
+      <p class="lead">Careful hands, honest pricing, on-time delivery across all 50 states. Get a real quote in under 2 minutes — no phone tag, no pressure.</p>
+      <div class="hero-ctas">
+        <a href="#quote" class="btn btn-primary btn-lg">Get a Free Quote</a>
+        <a href="#how" class="btn btn-ghost btn-lg">See How It Works</a>
       </div>
-      <div>
-        <h4>Quick Links</h4>
-        <p>Moving<br>Storage<br>Reviews<br>About Us</p>
+      <div class="hero-stats">
+        <div><strong>12,000+</strong><span>Moves completed</span></div>
+        <div><strong>4.9/5</strong><span>Customer rating</span></div>
+        <div><strong>50</strong><span>States covered</span></div>
       </div>
     </div>
-    <div class="footer-bottom">&copy; 2026 Moovers Inc. All rights reserved.</div>
-  </footer>
-
-  <script type="module">
-    import { calculateQuote, distanceMiles, CONFIG } from './pricing.js';
-
-    const chatEl = document.getElementById('chat');
-    const answers = {};
-    const BACK = Symbol('back');
-    let stepIdx = 0;
-    let pendingResolve = null;
-
-    // --- Rewind ---
-    function rewindTo(targetIdx) {
-      // Remove all DOM children tagged at or after targetIdx
-      for (const child of [...chatEl.children]) {
-        const s = child.dataset.step;
-        if (s !== undefined && Number(s) >= targetIdx) child.remove();
-      }
-      // Remove any active input area or typing indicator
-      for (const sel of ['.input-area', '.typing', '.result']) {
-        const el = chatEl.querySelector(sel);
-        if (el) el.remove();
-      }
-      // Clear answers from targetIdx onward
-      for (let i = targetIdx; i < STEPS.length; i++) {
-        delete answers[STEPS[i].id];
-      }
-      stepIdx = targetIdx;
-      if (pendingResolve) {
-        const r = pendingResolve;
-        pendingResolve = null;
-        r(BACK);
-      } else {
-        runConversation();
-      }
-    }
-
-    // --- UI primitives ---
-    function appendBubble(role, text) {
-      const div = document.createElement('div');
-      div.className = `bubble ${role}`;
-      div.textContent = text;
-      chatEl.appendChild(div);
-      scrollToBottom();
-      return div;
-    }
-    function appendTyping() {
-      const div = document.createElement('div');
-      div.className = 'typing';
-      for (let i = 0; i < 3; i++) {
-        div.appendChild(document.createElement('span'));
-      }
-      chatEl.appendChild(div);
-      scrollToBottom();
-      return div;
-    }
-    function appendInputArea() {
-      const div = document.createElement('div');
-      div.className = 'input-area';
-      chatEl.appendChild(div);
-      scrollToBottom();
-      return div;
-    }
-    function scrollToBottom() {
-      const el = chatEl.lastElementChild;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.bottom > window.innerHeight) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }
-    }
-    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-    async function botSay(text, typingMs = 600) {
-      const t = appendTyping();
-      await delay(typingMs);
-      t.remove();
-      return appendBubble('bot', text);
-    }
-
-    // --- Conversation engine ---
-    const STEPS = [
-      {
-        id: 'size',
-        botText: "Hi! I'll help you get a quick moving quote. What size is your current home?",
-        input: 'buttons',
-        options: [
-          { value: 'studio', label: 'Studio' },
-          { value: '1br', label: '1 BR' },
-          { value: '2br', label: '2 BR' },
-          { value: '3br', label: '3 BR' },
-          { value: '4br', label: '4+ BR' },
-        ],
-      },
-      {
-        id: 'origin',
-        botText: "Got it. What's the pickup address?",
-        input: 'address',
-      },
-      {
-        id: 'originFloor',
-        botText: "Which floor is the pickup on, and is there an elevator?",
-        input: 'buttons',
-        options: [
-          { value: 'ground', label: 'Ground floor' },
-          { value: '2-3-elev', label: '2nd–3rd, elevator' },
-          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
-          { value: '4+-elev', label: '4th+, elevator' },
-          { value: '4+-no-elev', label: '4th+, no elevator' },
-        ],
-      },
-      {
-        id: 'destination',
-        botText: "And where are you moving to?",
-        input: 'address',
-      },
-      {
-        id: 'destFloor',
-        botText: "Which floor at the destination?",
-        input: 'buttons',
-        options: [
-          { value: 'ground', label: 'Ground floor' },
-          { value: '2-3-elev', label: '2nd–3rd, elevator' },
-          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
-          { value: '4+-elev', label: '4th+, elevator' },
-          { value: '4+-no-elev', label: '4th+, no elevator' },
-        ],
-      },
-      {
-        id: 'specialItems',
-        botText: "Are any of these items part of the move?",
-        input: 'multiselect',
-        options: [
-          { value: 'piano', label: 'Piano' },
-          { value: 'safe', label: 'Safe (>500 lb)' },
-          { value: 'pooltable', label: 'Pool table' },
-          { value: 'artwork', label: 'Large artwork' },
-        ],
-      },
-      {
-        id: 'packing',
-        botText: "Will you need packing service?",
-        input: 'buttons',
-        options: [
-          { value: 'self', label: "I'll pack myself" },
-          { value: 'partial', label: 'Partial packing' },
-          { value: 'full', label: 'Full packing' },
-        ],
-      },
-      {
-        id: 'date',
-        botText: "What's your preferred move date?",
-        input: 'date',
-      },
-    ];
-
-    const RENDERERS = {};
-
-    RENDERERS.buttons = function (step, onAnswer) {
-      const area = appendInputArea();
-      for (const opt of step.options) {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.textContent = opt.label;
-        btn.addEventListener('click', () => {
-          area.remove();
-          appendBubble('user', opt.label);
-          onAnswer(opt.value);
-        });
-        area.appendChild(btn);
-      }
-    };
-
-    RENDERERS.address = function (step, onAnswer) {
-      const area = appendInputArea();
-      const wrapper = document.createElement('div');
-      wrapper.className = 'autocomplete';
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'text-input';
-      input.placeholder = 'Start typing an address\u2026';
-      wrapper.appendChild(input);
-
-      const suggestions = document.createElement('div');
-      suggestions.className = 'suggestions';
-      suggestions.style.display = 'none';
-      wrapper.appendChild(suggestions);
-
-      // Manual submit button — escape hatch when autocomplete returns nothing
-      const submitBtn = document.createElement('button');
-      submitBtn.className = 'submit-btn';
-      submitBtn.textContent = 'Use this address';
-      submitBtn.style.display = 'none';
-
-      area.appendChild(wrapper);
-      area.appendChild(submitBtn);
-      input.focus();
-
-      let debounceTimer;
-      let currentItems = [];
-      let focusedIdx = -1;
-
-      function selectItem(item) {
-        const display = item.display_name;
-        area.remove();
-        appendBubble('user', display);
-        onAnswer({
-          display,
-          coords: { lat: Number(item.lat), lng: Number(item.lon) },
-        });
-      }
-
-      function highlightFocused() {
-        const divs = suggestions.querySelectorAll('div');
-        divs.forEach((d, i) => {
-          if (i === focusedIdx) { d.classList.add('focused'); }
-          else { d.classList.remove('focused'); }
-        });
-      }
-
-      // Geocode the typed text and proceed if a result is found
-      async function geocodeAndSubmit() {
-        const q = input.value.trim();
-        if (q.length < 3) return;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Looking up\u2026';
-        try {
-          const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=1&q=${encodeURIComponent(q)}`;
-          const res = await fetch(url, {
-            headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
-          });
-          const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            selectItem(data[0]);
-          } else {
-            submitBtn.textContent = 'Address not found \u2014 try again';
-            submitBtn.disabled = false;
-          }
-        } catch (e) {
-          console.error('nominatim error', e);
-          submitBtn.textContent = 'Lookup failed \u2014 try again';
-          submitBtn.disabled = false;
-        }
-      }
-
-      submitBtn.addEventListener('click', geocodeAndSubmit);
-
-      input.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        focusedIdx = -1;
-        const q = input.value.trim();
-        // Show manual submit when user has typed enough but might not get results
-        submitBtn.style.display = q.length >= 3 ? '' : 'none';
-        submitBtn.textContent = 'Use this address';
-        submitBtn.disabled = false;
-        if (q.length < 3) {
-          suggestions.style.display = 'none';
-          currentItems = [];
-          return;
-        }
-        debounceTimer = setTimeout(async () => {
-          try {
-            const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=${encodeURIComponent(q)}`;
-            const res = await fetch(url, {
-              headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
-            });
-            const data = await res.json();
-            const items = Array.isArray(data) ? data : [];
-            currentItems = items;
-            renderSuggestions(items);
-          } catch (e) {
-            console.error('nominatim error', e);
-          }
-        }, 400);
-      });
-
-      input.addEventListener('keydown', (e) => {
-        if (suggestions.style.display === 'none' || currentItems.length === 0) {
-          if (e.key === 'Enter') { e.preventDefault(); geocodeAndSubmit(); }
-          return;
-        }
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          focusedIdx = Math.min(focusedIdx + 1, currentItems.length - 1);
-          highlightFocused();
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          focusedIdx = Math.max(focusedIdx - 1, 0);
-          highlightFocused();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          if (focusedIdx >= 0 && focusedIdx < currentItems.length) {
-            selectItem(currentItems[focusedIdx]);
-          }
-        } else if (e.key === 'Escape') {
-          suggestions.style.display = 'none';
-          focusedIdx = -1;
-        }
-      });
-
-      function renderSuggestions(items) {
-        while (suggestions.firstChild) suggestions.removeChild(suggestions.firstChild);
-        if (items.length === 0) {
-          suggestions.style.display = 'none';
-          return;
-        }
-        items.forEach((item, idx) => {
-          const display = item.display_name;
-          const div = document.createElement('div');
-          div.textContent = display;
-          div.addEventListener('click', () => selectItem(item));
-          div.addEventListener('mouseenter', () => {
-            focusedIdx = idx;
-            highlightFocused();
-          });
-          suggestions.appendChild(div);
-        });
-        suggestions.style.display = 'block';
-        focusedIdx = -1;
-      }
-    };
-
-    RENDERERS.multiselect = function (step, onAnswer) {
-      const area = appendInputArea();
-      const selected = new Set();
-
-      for (const opt of step.options) {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.textContent = opt.label;
-        btn.addEventListener('click', () => {
-          if (selected.has(opt.value)) {
-            selected.delete(opt.value);
-            btn.classList.remove('selected');
-          } else {
-            selected.add(opt.value);
-            btn.classList.add('selected');
-          }
-        });
-        area.appendChild(btn);
-      }
-
-      const noneBtn = document.createElement('button');
-      noneBtn.className = 'choice-btn';
-      noneBtn.textContent = 'None of these';
-      noneBtn.addEventListener('click', () => {
-        area.remove();
-        appendBubble('user', 'None');
-        onAnswer([]);
-      });
-      area.appendChild(noneBtn);
-
-      const doneBtn = document.createElement('button');
-      doneBtn.className = 'submit-btn';
-      doneBtn.textContent = 'Continue';
-      doneBtn.addEventListener('click', () => {
-        if (selected.size === 0) {
-          area.remove();
-          appendBubble('user', 'None');
-          onAnswer([]);
-          return;
-        }
-        const labels = step.options
-          .filter(o => selected.has(o.value))
-          .map(o => o.label)
-          .join(', ');
-        area.remove();
-        appendBubble('user', labels);
-        onAnswer([...selected]);
-      });
-      area.appendChild(doneBtn);
-    };
-
-    RENDERERS.date = function (step, onAnswer) {
-      const area = appendInputArea();
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const maxDate = new Date(today.getFullYear(), today.getMonth() + 6, 1);
-      let viewYear = today.getFullYear();
-      let viewMonth = today.getMonth();
-      let selected = null;
-
-      const wrap = document.createElement('div');
-      wrap.className = 'cal-wrap';
-      area.appendChild(wrap);
-
-      const cal = document.createElement('div');
-      cal.className = 'calendar';
-      wrap.appendChild(cal);
-
-      const doneBtn = document.createElement('button');
-      doneBtn.className = 'cal-submit';
-      doneBtn.textContent = 'Continue';
-      doneBtn.disabled = true;
-      doneBtn.addEventListener('click', () => {
-        if (!selected) return;
-        const iso = `${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, '0')}-${String(selected.getDate()).padStart(2, '0')}`;
-        const pretty = selected.toLocaleDateString('en-US', {
-          weekday: 'long', month: 'long', day: 'numeric',
-        });
-        area.remove();
-        appendBubble('user', pretty);
-        onAnswer(iso);
-      });
-      wrap.appendChild(doneBtn);
-
-      function renderCal() {
-        while (cal.firstChild) cal.removeChild(cal.firstChild);
-
-        // Header
-        const header = document.createElement('div');
-        header.className = 'cal-header';
-
-        const prev = document.createElement('button');
-        prev.className = 'cal-nav';
-        prev.textContent = '‹';
-        const firstOfView = new Date(viewYear, viewMonth, 1);
-        const firstOfToday = new Date(today.getFullYear(), today.getMonth(), 1);
-        prev.disabled = firstOfView <= firstOfToday;
-        prev.addEventListener('click', () => {
-          viewMonth--;
-          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-          renderCal();
-        });
-
-        const title = document.createElement('div');
-        title.className = 'cal-title';
-        title.textContent = firstOfView.toLocaleDateString('en-US', {
-          month: 'long', year: 'numeric',
-        });
-
-        const next = document.createElement('button');
-        next.className = 'cal-nav';
-        next.textContent = '\u203a';
-        const nextMonth = new Date(viewYear, viewMonth + 1, 1);
-        next.disabled = nextMonth >= maxDate;
-        next.addEventListener('click', () => {
-          viewMonth++;
-          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-          renderCal();
-        });
-
-        header.appendChild(prev);
-        header.appendChild(title);
-        header.appendChild(next);
-        cal.appendChild(header);
-
-        // Weekday labels
-        const weekdays = document.createElement('div');
-        weekdays.className = 'cal-weekdays';
-        for (const w of ['S', 'M', 'T', 'W', 'T', 'F', 'S']) {
-          const d = document.createElement('div');
-          d.textContent = w;
-          weekdays.appendChild(d);
-        }
-        cal.appendChild(weekdays);
-
-        // Day grid
-        const grid = document.createElement('div');
-        grid.className = 'cal-grid';
-
-        const startDay = firstOfView.getDay();
-        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-        for (let i = 0; i < startDay; i++) {
-          const blank = document.createElement('div');
-          blank.className = 'cal-day blank';
-          grid.appendChild(blank);
-        }
-
-        for (let d = 1; d <= daysInMonth; d++) {
-          const btn = document.createElement('button');
-          btn.className = 'cal-day';
-          btn.textContent = String(d);
-          const cellDate = new Date(viewYear, viewMonth, d);
-          if (cellDate < today) {
-            btn.disabled = true;
-          }
-          if (selected &&
-              selected.getFullYear() === viewYear &&
-              selected.getMonth() === viewMonth &&
-              selected.getDate() === d) {
-            btn.classList.add('selected');
-          }
-          btn.addEventListener('click', () => {
-            selected = cellDate;
-            doneBtn.disabled = false;
-            renderCal();
-          });
-          grid.appendChild(btn);
-        }
-        cal.appendChild(grid);
-      }
-
-      renderCal();
-    };
-
-    // --- Result screen helpers ---
-    function el(tag, opts = {}) {
-      const node = document.createElement(tag);
-      if (opts.className) node.className = opts.className;
-      if (opts.text != null) node.textContent = opts.text;
-      if (opts.children) {
-        for (const c of opts.children) node.appendChild(c);
-      }
-      return node;
-    }
-
-    function formatMoney(n) {
-      return '$ ' + n.toLocaleString('en-US');
-    }
-
-    function formatRange(low, high) {
-      return `${formatMoney(low)} – ${formatMoney(high)}`;
-    }
-
-    function breakdownRow(label, value) {
-      return el('div', {
-        className: 'row',
-        children: [
-          el('span', { className: 'lbl', text: label }),
-          el('span', { text: typeof value === 'number' ? formatMoney(value) : value }),
-        ],
-      });
-    }
-
-    function renderResult(quote) {
-      const headerBlock = el('div', {
-        className: 'breakdown',
-        children: [
-          breakdownRow('Crew', `${quote.crew} movers`),
-          breakdownRow('Estimated labor', `${quote.laborHours} hours`),
-          breakdownRow(
-            'Drive time',
-            CONFIG.doubleDriveTime
-              ? `${quote.driveHours} hours (${quote.miles} mi, round trip)`
-              : `${quote.driveHours} hours (${quote.miles} mi)`
-          ),
-        ],
-      });
-
-      const breakdownBlock = el('div', { className: 'breakdown' });
-      for (const row of quote.breakdown) {
-        breakdownBlock.appendChild(breakdownRow(row.label, row.value));
-      }
-
-      const totalRow = el('div', { className: 'row' });
-      const totalLabel = el('strong', { text: 'Total estimate' });
-      const totalValue = el('strong', { text: formatRange(quote.totalLow, quote.totalHigh) });
-      totalRow.appendChild(totalLabel);
-      totalRow.appendChild(totalValue);
-      const totalBlock = el('div', { className: 'breakdown', children: [totalRow] });
-
-      const phoneBlock = buildPhoneCapture();
-
-      const startOver = el('a', { className: 'start-over', text: 'Start Over' });
-      startOver.addEventListener('click', () => rewindTo(0));
-
-      const result = el('div', {
-        className: 'result',
-        children: [
-          el('div', { className: 'label', text: 'Your moving estimate' }),
-          el('div', { className: 'total', text: formatRange(quote.totalLow, quote.totalHigh) }),
-          el('hr'),
-          headerBlock,
-          el('hr'),
-          breakdownBlock,
-          el('hr'),
-          totalBlock,
-          phoneBlock,
-          el('div', {
-            className: 'disclaimer',
-            text: 'This is a non-binding estimate. Final price depends on actual move time.',
-          }),
-          startOver,
-        ],
-      });
-
-      result.dataset.step = String(STEPS.length);
-      chatEl.appendChild(result);
-      scrollToBottom();
-    }
-
-    // Accepts 10-digit US numbers with any formatting, or 11 digits starting
-    // with a country-code 1. Returns the normalized 10-digit string, or null.
-    function validatePhone(raw) {
-      const digits = raw.replace(/\D/g, '');
-      if (digits.length === 10) return digits;
-      if (digits.length === 11 && digits.startsWith('1')) return digits.slice(1);
-      return null;
-    }
-
-    function formatPhone(digits) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-    }
-
-    function buildPhoneCapture() {
-      const block = el('div', { className: 'phone-capture' });
-      const title = el('h3', { text: 'Want a human to confirm this price?' });
-      const sub = el('p', {
-        text: "Leave your number and a coordinator will call within 15 minutes to lock in your date.",
-      });
-
-      const form = el('div', { className: 'phone-form' });
-      const input = document.createElement('input');
-      input.type = 'tel';
-      input.inputMode = 'numeric';
-      input.autocomplete = 'tel';
-      input.className = 'text-input';
-      input.placeholder = '(555) 123-4567';
-      input.setAttribute('aria-label', 'Phone number');
-
-      const btn = document.createElement('button');
-      btn.className = 'submit-btn';
-      btn.textContent = 'Request call';
-
-      form.appendChild(input);
-      form.appendChild(btn);
-
-      const errEl = el('div', { className: 'phone-error' });
-      errEl.style.display = 'none';
-
-      block.appendChild(title);
-      block.appendChild(sub);
-      block.appendChild(form);
-      block.appendChild(errEl);
-
-      function submit() {
-        const normalized = validatePhone(input.value);
-        if (!normalized) {
-          errEl.textContent = 'Please enter a valid US phone number.';
-          errEl.style.display = 'block';
-          input.focus();
-          return;
-        }
-        try { localStorage.setItem('moovers_phone', normalized); } catch (_) { /* private mode */ }
-        while (block.firstChild) block.removeChild(block.firstChild);
-        const success = el('div', { className: 'phone-success' });
-        success.appendChild(el('strong', { text: 'Thanks! ' }));
-        success.appendChild(document.createTextNode(
-          `We'll call you at ${formatPhone(normalized)} within 15 minutes.`
-        ));
-        block.appendChild(success);
-      }
-
-      btn.addEventListener('click', submit);
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); submit(); }
-      });
-      // Clear error as soon as the user starts fixing the input
-      input.addEventListener('input', () => {
-        if (errEl.style.display === 'block') errEl.style.display = 'none';
-      });
-
-      return block;
-    }
-
-    async function runConversation() {
-      while (stepIdx < STEPS.length) {
-        const step = STEPS[stepIdx];
-        const idx = stepIdx;
-
-        const botBubble = await botSay(step.botText);
-        botBubble.dataset.step = String(idx);
-
-        const value = await new Promise(resolve => {
-          pendingResolve = resolve;
-          RENDERERS[step.input](step, resolve);
-        });
-        pendingResolve = null;
-
-        if (value === BACK) continue;
-
-        // Tag the user bubble that was just appended
-        const userBubbles = chatEl.querySelectorAll('.bubble.user:not([data-step])');
-        const last = userBubbles[userBubbles.length - 1];
-        if (last) {
-          last.dataset.step = String(idx);
-          last.addEventListener('click', () => rewindTo(idx));
-        }
-
-        answers[step.id] = value;
-        stepIdx++;
-      }
-
-      const miles = distanceMiles(answers.origin.coords, answers.destination.coords);
-
-      const calcBubble = await botSay('One moment — calculating your estimate…', 1500);
-      calcBubble.dataset.step = String(STEPS.length);
-
-      const quote = calculateQuote({
-        size: answers.size,
-        originFloor: answers.originFloor,
-        destFloor: answers.destFloor,
-        miles,
-        specialItems: answers.specialItems,
-        packing: answers.packing,
-        date: answers.date,
-      });
-
-      renderResult(quote);
-    }
-
-    runConversation();
-  </script>
+  </div>
+</section>
+
+<!-- ============ TRUST BAR ============ -->
+<section class="trust-bar" aria-label="Trust and credentials">
+  <div class="container trust-grid">
+    <div class="trust-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Fully licensed & insured</span>
+    </div>
+    <div class="trust-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-5-8 5v10l8 5 8-5V7z"/><path d="M12 22V12"/><path d="M20 7l-8 5-8-5"/></svg>
+      <span>AMSA ProMover certified</span>
+    </div>
+    <div class="trust-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span>On-time guarantee</span>
+    </div>
+    <div class="trust-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>24/7 support</span>
+    </div>
+    <div class="trust-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>Transparent flat pricing</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="services section" id="services">
+  <div class="container">
+    <header class="section-head reveal">
+      <span class="section-kicker">What we move</span>
+      <h2>Services built for long-distance moves</h2>
+      <p class="section-sub">Whether it's a studio in Brooklyn heading to Chicago or a five-bedroom home going to Miami, we handle it end-to-end.</p>
+    </header>
+
+    <div class="services-grid">
+      <article class="service-card reveal">
+        <div class="service-media">
+          <img src="assets/images/service-interstate.jpg" alt="Convoy of long-haul semi trucks on a US interstate highway" loading="lazy"/>
+        </div>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <h3>Interstate Moving</h3>
+          <p>New York to Chicago, Florida, Texas, California — we run dedicated routes across the continental US with GPS-tracked trucks.</p>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media">
+          <img src="assets/images/service-residential.jpg" alt="Cardboard boxes labeled for each room inside a furnished apartment during a residential move" loading="lazy"/>
+        </div>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <h3>Residential & Apartment Moves</h3>
+          <p>Studios, walk-ups, high-rises, and family homes. Floor protection, door padding, and an insured crew that respects your building rules.</p>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media">
+          <img src="assets/images/service-packing.jpg" alt="Professional mover sealing a moving box with packing tape" loading="lazy"/>
+        </div>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Packing & Unpacking</h3>
+          <p>Full-service packing with double-wall cartons, bubble wrap, and custom crates. We label every box and unpack at your destination.</p>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media">
+          <img src="assets/images/service-specialty.jpg" alt="Close-up of piano keys — specialty item moving for pianos and delicate instruments" loading="lazy"/>
+        </div>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <h3>Specialty Item Moving</h3>
+          <p>Pianos, antiques, fine art, statues, oversized TVs, gun safes, and large furniture — crated, strapped, and handled by specialists.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="how section alt" id="how">
+  <div class="container how-grid">
+    <div class="how-text reveal">
+      <span class="section-kicker">Simple process</span>
+      <h2>Four steps from box to new home</h2>
+      <p class="section-sub">No 30-minute phone calls. No hidden fees. Our quote flow was built around how people actually move.</p>
+
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <div>
+            <h4>Request a quote</h4>
+            <p>Tap the chat below and tell us where you're moving from and to.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <div>
+            <h4>Answer a few questions</h4>
+            <p>Home size, move date, inventory, specialty items — it takes about 90 seconds.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <div>
+            <h4>Receive your estimate</h4>
+            <p>A transparent, itemized price range based on real mileage and volume.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <div>
+            <h4>Schedule your move</h4>
+            <p>Lock in the date, meet your crew lead, and we take it from there.</p>
+          </div>
+        </li>
+      </ol>
+
+      <a href="#quote" class="btn btn-primary btn-lg">Start Your Quote</a>
+    </div>
+
+    <div class="how-media reveal">
+      <img src="assets/images/how.jpg" alt="Uniformed mover carrying a box and houseplant into a customer's new home" loading="lazy"/>
+      <div class="how-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Average quote time: <strong>1 min 48 s</strong></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTE (CHAT) ============ -->
+<section class="quote section" id="quote">
+  <div class="container">
+    <header class="section-head reveal">
+      <span class="section-kicker">Instant quote</span>
+      <h2>Chat with our quote assistant</h2>
+      <p class="section-sub">Answer five quick questions — we'll calculate an honest estimate and a real moving consultant will follow up.</p>
+    </header>
+
+    <div class="chat-wrap reveal">
+      <div class="chat-header">
+        <div class="chat-avatar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 1 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        </div>
+        <div>
+          <div class="chat-title">Moving Assistant</div>
+          <div class="chat-status"><span class="pulse"></span>Online · replies instantly</div>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-label="Quote conversation"></div>
+
+      <div class="chat-input-wrap" id="chatInputWrap"></div>
+
+      <div class="chat-progress" aria-hidden="true">
+        <div class="chat-progress-bar" id="chatProgress" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY CHOOSE US ============ -->
+<section class="why section alt" id="why">
+  <div class="container">
+    <header class="section-head reveal">
+      <span class="section-kicker">Why choose us</span>
+      <h2>Built on trust, finished on time</h2>
+    </header>
+
+    <div class="why-grid">
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Licensed & insured</h3>
+        <p>USDOT #3857210 · MC #1425678. Full cargo and liability coverage on every move.</p>
+      </article>
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Experienced crews</h3>
+        <p>Every lead has 5+ years on the road. Background-checked, uniformed, and trained in-house.</p>
+      </article>
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Safe, secure packing</h3>
+        <p>Double-wall cartons, custom crates for fragile items, furniture pads on every piece.</p>
+      </article>
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>On-time delivery</h3>
+        <p>97% of interstate moves arrive within the scheduled window. If we're late, you get a credit.</p>
+      </article>
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <h3>Customer-first</h3>
+        <p>Dedicated move coordinator from quote to unpack. Real humans, no call center runaround.</p>
+      </article>
+      <article class="why-card reveal">
+        <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Transparent pricing</h3>
+        <p>Binding estimates only. What you're quoted is what you pay — no surprises at delivery.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="testimonials section" id="testimonials">
+  <div class="container">
+    <header class="section-head reveal">
+      <span class="section-kicker">From our customers</span>
+      <h2>Real moves, real reviews</h2>
+      <p class="section-sub">Verified reviews from customers across the country.</p>
+    </header>
+
+    <div class="tm-grid">
+      <article class="tm-card reveal">
+        <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"Moved from Brooklyn to Austin in June. Crew showed up early, wrapped everything, and delivered two days ahead of schedule. Price matched the quote exactly."</blockquote>
+        <div class="tm-person">
+          <img src="https://i.pravatar.cc/80?img=47" alt="Sarah Mitchell" loading="lazy"/>
+          <div><strong>Sarah Mitchell</strong><span>Brooklyn, NY → Austin, TX</span></div>
+        </div>
+      </article>
+
+      <article class="tm-card reveal">
+        <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"Had a 1920s upright piano and a lot of anxiety. These guys custom-crated it in my apartment and it arrived in Chicago without a scratch. Pros."</blockquote>
+        <div class="tm-person">
+          <img src="https://i.pravatar.cc/80?img=12" alt="David Chen" loading="lazy"/>
+          <div><strong>David Chen</strong><span>Manhattan, NY → Chicago, IL</span></div>
+        </div>
+      </article>
+
+      <article class="tm-card reveal">
+        <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"Chat quote was shockingly fast. I'd called three other companies — Metro was the only one that gave me a real number without pressure. Booked them the same day."</blockquote>
+        <div class="tm-person">
+          <img src="https://i.pravatar.cc/80?img=32" alt="Jessica Rodriguez" loading="lazy"/>
+          <div><strong>Jessica Rodriguez</strong><span>Queens, NY → Miami, FL</span></div>
+        </div>
+      </article>
+
+      <article class="tm-card reveal">
+        <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"Four-bedroom house, 1,800 miles, two dogs and a lot of stairs. The crew was patient, professional, and the coordinator texted me updates the whole way."</blockquote>
+        <div class="tm-person">
+          <img src="https://i.pravatar.cc/80?img=59" alt="Michael Thompson" loading="lazy"/>
+          <div><strong>Michael Thompson</strong><span>Staten Island, NY → Denver, CO</span></div>
+        </div>
+      </article>
+
+      <article class="tm-card reveal">
+        <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"We moved my mother out of her Bronx co-op after 40 years. The team was kind, gentle, and genuinely cared. Can't recommend them enough."</blockquote>
+        <div class="tm-person">
+          <img src="https://i.pravatar.cc/80?img=23" alt="Emily Parker" loading="lazy"/>
+          <div><strong>Emily Parker</strong><span>Bronx, NY → Raleigh, NC</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="about section alt">
+  <div class="container about-grid">
+    <div class="about-media reveal">
+      <img src="assets/images/about.jpg" alt="Metro Relocators moving crew standing by their branded local and long distance moving van" loading="lazy"/>
+    </div>
+    <div class="about-text reveal">
+      <span class="section-kicker">About Metro Relocators</span>
+      <h2>New York based. Built for the long haul.</h2>
+      <p>Metro Relocators was founded in 2011 by three former long-haul drivers who were tired of watching broker outfits mishandle customers' belongings. We operate our own fleet out of Long Island City, employ our crews directly, and specialize in one thing: getting New Yorkers to their next chapter with nothing broken and nothing hidden in the bill.</p>
+      <p>Today we're one of the top-rated interstate movers on the East Coast, trusted by families, remote workers, and corporate relocations in all 50 states.</p>
+      <div class="about-stats">
+        <div><strong>2011</strong><span>Founded</span></div>
+        <div><strong>65+</strong><span>Team members</span></div>
+        <div><strong>22</strong><span>Trucks in fleet</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRONG CTA ============ -->
+<section class="cta-strong">
+  <div class="container cta-inner reveal">
+    <div>
+      <h2>Get Your Free Moving Quote Today</h2>
+      <p>Transparent pricing. No obligation. A real estimate in under two minutes.</p>
+    </div>
+    <a href="#quote" class="btn btn-white btn-lg">Start My Free Quote</a>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact section" id="contact">
+  <div class="container contact-grid">
+    <div class="contact-info reveal">
+      <span class="section-kicker">Contact</span>
+      <h2>Talk to a real mover</h2>
+      <p>Call us, email, or send a message. A move coordinator will reach back within one business hour.</p>
+
+      <ul class="contact-list">
+        <li>
+          <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <div><strong>Phone</strong><a href="tel:+18005550199">1 (800) 555-0199</a></div>
+        </li>
+        <li>
+          <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <div><strong>Email</strong><a href="mailto:hello@metrorelocators.com">hello@metrorelocators.com</a></div>
+        </li>
+        <li>
+          <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div><strong>Service area</strong><span>Based in New York · Interstate moves to all 50 states</span></div>
+        </li>
+        <li>
+          <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <div><strong>Hours</strong><span>Mon–Sat 7:00 AM – 9:00 PM ET · Sun 9:00 AM – 5:00 PM</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <form class="contact-form reveal" id="contactForm" novalidate>
+      <h3>Send us a message</h3>
+      <div class="row">
+        <label>
+          <span>Full name</span>
+          <input type="text" name="name" required autocomplete="name" placeholder="Jane Doe"/>
+        </label>
+        <label>
+          <span>Phone</span>
+          <input type="tel" name="phone" required autocomplete="tel" placeholder="(555) 010-1234"/>
+        </label>
+      </div>
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com"/>
+      </label>
+      <label>
+        <span>How can we help?</span>
+        <textarea name="message" rows="4" placeholder="Tell us about your move…"></textarea>
+      </label>
+      <button type="submit" class="btn btn-primary btn-lg full">Send Message</button>
+      <p class="form-note" id="contactNote" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="#top" class="logo light">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="10" width="18" height="12" rx="2" fill="#56CCF2"/>
+            <path d="M20 13h6l4 4v5h-10V13z" fill="#2F80ED"/>
+            <circle cx="8" cy="24" r="3" fill="#F7F9FC"/>
+            <circle cx="24" cy="24" r="3" fill="#F7F9FC"/>
+          </svg>
+        </span>
+        <span class="logo-text"><span class="logo-name">Metro Relocators</span></span>
+      </a>
+      <p class="footer-about">Licensed interstate moving company headquartered in Long Island City, New York. USDOT #3857210 · MC #1425678.</p>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Interstate moving</a></li>
+        <li><a href="#services">Apartment moves</a></li>
+        <li><a href="#services">Packing & unpacking</a></li>
+        <li><a href="#services">Specialty items</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#why">Why choose us</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Get in touch</h4>
+      <ul>
+        <li><a href="tel:+18005550199">1 (800) 555-0199</a></li>
+        <li><a href="mailto:hello@metrorelocators.com">hello@metrorelocators.com</a></li>
+        <li>Long Island City, NY 11101</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© <span id="year"></span> Metro Relocators LLC. All rights reserved.</span>
+      <span>Privacy · Terms · Licensing</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Moovers — Free Moving Quote</title>
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e1e8ee;
+      --text: #15679b;
+      --text-muted: #6b8aa5;
+      --accent: #448cca;
+      --user-bg: #15679b;
+      --user-text: #f5f5f5;
+      --total: #15679b;
+      --shadow-card: 0 10px 25px rgba(21, 103, 155, 0.08);
+      --shadow-hover: 0 15px 25px rgba(41, 81, 106, 0.18);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', system-ui, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: calc(64px + env(safe-area-inset-top, 0px));
+      padding: env(safe-area-inset-top, 0px) 32px 0;
+      background: var(--text);
+      color: var(--bg);
+    }
+    .header-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .header-nav {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .header-nav a {
+      color: var(--bg);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.85;
+      transition: opacity 200ms;
+    }
+    .header-nav a:hover { opacity: 1; }
+    .header-phone {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #15679b 0%, #448cca 100%);
+      color: var(--bg);
+      text-align: center;
+      padding: 56px 24px 64px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 16px;
+      opacity: 0.85;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Chatbot card */
+    .chatbot-card {
+      max-width: 640px;
+      margin: -32px auto 0;
+      padding: 32px;
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      z-index: 2;
+    }
+    .chatbot-card h2 {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--text);
+      color: var(--bg);
+      padding: 40px 32px;
+      margin-top: 48px;
+    }
+    .footer-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .footer-grid h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+    .footer-grid p {
+      opacity: 0.7;
+    }
+    .footer-bottom {
+      max-width: 900px;
+      margin: 24px auto 0;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 12px;
+      opacity: 0.5;
+      text-align: center;
+    }
+
+    /* Chatbot styles */
+    .chat {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 70vh;
+    }
+    .bubble {
+      max-width: 80%;
+      padding: 14px 20px;
+      border-radius: 20px;
+      line-height: 1.5;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      animation: slideUp 250ms ease-out both;
+    }
+    .bubble.bot {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-left-radius: 6px;
+      box-shadow: var(--shadow-card);
+    }
+    .bubble.user {
+      align-self: flex-end;
+      background: var(--user-bg);
+      color: var(--user-text);
+      border-bottom-right-radius: 6px;
+      font-weight: 600;
+    }
+    .bubble.user[data-step] {
+      cursor: pointer;
+      transition: opacity 200ms;
+    }
+    .bubble.user[data-step]:hover {
+      opacity: 0.7;
+    }
+    .typing {
+      align-self: flex-start;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      border-bottom-left-radius: 6px;
+      display: inline-flex;
+      gap: 4px;
+      animation: slideUp 250ms ease-out both;
+      box-shadow: var(--shadow-card);
+    }
+    .typing span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.3; }
+      40% { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .input-area {
+      align-self: stretch;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+      animation: slideUp 250ms ease-out both;
+    }
+    .choice-btn {
+      padding: 10px 20px;
+      background: var(--surface);
+      color: var(--accent);
+      border: 2px solid var(--border);
+      border-radius: 15px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease-in-out;
+    }
+    .choice-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+      box-shadow: var(--shadow-hover);
+    }
+    .choice-btn.selected {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .text-input {
+      flex: 1; min-width: 280px;
+      padding: 12px 18px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      border-radius: 15px;
+      outline: none;
+      transition: border-color 200ms ease-in-out;
+    }
+    .text-input:focus { border-color: var(--accent); }
+    .autocomplete {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+    }
+    .autocomplete .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      margin-top: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: var(--shadow-hover);
+    }
+    .autocomplete .suggestions div {
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .autocomplete .suggestions div:hover,
+    .autocomplete .suggestions div.focused { background: var(--bg); }
+    .submit-btn {
+      padding: 10px 22px;
+      background: var(--text);
+      color: var(--bg);
+      border: 2px solid var(--text);
+      border-radius: 15px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease-in-out;
+    }
+    .submit-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-hover);
+    }
+    .calendar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: var(--shadow-card);
+    }
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .cal-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .cal-nav {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 600;
+      transition: all 200ms ease-in-out;
+    }
+    .cal-nav:hover:not(:disabled) { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .cal-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      margin-bottom: 4px;
+    }
+    .cal-weekdays div {
+      text-align: center;
+      font-family: 'Manrope', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      padding: 4px 0;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .cal-day {
+      background: transparent;
+      border: none;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      transition: background 150ms, color 150ms;
+    }
+    .cal-day.blank { cursor: default; }
+    .cal-day:not(.blank):not(:disabled):not(.selected):hover { background: var(--bg); }
+    .cal-day:disabled { color: var(--text-muted); opacity: 0.35; cursor: not-allowed; }
+    .cal-day.selected { background: var(--user-bg); color: var(--user-text); }
+    .cal-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .cal-submit {
+      padding: 10px 22px;
+      background: var(--text);
+      color: var(--bg);
+      border: 2px solid var(--text);
+      border-radius: 15px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease-in-out;
+    }
+    .cal-submit:hover:not(:disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-hover);
+    }
+    .cal-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+    .result {
+      margin-top: 32px;
+      padding: 36px 28px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      box-shadow: var(--shadow-card);
+      animation: slideUp 400ms ease-out both;
+    }
+    .result .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .result .total {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 8vw, 44px);
+      letter-spacing: -0.02em;
+      color: var(--total);
+      margin: 8px 0 24px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .result hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 16px auto;
+      max-width: 320px;
+    }
+    .breakdown {
+      max-width: 360px;
+      margin: 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+    .breakdown .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .breakdown .row .lbl { color: var(--text-muted); font-weight: 500; }
+    .breakdown .row strong { font-weight: 700; }
+    .disclaimer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .start-over {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .start-over:hover { color: var(--text); }
+    .phone-capture {
+      margin: 28px auto 0;
+      max-width: 420px;
+      padding: 22px 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      text-align: left;
+    }
+    .phone-capture h3 {
+      margin: 0 0 6px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .phone-capture p {
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .phone-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .phone-form .text-input {
+      flex: 1;
+      min-width: 180px;
+    }
+    .phone-error {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    .phone-success {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.55;
+    }
+    .phone-success strong { color: var(--accent); font-weight: 700; }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .header {
+        padding: 0 16px;
+        height: calc(56px + env(safe-area-inset-top, 0px));
+      }
+      .header-nav { display: none; }
+      .hero {
+        padding: 36px 16px 48px;
+      }
+      .hero h1 { font-size: 24px; }
+      .hero p { font-size: 14px; }
+      .chatbot-card {
+        margin: -20px 8px 0;
+        padding: 12px;
+        border-radius: 16px;
+      }
+      .chatbot-card h2 { font-size: 17px; margin-bottom: 8px; }
+      .chat {
+        padding: 16px 8px 40px;
+        min-height: 0;
+      }
+      .bubble { max-width: 92%; padding: 12px 14px; font-size: 13px; }
+      .choice-btn { padding: 8px 14px; font-size: 12px; }
+      .text-input { min-width: 0; font-size: 16px; }
+      .autocomplete { min-width: 0; }
+      .autocomplete .suggestions { max-height: 180px; }
+      .autocomplete .suggestions div { padding: 10px 14px; }
+      .submit-btn { padding: 8px 16px; font-size: 12px; }
+      .calendar { max-width: 100%; }
+      .result { padding: 24px 14px; border-radius: 18px; }
+      .result .total { font-size: 28px; }
+      .breakdown { max-width: 100%; }
+      .breakdown .row { font-size: 13px; }
+      .phone-capture { padding: 16px; margin-top: 20px; }
+      .phone-form .text-input { min-width: 0; }
+      .footer { padding: 32px 16px; }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-logo">Moovers</div>
+    <nav>
+      <ul class="header-nav">
+        <li><a href="#">Moving</a></li>
+        <li><a href="#">Storage</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-phone">(555) 123-4567</div>
+  </header>
+
+  <section class="hero">
+    <h1>Get A Free Moving Quote</h1>
+    <p>Answer a few quick questions and get an instant estimate for your local move.</p>
+  </section>
+
+  <main class="chatbot-card">
+    <h2>Get Your Instant Quote</h2>
+    <div class="chat" id="chat"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <h4>Contact</h4>
+        <p>Moovers Inc.<br>123 Moving Lane<br>New York, NY 10001</p>
+        <p>(555) 123-4567</p>
+      </div>
+      <div>
+        <h4>Hours</h4>
+        <p>Mon–Fri: 9 AM – 8 PM<br>Sat: 10 AM – 6 PM<br>Sun: Closed</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p>Moving<br>Storage<br>Reviews<br>About Us</p>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Moovers Inc. All rights reserved.</div>
+  </footer>
+
+  <script type="module">
+    import { calculateQuote, distanceMiles, CONFIG } from './pricing.js';
+
+    const chatEl = document.getElementById('chat');
+    const answers = {};
+    const BACK = Symbol('back');
+    let stepIdx = 0;
+    let pendingResolve = null;
+
+    // --- Rewind ---
+    function rewindTo(targetIdx) {
+      // Remove all DOM children tagged at or after targetIdx
+      for (const child of [...chatEl.children]) {
+        const s = child.dataset.step;
+        if (s !== undefined && Number(s) >= targetIdx) child.remove();
+      }
+      // Remove any active input area or typing indicator
+      for (const sel of ['.input-area', '.typing', '.result']) {
+        const el = chatEl.querySelector(sel);
+        if (el) el.remove();
+      }
+      // Clear answers from targetIdx onward
+      for (let i = targetIdx; i < STEPS.length; i++) {
+        delete answers[STEPS[i].id];
+      }
+      stepIdx = targetIdx;
+      if (pendingResolve) {
+        const r = pendingResolve;
+        pendingResolve = null;
+        r(BACK);
+      } else {
+        runConversation();
+      }
+    }
+
+    // --- UI primitives ---
+    function appendBubble(role, text) {
+      const div = document.createElement('div');
+      div.className = `bubble ${role}`;
+      div.textContent = text;
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+    function appendTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing';
+      for (let i = 0; i < 3; i++) {
+        div.appendChild(document.createElement('span'));
+      }
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+    function appendInputArea() {
+      const div = document.createElement('div');
+      div.className = 'input-area';
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+    function scrollToBottom() {
+      const el = chatEl.lastElementChild;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+    async function botSay(text, typingMs = 600) {
+      const t = appendTyping();
+      await delay(typingMs);
+      t.remove();
+      return appendBubble('bot', text);
+    }
+
+    // --- Conversation engine ---
+    const STEPS = [
+      {
+        id: 'size',
+        botText: "Hi! I'll help you get a quick moving quote. What size is your current home?",
+        input: 'buttons',
+        options: [
+          { value: 'studio', label: 'Studio' },
+          { value: '1br', label: '1 BR' },
+          { value: '2br', label: '2 BR' },
+          { value: '3br', label: '3 BR' },
+          { value: '4br', label: '4+ BR' },
+        ],
+      },
+      {
+        id: 'origin',
+        botText: "Got it. What's the pickup address?",
+        input: 'address',
+      },
+      {
+        id: 'originFloor',
+        botText: "Which floor is the pickup on, and is there an elevator?",
+        input: 'buttons',
+        options: [
+          { value: 'ground', label: 'Ground floor' },
+          { value: '2-3-elev', label: '2nd–3rd, elevator' },
+          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
+          { value: '4+-elev', label: '4th+, elevator' },
+          { value: '4+-no-elev', label: '4th+, no elevator' },
+        ],
+      },
+      {
+        id: 'destination',
+        botText: "And where are you moving to?",
+        input: 'address',
+      },
+      {
+        id: 'destFloor',
+        botText: "Which floor at the destination?",
+        input: 'buttons',
+        options: [
+          { value: 'ground', label: 'Ground floor' },
+          { value: '2-3-elev', label: '2nd–3rd, elevator' },
+          { value: '2-3-no-elev', label: '2nd–3rd, no elevator' },
+          { value: '4+-elev', label: '4th+, elevator' },
+          { value: '4+-no-elev', label: '4th+, no elevator' },
+        ],
+      },
+      {
+        id: 'specialItems',
+        botText: "Are any of these items part of the move?",
+        input: 'multiselect',
+        options: [
+          { value: 'piano', label: 'Piano' },
+          { value: 'safe', label: 'Safe (>500 lb)' },
+          { value: 'pooltable', label: 'Pool table' },
+          { value: 'artwork', label: 'Large artwork' },
+        ],
+      },
+      {
+        id: 'packing',
+        botText: "Will you need packing service?",
+        input: 'buttons',
+        options: [
+          { value: 'self', label: "I'll pack myself" },
+          { value: 'partial', label: 'Partial packing' },
+          { value: 'full', label: 'Full packing' },
+        ],
+      },
+      {
+        id: 'date',
+        botText: "What's your preferred move date?",
+        input: 'date',
+      },
+    ];
+
+    const RENDERERS = {};
+
+    RENDERERS.buttons = function (step, onAnswer) {
+      const area = appendInputArea();
+      for (const opt of step.options) {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => {
+          area.remove();
+          appendBubble('user', opt.label);
+          onAnswer(opt.value);
+        });
+        area.appendChild(btn);
+      }
+    };
+
+    RENDERERS.address = function (step, onAnswer) {
+      const area = appendInputArea();
+      const wrapper = document.createElement('div');
+      wrapper.className = 'autocomplete';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'text-input';
+      input.placeholder = 'Start typing an address\u2026';
+      wrapper.appendChild(input);
+
+      const suggestions = document.createElement('div');
+      suggestions.className = 'suggestions';
+      suggestions.style.display = 'none';
+      wrapper.appendChild(suggestions);
+
+      // Manual submit button — escape hatch when autocomplete returns nothing
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'submit-btn';
+      submitBtn.textContent = 'Use this address';
+      submitBtn.style.display = 'none';
+
+      area.appendChild(wrapper);
+      area.appendChild(submitBtn);
+      input.focus();
+
+      let debounceTimer;
+      let currentItems = [];
+      let focusedIdx = -1;
+
+      function selectItem(item) {
+        const display = item.display_name;
+        area.remove();
+        appendBubble('user', display);
+        onAnswer({
+          display,
+          coords: { lat: Number(item.lat), lng: Number(item.lon) },
+        });
+      }
+
+      function highlightFocused() {
+        const divs = suggestions.querySelectorAll('div');
+        divs.forEach((d, i) => {
+          if (i === focusedIdx) { d.classList.add('focused'); }
+          else { d.classList.remove('focused'); }
+        });
+      }
+
+      // Geocode the typed text and proceed if a result is found
+      async function geocodeAndSubmit() {
+        const q = input.value.trim();
+        if (q.length < 3) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Looking up\u2026';
+        try {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=1&q=${encodeURIComponent(q)}`;
+          const res = await fetch(url, {
+            headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
+          });
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            selectItem(data[0]);
+          } else {
+            submitBtn.textContent = 'Address not found \u2014 try again';
+            submitBtn.disabled = false;
+          }
+        } catch (e) {
+          console.error('nominatim error', e);
+          submitBtn.textContent = 'Lookup failed \u2014 try again';
+          submitBtn.disabled = false;
+        }
+      }
+
+      submitBtn.addEventListener('click', geocodeAndSubmit);
+
+      input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        focusedIdx = -1;
+        const q = input.value.trim();
+        // Show manual submit when user has typed enough but might not get results
+        submitBtn.style.display = q.length >= 3 ? '' : 'none';
+        submitBtn.textContent = 'Use this address';
+        submitBtn.disabled = false;
+        if (q.length < 3) {
+          suggestions.style.display = 'none';
+          currentItems = [];
+          return;
+        }
+        debounceTimer = setTimeout(async () => {
+          try {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=${encodeURIComponent(q)}`;
+            const res = await fetch(url, {
+              headers: { 'User-Agent': 'Moovers-QuoteBot/1.0' },
+            });
+            const data = await res.json();
+            const items = Array.isArray(data) ? data : [];
+            currentItems = items;
+            renderSuggestions(items);
+          } catch (e) {
+            console.error('nominatim error', e);
+          }
+        }, 400);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (suggestions.style.display === 'none' || currentItems.length === 0) {
+          if (e.key === 'Enter') { e.preventDefault(); geocodeAndSubmit(); }
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          focusedIdx = Math.min(focusedIdx + 1, currentItems.length - 1);
+          highlightFocused();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          focusedIdx = Math.max(focusedIdx - 1, 0);
+          highlightFocused();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (focusedIdx >= 0 && focusedIdx < currentItems.length) {
+            selectItem(currentItems[focusedIdx]);
+          }
+        } else if (e.key === 'Escape') {
+          suggestions.style.display = 'none';
+          focusedIdx = -1;
+        }
+      });
+
+      function renderSuggestions(items) {
+        while (suggestions.firstChild) suggestions.removeChild(suggestions.firstChild);
+        if (items.length === 0) {
+          suggestions.style.display = 'none';
+          return;
+        }
+        items.forEach((item, idx) => {
+          const display = item.display_name;
+          const div = document.createElement('div');
+          div.textContent = display;
+          div.addEventListener('click', () => selectItem(item));
+          div.addEventListener('mouseenter', () => {
+            focusedIdx = idx;
+            highlightFocused();
+          });
+          suggestions.appendChild(div);
+        });
+        suggestions.style.display = 'block';
+        focusedIdx = -1;
+      }
+    };
+
+    RENDERERS.multiselect = function (step, onAnswer) {
+      const area = appendInputArea();
+      const selected = new Set();
+
+      for (const opt of step.options) {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => {
+          if (selected.has(opt.value)) {
+            selected.delete(opt.value);
+            btn.classList.remove('selected');
+          } else {
+            selected.add(opt.value);
+            btn.classList.add('selected');
+          }
+        });
+        area.appendChild(btn);
+      }
+
+      const noneBtn = document.createElement('button');
+      noneBtn.className = 'choice-btn';
+      noneBtn.textContent = 'None of these';
+      noneBtn.addEventListener('click', () => {
+        area.remove();
+        appendBubble('user', 'None');
+        onAnswer([]);
+      });
+      area.appendChild(noneBtn);
+
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'submit-btn';
+      doneBtn.textContent = 'Continue';
+      doneBtn.addEventListener('click', () => {
+        if (selected.size === 0) {
+          area.remove();
+          appendBubble('user', 'None');
+          onAnswer([]);
+          return;
+        }
+        const labels = step.options
+          .filter(o => selected.has(o.value))
+          .map(o => o.label)
+          .join(', ');
+        area.remove();
+        appendBubble('user', labels);
+        onAnswer([...selected]);
+      });
+      area.appendChild(doneBtn);
+    };
+
+    RENDERERS.date = function (step, onAnswer) {
+      const area = appendInputArea();
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const maxDate = new Date(today.getFullYear(), today.getMonth() + 6, 1);
+      let viewYear = today.getFullYear();
+      let viewMonth = today.getMonth();
+      let selected = null;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'cal-wrap';
+      area.appendChild(wrap);
+
+      const cal = document.createElement('div');
+      cal.className = 'calendar';
+      wrap.appendChild(cal);
+
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'cal-submit';
+      doneBtn.textContent = 'Continue';
+      doneBtn.disabled = true;
+      doneBtn.addEventListener('click', () => {
+        if (!selected) return;
+        const iso = `${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, '0')}-${String(selected.getDate()).padStart(2, '0')}`;
+        const pretty = selected.toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric',
+        });
+        area.remove();
+        appendBubble('user', pretty);
+        onAnswer(iso);
+      });
+      wrap.appendChild(doneBtn);
+
+      function renderCal() {
+        while (cal.firstChild) cal.removeChild(cal.firstChild);
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'cal-header';
+
+        const prev = document.createElement('button');
+        prev.className = 'cal-nav';
+        prev.textContent = '‹';
+        const firstOfView = new Date(viewYear, viewMonth, 1);
+        const firstOfToday = new Date(today.getFullYear(), today.getMonth(), 1);
+        prev.disabled = firstOfView <= firstOfToday;
+        prev.addEventListener('click', () => {
+          viewMonth--;
+          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+          renderCal();
+        });
+
+        const title = document.createElement('div');
+        title.className = 'cal-title';
+        title.textContent = firstOfView.toLocaleDateString('en-US', {
+          month: 'long', year: 'numeric',
+        });
+
+        const next = document.createElement('button');
+        next.className = 'cal-nav';
+        next.textContent = '\u203a';
+        const nextMonth = new Date(viewYear, viewMonth + 1, 1);
+        next.disabled = nextMonth >= maxDate;
+        next.addEventListener('click', () => {
+          viewMonth++;
+          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+          renderCal();
+        });
+
+        header.appendChild(prev);
+        header.appendChild(title);
+        header.appendChild(next);
+        cal.appendChild(header);
+
+        // Weekday labels
+        const weekdays = document.createElement('div');
+        weekdays.className = 'cal-weekdays';
+        for (const w of ['S', 'M', 'T', 'W', 'T', 'F', 'S']) {
+          const d = document.createElement('div');
+          d.textContent = w;
+          weekdays.appendChild(d);
+        }
+        cal.appendChild(weekdays);
+
+        // Day grid
+        const grid = document.createElement('div');
+        grid.className = 'cal-grid';
+
+        const startDay = firstOfView.getDay();
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+        for (let i = 0; i < startDay; i++) {
+          const blank = document.createElement('div');
+          blank.className = 'cal-day blank';
+          grid.appendChild(blank);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const btn = document.createElement('button');
+          btn.className = 'cal-day';
+          btn.textContent = String(d);
+          const cellDate = new Date(viewYear, viewMonth, d);
+          if (cellDate < today) {
+            btn.disabled = true;
+          }
+          if (selected &&
+              selected.getFullYear() === viewYear &&
+              selected.getMonth() === viewMonth &&
+              selected.getDate() === d) {
+            btn.classList.add('selected');
+          }
+          btn.addEventListener('click', () => {
+            selected = cellDate;
+            doneBtn.disabled = false;
+            renderCal();
+          });
+          grid.appendChild(btn);
+        }
+        cal.appendChild(grid);
+      }
+
+      renderCal();
+    };
+
+    // --- Result screen helpers ---
+    function el(tag, opts = {}) {
+      const node = document.createElement(tag);
+      if (opts.className) node.className = opts.className;
+      if (opts.text != null) node.textContent = opts.text;
+      if (opts.children) {
+        for (const c of opts.children) node.appendChild(c);
+      }
+      return node;
+    }
+
+    function formatMoney(n) {
+      return '$ ' + n.toLocaleString('en-US');
+    }
+
+    function formatRange(low, high) {
+      return `${formatMoney(low)} – ${formatMoney(high)}`;
+    }
+
+    function breakdownRow(label, value) {
+      return el('div', {
+        className: 'row',
+        children: [
+          el('span', { className: 'lbl', text: label }),
+          el('span', { text: typeof value === 'number' ? formatMoney(value) : value }),
+        ],
+      });
+    }
+
+    function renderResult(quote) {
+      const headerBlock = el('div', {
+        className: 'breakdown',
+        children: [
+          breakdownRow('Crew', `${quote.crew} movers`),
+          breakdownRow('Estimated labor', `${quote.laborHours} hours`),
+          breakdownRow(
+            'Drive time',
+            CONFIG.doubleDriveTime
+              ? `${quote.driveHours} hours (${quote.miles} mi, round trip)`
+              : `${quote.driveHours} hours (${quote.miles} mi)`
+          ),
+        ],
+      });
+
+      const breakdownBlock = el('div', { className: 'breakdown' });
+      for (const row of quote.breakdown) {
+        breakdownBlock.appendChild(breakdownRow(row.label, row.value));
+      }
+
+      const totalRow = el('div', { className: 'row' });
+      const totalLabel = el('strong', { text: 'Total estimate' });
+      const totalValue = el('strong', { text: formatRange(quote.totalLow, quote.totalHigh) });
+      totalRow.appendChild(totalLabel);
+      totalRow.appendChild(totalValue);
+      const totalBlock = el('div', { className: 'breakdown', children: [totalRow] });
+
+      const phoneBlock = buildPhoneCapture();
+
+      const startOver = el('a', { className: 'start-over', text: 'Start Over' });
+      startOver.addEventListener('click', () => rewindTo(0));
+
+      const result = el('div', {
+        className: 'result',
+        children: [
+          el('div', { className: 'label', text: 'Your moving estimate' }),
+          el('div', { className: 'total', text: formatRange(quote.totalLow, quote.totalHigh) }),
+          el('hr'),
+          headerBlock,
+          el('hr'),
+          breakdownBlock,
+          el('hr'),
+          totalBlock,
+          phoneBlock,
+          el('div', {
+            className: 'disclaimer',
+            text: 'This is a non-binding estimate. Final price depends on actual move time.',
+          }),
+          startOver,
+        ],
+      });
+
+      result.dataset.step = String(STEPS.length);
+      chatEl.appendChild(result);
+      scrollToBottom();
+    }
+
+    // Accepts 10-digit US numbers with any formatting, or 11 digits starting
+    // with a country-code 1. Returns the normalized 10-digit string, or null.
+    function validatePhone(raw) {
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length === 10) return digits;
+      if (digits.length === 11 && digits.startsWith('1')) return digits.slice(1);
+      return null;
+    }
+
+    function formatPhone(digits) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    function buildPhoneCapture() {
+      const block = el('div', { className: 'phone-capture' });
+      const title = el('h3', { text: 'Want a human to confirm this price?' });
+      const sub = el('p', {
+        text: "Leave your number and a coordinator will call within 15 minutes to lock in your date.",
+      });
+
+      const form = el('div', { className: 'phone-form' });
+      const input = document.createElement('input');
+      input.type = 'tel';
+      input.inputMode = 'numeric';
+      input.autocomplete = 'tel';
+      input.className = 'text-input';
+      input.placeholder = '(555) 123-4567';
+      input.setAttribute('aria-label', 'Phone number');
+
+      const btn = document.createElement('button');
+      btn.className = 'submit-btn';
+      btn.textContent = 'Request call';
+
+      form.appendChild(input);
+      form.appendChild(btn);
+
+      const errEl = el('div', { className: 'phone-error' });
+      errEl.style.display = 'none';
+
+      block.appendChild(title);
+      block.appendChild(sub);
+      block.appendChild(form);
+      block.appendChild(errEl);
+
+      function submit() {
+        const normalized = validatePhone(input.value);
+        if (!normalized) {
+          errEl.textContent = 'Please enter a valid US phone number.';
+          errEl.style.display = 'block';
+          input.focus();
+          return;
+        }
+        try { localStorage.setItem('moovers_phone', normalized); } catch (_) { /* private mode */ }
+        while (block.firstChild) block.removeChild(block.firstChild);
+        const success = el('div', { className: 'phone-success' });
+        success.appendChild(el('strong', { text: 'Thanks! ' }));
+        success.appendChild(document.createTextNode(
+          `We'll call you at ${formatPhone(normalized)} within 15 minutes.`
+        ));
+        block.appendChild(success);
+      }
+
+      btn.addEventListener('click', submit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); submit(); }
+      });
+      // Clear error as soon as the user starts fixing the input
+      input.addEventListener('input', () => {
+        if (errEl.style.display === 'block') errEl.style.display = 'none';
+      });
+
+      return block;
+    }
+
+    async function runConversation() {
+      while (stepIdx < STEPS.length) {
+        const step = STEPS[stepIdx];
+        const idx = stepIdx;
+
+        const botBubble = await botSay(step.botText);
+        botBubble.dataset.step = String(idx);
+
+        const value = await new Promise(resolve => {
+          pendingResolve = resolve;
+          RENDERERS[step.input](step, resolve);
+        });
+        pendingResolve = null;
+
+        if (value === BACK) continue;
+
+        // Tag the user bubble that was just appended
+        const userBubbles = chatEl.querySelectorAll('.bubble.user:not([data-step])');
+        const last = userBubbles[userBubbles.length - 1];
+        if (last) {
+          last.dataset.step = String(idx);
+          last.addEventListener('click', () => rewindTo(idx));
+        }
+
+        answers[step.id] = value;
+        stepIdx++;
+      }
+
+      const miles = distanceMiles(answers.origin.coords, answers.destination.coords);
+
+      const calcBubble = await botSay('One moment — calculating your estimate…', 1500);
+      calcBubble.dataset.step = String(STEPS.length);
+
+      const quote = calculateQuote({
+        size: answers.size,
+        originFloor: answers.originFloor,
+        destFloor: answers.destFloor,
+        miles,
+        specialItems: answers.specialItems,
+        packing: answers.packing,
+        date: answers.date,
+      });
+
+      renderResult(quote);
+    }
+
+    runConversation();
+  </script>
+</body>
+</html>
