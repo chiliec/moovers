@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Metro Relocators — Reliable Interstate Moving from New York</title>
-<meta name="description" content="Licensed and insured interstate moving company based in New York. Careful handling, on-time delivery, free quotes in minutes." />
+<title data-i18n="meta_title">Metro Relocators — Reliable Interstate Moving from New York</title>
+<meta name="description" data-i18n-attr="content" data-i18n="meta_desc" content="Licensed and insured interstate moving company based in New York. Careful handling, on-time delivery, free quotes in minutes." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -28,36 +28,50 @@
       </span>
       <span class="logo-text">
         <span class="logo-name">Metro Relocators</span>
-        <span class="logo-sub">New York · Interstate Moving</span>
+        <span class="logo-sub" data-i18n="logo_sub">New York · Interstate Moving</span>
       </span>
     </a>
 
     <nav class="primary-nav" aria-label="Primary">
-      <a href="#services">Services</a>
-      <a href="#how">How It Works</a>
-      <a href="#why">Why Us</a>
-      <a href="#testimonials">Reviews</a>
-      <a href="#contact">Contact</a>
+      <a href="#services" data-i18n="nav_services">Services</a>
+      <a href="#how" data-i18n="nav_how">How It Works</a>
+      <a href="#why" data-i18n="nav_why">Why Us</a>
+      <a href="#testimonials" data-i18n="nav_reviews">Reviews</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
     </nav>
 
     <div class="header-cta">
-      <a href="tel:+18005550199" class="phone-link" aria-label="Call us at 1 800 555 0199">
+      <a href="tel:+18005550199" class="phone-link" data-i18n-attr="aria-label" data-i18n="phone_aria" aria-label="Call us at 1 800 555 0199">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <span>1 (800) 555-0199</span>
       </a>
-      <a href="#quote" class="btn btn-primary">Get a Free Quote</a>
+      <a href="#quote" class="btn btn-primary header-quote-btn" data-i18n="cta_free_quote">Get a Free Quote</a>
+
+      <div class="lang-switcher" id="langSwitcher">
+        <button type="button" class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select language">
+          <svg class="lang-globe" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="lang-code" id="langCode">EN</span>
+          <svg class="lang-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <ul class="lang-menu" id="langMenu" role="listbox" aria-label="Language">
+          <li><button type="button" role="option" data-lang="en"><span class="lang-tag">EN</span><span>English</span></button></li>
+          <li><button type="button" role="option" data-lang="es"><span class="lang-tag">ES</span><span>Español</span></button></li>
+          <li><button type="button" role="option" data-lang="ru"><span class="lang-tag">RU</span><span>Русский</span></button></li>
+        </ul>
+      </div>
+
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
   </div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
-    <a href="#services">Services</a>
-    <a href="#how">How It Works</a>
-    <a href="#why">Why Us</a>
-    <a href="#testimonials">Reviews</a>
-    <a href="#contact">Contact</a>
-    <a href="#quote" class="btn btn-primary full">Get a Free Quote</a>
+    <a href="#services" data-i18n="nav_services">Services</a>
+    <a href="#how" data-i18n="nav_how">How It Works</a>
+    <a href="#why" data-i18n="nav_why">Why Us</a>
+    <a href="#testimonials" data-i18n="nav_reviews">Reviews</a>
+    <a href="#contact" data-i18n="nav_contact">Contact</a>
+    <a href="#quote" class="btn btn-primary full" data-i18n="cta_free_quote">Get a Free Quote</a>
   </nav>
 </header>
 
@@ -65,24 +79,25 @@
 <section class="hero">
   <div class="hero-bg">
     <img src="assets/images/hero.jpg"
-         alt="Professional movers loading furniture into a moving truck outside a New York brownstone" loading="eager" />
+         alt="Professional movers loading furniture into a moving truck outside a New York brownstone"
+         data-i18n-attr="alt" data-i18n="hero_img_alt" loading="eager" />
     <div class="hero-overlay" aria-hidden="true"></div>
   </div>
   <div class="container hero-content">
     <div class="hero-text reveal">
       <div class="eyebrow">
-        <span class="dot"></span>Licensed · Insured · USDOT #3857210
+        <span class="dot"></span><span data-i18n="hero_eyebrow">Licensed · Insured · USDOT #3857210</span>
       </div>
-      <h1>Reliable Interstate Moving <span class="accent">from New York</span></h1>
-      <p class="lead">Careful hands, honest pricing, on-time delivery across all 50 states. Get a real quote in under 2 minutes — no phone tag, no pressure.</p>
+      <h1 data-i18n-html="hero_h1">Reliable Interstate Moving <span class="accent">from New York</span></h1>
+      <p class="lead" data-i18n="hero_lead">Careful hands, honest pricing, on-time delivery across all 50 states. Get a real quote in under 2 minutes — no phone tag, no pressure.</p>
       <div class="hero-ctas">
-        <a href="#quote" class="btn btn-primary btn-lg">Get a Free Quote</a>
-        <a href="#how" class="btn btn-ghost btn-lg">See How It Works</a>
+        <a href="#quote" class="btn btn-primary btn-lg" data-i18n="cta_free_quote">Get a Free Quote</a>
+        <a href="#how" class="btn btn-ghost btn-lg" data-i18n="cta_see_how">See How It Works</a>
       </div>
       <div class="hero-stats">
-        <div><strong>12,000+</strong><span>Moves completed</span></div>
-        <div><strong>4.9/5</strong><span>Customer rating</span></div>
-        <div><strong>50</strong><span>States covered</span></div>
+        <div><strong>12,000+</strong><span data-i18n="stat_moves">Moves completed</span></div>
+        <div><strong>4.9/5</strong><span data-i18n="stat_rating">Customer rating</span></div>
+        <div><strong>50</strong><span data-i18n="stat_states">States covered</span></div>
       </div>
     </div>
   </div>
@@ -93,23 +108,23 @@
   <div class="container trust-grid">
     <div class="trust-item">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Fully licensed & insured</span>
+      <span data-i18n="trust_1">Fully licensed &amp; insured</span>
     </div>
     <div class="trust-item">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-5-8 5v10l8 5 8-5V7z"/><path d="M12 22V12"/><path d="M20 7l-8 5-8-5"/></svg>
-      <span>AMSA ProMover certified</span>
+      <span data-i18n="trust_2">AMSA ProMover certified</span>
     </div>
     <div class="trust-item">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      <span>On-time guarantee</span>
+      <span data-i18n="trust_3">On-time guarantee</span>
     </div>
     <div class="trust-item">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      <span>24/7 support</span>
+      <span data-i18n="trust_4">24/7 support</span>
     </div>
     <div class="trust-item">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      <span>Transparent flat pricing</span>
+      <span data-i18n="trust_5">Transparent flat pricing</span>
     </div>
   </div>
 </section>
@@ -118,9 +133,9 @@
 <section class="services section" id="services">
   <div class="container">
     <header class="section-head reveal">
-      <span class="section-kicker">What we move</span>
-      <h2>Services built for long-distance moves</h2>
-      <p class="section-sub">Whether it's a studio in Brooklyn heading to Chicago or a five-bedroom home going to Miami, we handle it end-to-end.</p>
+      <span class="section-kicker" data-i18n="services_kicker">What we move</span>
+      <h2 data-i18n="services_h2">Services built for long-distance moves</h2>
+      <p class="section-sub" data-i18n="services_sub">Whether it's a studio in Brooklyn heading to Chicago or a five-bedroom home going to Miami, we handle it end-to-end.</p>
     </header>
 
     <div class="services-grid">
@@ -132,8 +147,8 @@
           <div class="service-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
-          <h3>Interstate Moving</h3>
-          <p>New York to Chicago, Florida, Texas, California — we run dedicated routes across the continental US with GPS-tracked trucks.</p>
+          <h3 data-i18n="svc_inter_t">Interstate Moving</h3>
+          <p data-i18n="svc_inter_d">New York to Chicago, Florida, Texas, California — we run dedicated routes across the continental US with GPS-tracked trucks.</p>
         </div>
       </article>
 
@@ -145,8 +160,8 @@
           <div class="service-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
-          <h3>Residential & Apartment Moves</h3>
-          <p>Studios, walk-ups, high-rises, and family homes. Floor protection, door padding, and an insured crew that respects your building rules.</p>
+          <h3 data-i18n="svc_res_t">Residential &amp; Apartment Moves</h3>
+          <p data-i18n="svc_res_d">Studios, walk-ups, high-rises, and family homes. Floor protection, door padding, and an insured crew that respects your building rules.</p>
         </div>
       </article>
 
@@ -158,8 +173,8 @@
           <div class="service-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </div>
-          <h3>Packing & Unpacking</h3>
-          <p>Full-service packing with double-wall cartons, bubble wrap, and custom crates. We label every box and unpack at your destination.</p>
+          <h3 data-i18n="svc_pack_t">Packing &amp; Unpacking</h3>
+          <p data-i18n="svc_pack_d">Full-service packing with double-wall cartons, bubble wrap, and custom crates. We label every box and unpack at your destination.</p>
         </div>
       </article>
 
@@ -171,8 +186,8 @@
           <div class="service-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           </div>
-          <h3>Specialty Item Moving</h3>
-          <p>Pianos, antiques, fine art, statues, oversized TVs, gun safes, and large furniture — crated, strapped, and handled by specialists.</p>
+          <h3 data-i18n="svc_spec_t">Specialty Item Moving</h3>
+          <p data-i18n="svc_spec_d">Pianos, antiques, fine art, statues, oversized TVs, gun safes, and large furniture — crated, strapped, and handled by specialists.</p>
         </div>
       </article>
     </div>
@@ -183,49 +198,49 @@
 <section class="how section alt" id="how">
   <div class="container how-grid">
     <div class="how-text reveal">
-      <span class="section-kicker">Simple process</span>
-      <h2>Four steps from box to new home</h2>
-      <p class="section-sub">No 30-minute phone calls. No hidden fees. Our quote flow was built around how people actually move.</p>
+      <span class="section-kicker" data-i18n="how_kicker">Simple process</span>
+      <h2 data-i18n="how_h2">Four steps from box to new home</h2>
+      <p class="section-sub" data-i18n="how_sub">No 30-minute phone calls. No hidden fees. Our quote flow was built around how people actually move.</p>
 
       <ol class="steps">
         <li>
           <span class="step-num">1</span>
           <div>
-            <h4>Request a quote</h4>
-            <p>Tap the chat below and tell us where you're moving from and to.</p>
+            <h4 data-i18n="how_s1_t">Request a quote</h4>
+            <p data-i18n="how_s1_d">Tap the chat below and tell us where you're moving from and to.</p>
           </div>
         </li>
         <li>
           <span class="step-num">2</span>
           <div>
-            <h4>Answer a few questions</h4>
-            <p>Home size, move date, inventory, specialty items — it takes about 90 seconds.</p>
+            <h4 data-i18n="how_s2_t">Answer a few questions</h4>
+            <p data-i18n="how_s2_d">Home size, move date, inventory, specialty items — it takes about 90 seconds.</p>
           </div>
         </li>
         <li>
           <span class="step-num">3</span>
           <div>
-            <h4>Receive your estimate</h4>
-            <p>A transparent, itemized price range based on real mileage and volume.</p>
+            <h4 data-i18n="how_s3_t">Receive your estimate</h4>
+            <p data-i18n="how_s3_d">A transparent, itemized price range based on real mileage and volume.</p>
           </div>
         </li>
         <li>
           <span class="step-num">4</span>
           <div>
-            <h4>Schedule your move</h4>
-            <p>Lock in the date, meet your crew lead, and we take it from there.</p>
+            <h4 data-i18n="how_s4_t">Schedule your move</h4>
+            <p data-i18n="how_s4_d">Lock in the date, meet your crew lead, and we take it from there.</p>
           </div>
         </li>
       </ol>
 
-      <a href="#quote" class="btn btn-primary btn-lg">Start Your Quote</a>
+      <a href="#quote" class="btn btn-primary btn-lg" data-i18n="how_cta">Start Your Quote</a>
     </div>
 
     <div class="how-media reveal">
       <img src="assets/images/how.jpg" alt="Uniformed mover carrying a box and houseplant into a customer's new home" loading="lazy"/>
       <div class="how-badge">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>Average quote time: <strong>1 min 48 s</strong></span>
+        <span data-i18n-html="how_badge">Average quote time: <strong>1 min 48 s</strong></span>
       </div>
     </div>
   </div>
@@ -235,9 +250,9 @@
 <section class="quote section" id="quote">
   <div class="container">
     <header class="section-head reveal">
-      <span class="section-kicker">Instant quote</span>
-      <h2>Chat with our quote assistant</h2>
-      <p class="section-sub">Answer five quick questions — we'll calculate an honest estimate and a real moving consultant will follow up.</p>
+      <span class="section-kicker" data-i18n="quote_kicker">Instant quote</span>
+      <h2 data-i18n="quote_h2">Chat with our quote assistant</h2>
+      <p class="section-sub" data-i18n="quote_sub">Answer five quick questions — we'll calculate an honest estimate and a real moving consultant will follow up.</p>
     </header>
 
     <div class="chat-wrap reveal">
@@ -246,8 +261,8 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 1 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
         </div>
         <div>
-          <div class="chat-title">Moving Assistant</div>
-          <div class="chat-status"><span class="pulse"></span>Online · replies instantly</div>
+          <div class="chat-title" data-i18n="chat_title">Moving Assistant</div>
+          <div class="chat-status"><span class="pulse"></span><span data-i18n="chat_status">Online · replies instantly</span></div>
         </div>
       </div>
 
@@ -266,40 +281,40 @@
 <section class="why section alt" id="why">
   <div class="container">
     <header class="section-head reveal">
-      <span class="section-kicker">Why choose us</span>
-      <h2>Built on trust, finished on time</h2>
+      <span class="section-kicker" data-i18n="why_kicker">Why choose us</span>
+      <h2 data-i18n="why_h2">Built on trust, finished on time</h2>
     </header>
 
     <div class="why-grid">
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3>Licensed & insured</h3>
-        <p>USDOT #3857210 · MC #1425678. Full cargo and liability coverage on every move.</p>
+        <h3 data-i18n="why_1_t">Licensed &amp; insured</h3>
+        <p data-i18n="why_1_d">USDOT #3857210 · MC #1425678. Full cargo and liability coverage on every move.</p>
       </article>
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h3>Experienced crews</h3>
-        <p>Every lead has 5+ years on the road. Background-checked, uniformed, and trained in-house.</p>
+        <h3 data-i18n="why_2_t">Experienced crews</h3>
+        <p data-i18n="why_2_d">Every lead has 5+ years on the road. Background-checked, uniformed, and trained in-house.</p>
       </article>
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <h3>Safe, secure packing</h3>
-        <p>Double-wall cartons, custom crates for fragile items, furniture pads on every piece.</p>
+        <h3 data-i18n="why_3_t">Safe, secure packing</h3>
+        <p data-i18n="why_3_d">Double-wall cartons, custom crates for fragile items, furniture pads on every piece.</p>
       </article>
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <h3>On-time delivery</h3>
-        <p>97% of interstate moves arrive within the scheduled window. If we're late, you get a credit.</p>
+        <h3 data-i18n="why_4_t">On-time delivery</h3>
+        <p data-i18n="why_4_d">97% of interstate moves arrive within the scheduled window. If we're late, you get a credit.</p>
       </article>
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-        <h3>Customer-first</h3>
-        <p>Dedicated move coordinator from quote to unpack. Real humans, no call center runaround.</p>
+        <h3 data-i18n="why_5_t">Customer-first</h3>
+        <p data-i18n="why_5_d">Dedicated move coordinator from quote to unpack. Real humans, no call center runaround.</p>
       </article>
       <article class="why-card reveal">
         <div class="why-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <h3>Transparent pricing</h3>
-        <p>Binding estimates only. What you're quoted is what you pay — no surprises at delivery.</p>
+        <h3 data-i18n="why_6_t">Transparent pricing</h3>
+        <p data-i18n="why_6_d">Binding estimates only. What you're quoted is what you pay — no surprises at delivery.</p>
       </article>
     </div>
   </div>
@@ -309,15 +324,15 @@
 <section class="testimonials section" id="testimonials">
   <div class="container">
     <header class="section-head reveal">
-      <span class="section-kicker">From our customers</span>
-      <h2>Real moves, real reviews</h2>
-      <p class="section-sub">Verified reviews from customers across the country.</p>
+      <span class="section-kicker" data-i18n="tm_kicker">From our customers</span>
+      <h2 data-i18n="tm_h2">Real moves, real reviews</h2>
+      <p class="section-sub" data-i18n="tm_sub">Verified reviews from customers across the country.</p>
     </header>
 
     <div class="tm-grid">
       <article class="tm-card reveal">
         <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"Moved from Brooklyn to Austin in June. Crew showed up early, wrapped everything, and delivered two days ahead of schedule. Price matched the quote exactly."</blockquote>
+        <blockquote data-i18n="tm_1_q">"Moved from Brooklyn to Austin in June. Crew showed up early, wrapped everything, and delivered two days ahead of schedule. Price matched the quote exactly."</blockquote>
         <div class="tm-person">
           <img src="https://i.pravatar.cc/80?img=47" alt="Sarah Mitchell" loading="lazy"/>
           <div><strong>Sarah Mitchell</strong><span>Brooklyn, NY → Austin, TX</span></div>
@@ -326,7 +341,7 @@
 
       <article class="tm-card reveal">
         <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"Had a 1920s upright piano and a lot of anxiety. These guys custom-crated it in my apartment and it arrived in Chicago without a scratch. Pros."</blockquote>
+        <blockquote data-i18n="tm_2_q">"Had a 1920s upright piano and a lot of anxiety. These guys custom-crated it in my apartment and it arrived in Chicago without a scratch. Pros."</blockquote>
         <div class="tm-person">
           <img src="https://i.pravatar.cc/80?img=12" alt="David Chen" loading="lazy"/>
           <div><strong>David Chen</strong><span>Manhattan, NY → Chicago, IL</span></div>
@@ -335,7 +350,7 @@
 
       <article class="tm-card reveal">
         <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"Chat quote was shockingly fast. I'd called three other companies — Metro was the only one that gave me a real number without pressure. Booked them the same day."</blockquote>
+        <blockquote data-i18n="tm_3_q">"Chat quote was shockingly fast. I'd called three other companies — Metro was the only one that gave me a real number without pressure. Booked them the same day."</blockquote>
         <div class="tm-person">
           <img src="https://i.pravatar.cc/80?img=32" alt="Jessica Rodriguez" loading="lazy"/>
           <div><strong>Jessica Rodriguez</strong><span>Queens, NY → Miami, FL</span></div>
@@ -344,7 +359,7 @@
 
       <article class="tm-card reveal">
         <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"Four-bedroom house, 1,800 miles, two dogs and a lot of stairs. The crew was patient, professional, and the coordinator texted me updates the whole way."</blockquote>
+        <blockquote data-i18n="tm_4_q">"Four-bedroom house, 1,800 miles, two dogs and a lot of stairs. The crew was patient, professional, and the coordinator texted me updates the whole way."</blockquote>
         <div class="tm-person">
           <img src="https://i.pravatar.cc/80?img=59" alt="Michael Thompson" loading="lazy"/>
           <div><strong>Michael Thompson</strong><span>Staten Island, NY → Denver, CO</span></div>
@@ -353,7 +368,7 @@
 
       <article class="tm-card reveal">
         <div class="tm-stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"We moved my mother out of her Bronx co-op after 40 years. The team was kind, gentle, and genuinely cared. Can't recommend them enough."</blockquote>
+        <blockquote data-i18n="tm_5_q">"We moved my mother out of her Bronx co-op after 40 years. The team was kind, gentle, and genuinely cared. Can't recommend them enough."</blockquote>
         <div class="tm-person">
           <img src="https://i.pravatar.cc/80?img=23" alt="Emily Parker" loading="lazy"/>
           <div><strong>Emily Parker</strong><span>Bronx, NY → Raleigh, NC</span></div>
@@ -370,14 +385,14 @@
       <img src="assets/images/about.jpg" alt="Metro Relocators moving crew standing by their branded local and long distance moving van" loading="lazy"/>
     </div>
     <div class="about-text reveal">
-      <span class="section-kicker">About Metro Relocators</span>
-      <h2>New York based. Built for the long haul.</h2>
-      <p>Metro Relocators was founded in 2011 by three former long-haul drivers who were tired of watching broker outfits mishandle customers' belongings. We operate our own fleet out of Long Island City, employ our crews directly, and specialize in one thing: getting New Yorkers to their next chapter with nothing broken and nothing hidden in the bill.</p>
-      <p>Today we're one of the top-rated interstate movers on the East Coast, trusted by families, remote workers, and corporate relocations in all 50 states.</p>
+      <span class="section-kicker" data-i18n="about_kicker">About Metro Relocators</span>
+      <h2 data-i18n="about_h2">New York based. Built for the long haul.</h2>
+      <p data-i18n="about_p1">Metro Relocators was founded in 2011 by three former long-haul drivers who were tired of watching broker outfits mishandle customers' belongings. We operate our own fleet out of Long Island City, employ our crews directly, and specialize in one thing: getting New Yorkers to their next chapter with nothing broken and nothing hidden in the bill.</p>
+      <p data-i18n="about_p2">Today we're one of the top-rated interstate movers on the East Coast, trusted by families, remote workers, and corporate relocations in all 50 states.</p>
       <div class="about-stats">
-        <div><strong>2011</strong><span>Founded</span></div>
-        <div><strong>65+</strong><span>Team members</span></div>
-        <div><strong>22</strong><span>Trucks in fleet</span></div>
+        <div><strong>65+</strong><span data-i18n="about_s2">Team members</span></div>
+        <div><strong>22</strong><span data-i18n="about_s3">Trucks in fleet</span></div>
+        <div><strong>2011</strong><span data-i18n="about_s1">Founded</span></div>
       </div>
     </div>
   </div>
@@ -387,10 +402,10 @@
 <section class="cta-strong">
   <div class="container cta-inner reveal">
     <div>
-      <h2>Get Your Free Moving Quote Today</h2>
-      <p>Transparent pricing. No obligation. A real estimate in under two minutes.</p>
+      <h2 data-i18n="cta_h2">Get Your Free Moving Quote Today</h2>
+      <p data-i18n="cta_p">Transparent pricing. No obligation. A real estimate in under two minutes.</p>
     </div>
-    <a href="#quote" class="btn btn-white btn-lg">Start My Free Quote</a>
+    <a href="#quote" class="btn btn-white btn-lg" data-i18n="cta_btn">Start My Free Quote</a>
   </div>
 </section>
 
@@ -398,51 +413,51 @@
 <section class="contact section" id="contact">
   <div class="container contact-grid">
     <div class="contact-info reveal">
-      <span class="section-kicker">Contact</span>
-      <h2>Talk to a real mover</h2>
-      <p>Call us, email, or send a message. A move coordinator will reach back within one business hour.</p>
+      <span class="section-kicker" data-i18n="contact_kicker">Contact</span>
+      <h2 data-i18n="contact_h2">Talk to a real mover</h2>
+      <p data-i18n="contact_p">Call us, email, or send a message. A move coordinator will reach back within one business hour.</p>
 
       <ul class="contact-list">
         <li>
           <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-          <div><strong>Phone</strong><a href="tel:+18005550199">1 (800) 555-0199</a></div>
+          <div><strong data-i18n="contact_phone_lbl">Phone</strong><a href="tel:+18005550199">1 (800) 555-0199</a></div>
         </li>
         <li>
           <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-          <div><strong>Email</strong><a href="mailto:hello@metrorelocators.com">hello@metrorelocators.com</a></div>
+          <div><strong data-i18n="contact_email_lbl">Email</strong><a href="mailto:hello@metrorelocators.com">hello@metrorelocators.com</a></div>
         </li>
         <li>
           <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-          <div><strong>Service area</strong><span>Based in New York · Interstate moves to all 50 states</span></div>
+          <div><strong data-i18n="contact_area_lbl">Service area</strong><span data-i18n="contact_area_val">Based in New York · Interstate moves to all 50 states</span></div>
         </li>
         <li>
           <span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-          <div><strong>Hours</strong><span>Mon–Sat 7:00 AM – 9:00 PM ET · Sun 9:00 AM – 5:00 PM</span></div>
+          <div><strong data-i18n="contact_hours_lbl">Hours</strong><span data-i18n="contact_hours_val">Mon–Sat 7:00 AM – 9:00 PM ET · Sun 9:00 AM – 5:00 PM</span></div>
         </li>
       </ul>
     </div>
 
     <form class="contact-form reveal" id="contactForm" novalidate>
-      <h3>Send us a message</h3>
+      <h3 data-i18n="form_title">Send us a message</h3>
       <div class="row">
         <label>
-          <span>Full name</span>
-          <input type="text" name="name" required autocomplete="name" placeholder="Jane Doe"/>
+          <span data-i18n="form_name_lbl">Full name</span>
+          <input type="text" name="name" required autocomplete="name" placeholder="Jane Doe" data-i18n-attr="placeholder" data-i18n="form_name_ph"/>
         </label>
         <label>
-          <span>Phone</span>
-          <input type="tel" name="phone" required autocomplete="tel" placeholder="(555) 010-1234"/>
+          <span data-i18n="form_phone_lbl">Phone</span>
+          <input type="tel" name="phone" required autocomplete="tel" placeholder="(555) 010-1234" data-i18n-attr="placeholder" data-i18n="form_phone_ph"/>
         </label>
       </div>
       <label>
-        <span>Email</span>
-        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com"/>
+        <span data-i18n="form_email_lbl">Email</span>
+        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" data-i18n-attr="placeholder" data-i18n="form_email_ph"/>
       </label>
       <label>
-        <span>How can we help?</span>
-        <textarea name="message" rows="4" placeholder="Tell us about your move…"></textarea>
+        <span data-i18n="form_msg_lbl">How can we help?</span>
+        <textarea name="message" rows="4" placeholder="Tell us about your move…" data-i18n-attr="placeholder" data-i18n="form_msg_ph"></textarea>
       </label>
-      <button type="submit" class="btn btn-primary btn-lg full">Send Message</button>
+      <button type="submit" class="btn btn-primary btn-lg full" data-i18n="form_submit">Send Message</button>
       <p class="form-note" id="contactNote" aria-live="polite"></p>
     </form>
   </div>
@@ -463,38 +478,38 @@
         </span>
         <span class="logo-text"><span class="logo-name">Metro Relocators</span></span>
       </a>
-      <p class="footer-about">Licensed interstate moving company headquartered in Long Island City, New York. USDOT #3857210 · MC #1425678.</p>
+      <p class="footer-about" data-i18n="footer_about">Licensed interstate moving company headquartered in Long Island City, New York. USDOT #3857210 · MC #1425678.</p>
     </div>
     <div>
-      <h4>Services</h4>
+      <h4 data-i18n="footer_services_h">Services</h4>
       <ul>
-        <li><a href="#services">Interstate moving</a></li>
-        <li><a href="#services">Apartment moves</a></li>
-        <li><a href="#services">Packing & unpacking</a></li>
-        <li><a href="#services">Specialty items</a></li>
+        <li><a href="#services" data-i18n="footer_svc_1">Interstate moving</a></li>
+        <li><a href="#services" data-i18n="footer_svc_2">Apartment moves</a></li>
+        <li><a href="#services" data-i18n="footer_svc_3">Packing &amp; unpacking</a></li>
+        <li><a href="#services" data-i18n="footer_svc_4">Specialty items</a></li>
       </ul>
     </div>
     <div>
-      <h4>Company</h4>
+      <h4 data-i18n="footer_company_h">Company</h4>
       <ul>
-        <li><a href="#why">Why choose us</a></li>
-        <li><a href="#testimonials">Reviews</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#why" data-i18n="footer_why">Why choose us</a></li>
+        <li><a href="#testimonials" data-i18n="nav_reviews">Reviews</a></li>
+        <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
       </ul>
     </div>
     <div>
-      <h4>Get in touch</h4>
+      <h4 data-i18n="footer_touch_h">Get in touch</h4>
       <ul>
         <li><a href="tel:+18005550199">1 (800) 555-0199</a></li>
         <li><a href="mailto:hello@metrorelocators.com">hello@metrorelocators.com</a></li>
-        <li>Long Island City, NY 11101</li>
+        <li data-i18n="footer_addr">Long Island City, NY 11101</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
-      <span>© <span id="year"></span> Metro Relocators LLC. All rights reserved.</span>
-      <span>Privacy · Terms · Licensing</span>
+      <span data-i18n-html="footer_rights">© <span id="year"></span> Metro Relocators LLC. All rights reserved.</span>
+      <span data-i18n="footer_legal">Privacy · Terms · Licensing</span>
     </div>
   </div>
 </footer>
