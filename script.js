@@ -74,8 +74,9 @@
       chat_bot_date: 'When are you planning to move?',
       chat_bot_home: 'What kind of home are you moving from?',
       chat_bot_items: 'Any specialty items we should know about? Pick all that apply.',
-      chat_ph_from: 'e.g. Brooklyn, NY',
-      chat_ph_to: 'e.g. Chicago, IL',
+      chat_ph_from: 'Street, City, State (e.g. 145 W 32nd St, New York, NY)',
+      chat_ph_to: 'Street, City, State',
+      chat_searching: 'Searching addresses…',
       chat_home_studio: 'Studio',
       chat_home_1br: '1 bedroom',
       chat_home_2br: '2 bedrooms',
@@ -244,8 +245,9 @@
       chat_bot_date: '¿Cuándo planeas mudarte?',
       chat_bot_home: '¿Qué tipo de vivienda estás dejando?',
       chat_bot_items: '¿Algún artículo especial que debamos saber? Elige todos los que apliquen.',
-      chat_ph_from: 'Ej. Brooklyn, NY',
-      chat_ph_to: 'Ej. Chicago, IL',
+      chat_ph_from: 'Calle, Ciudad, Estado (ej. 145 W 32nd St, New York, NY)',
+      chat_ph_to: 'Calle, Ciudad, Estado',
+      chat_searching: 'Buscando direcciones…',
       chat_home_studio: 'Estudio',
       chat_home_1br: '1 habitación',
       chat_home_2br: '2 habitaciones',
@@ -414,8 +416,9 @@
       chat_bot_date: 'Когда планируете переезд?',
       chat_bot_home: 'Из какого типа жилья переезжаете?',
       chat_bot_items: 'Есть особые предметы, о которых стоит знать? Выберите всё, что подходит.',
-      chat_ph_from: 'Напр. Бруклин, NY',
-      chat_ph_to: 'Напр. Чикаго, IL',
+      chat_ph_from: 'Улица, город, штат (напр. 145 W 32nd St, New York, NY)',
+      chat_ph_to: 'Улица, город, штат',
+      chat_searching: 'Ищу адреса…',
       chat_home_studio: 'Студия',
       chat_home_1br: '1 спальня',
       chat_home_2br: '2 спальни',
@@ -524,6 +527,123 @@
       locale: 'ru-RU',
       currency_prefix: '$',
       currency_suffix: ''
+    }
+  };
+
+  /* ---------- City autocomplete dataset ---------- */
+  const CITIES = [
+    // NY metro (priority for NY-based mover)
+    'Brooklyn, NY','Manhattan, NY','Queens, NY','Bronx, NY','Staten Island, NY',
+    'Long Island City, NY','Astoria, NY','Williamsburg, NY','Harlem, NY','Flushing, NY',
+    'Yonkers, NY','New Rochelle, NY','White Plains, NY','Mount Vernon, NY',
+    'Buffalo, NY','Rochester, NY','Syracuse, NY','Albany, NY','Schenectady, NY',
+    'Jersey City, NJ','Hoboken, NJ','Newark, NJ','Paterson, NJ','Elizabeth, NJ','Edison, NJ',
+    'Stamford, CT','New Haven, CT','Hartford, CT','Bridgeport, CT',
+    // Top US cities
+    'New York, NY','Los Angeles, CA','Chicago, IL','Houston, TX','Phoenix, AZ',
+    'Philadelphia, PA','San Antonio, TX','San Diego, CA','Dallas, TX','Austin, TX',
+    'Jacksonville, FL','Fort Worth, TX','Columbus, OH','Indianapolis, IN','Charlotte, NC',
+    'San Francisco, CA','Seattle, WA','Denver, CO','Washington, DC','Nashville, TN',
+    'Oklahoma City, OK','El Paso, TX','Boston, MA','Portland, OR','Las Vegas, NV',
+    'Detroit, MI','Memphis, TN','Louisville, KY','Baltimore, MD','Milwaukee, WI',
+    'Albuquerque, NM','Tucson, AZ','Fresno, CA','Sacramento, CA','Kansas City, MO',
+    'Mesa, AZ','Atlanta, GA','Omaha, NE','Colorado Springs, CO','Raleigh, NC',
+    'Miami, FL','Virginia Beach, VA','Oakland, CA','Minneapolis, MN','Tulsa, OK',
+    'Arlington, TX','Tampa, FL','New Orleans, LA','Wichita, KS','Cleveland, OH',
+    'Bakersfield, CA','Aurora, CO','Anaheim, CA','Honolulu, HI','Santa Ana, CA',
+    'Riverside, CA','Corpus Christi, TX','Lexington, KY','Henderson, NV','Stockton, CA',
+    'Saint Paul, MN','Cincinnati, OH','St. Louis, MO','Pittsburgh, PA','Greensboro, NC',
+    'Lincoln, NE','Anchorage, AK','Plano, TX','Orlando, FL','Irvine, CA',
+    'Toledo, OH','Durham, NC','Chula Vista, CA','Fort Wayne, IN','St. Petersburg, FL',
+    'Laredo, TX','Madison, WI','Chandler, AZ','Lubbock, TX','Scottsdale, AZ',
+    'Reno, NV','Glendale, AZ','Gilbert, AZ','Winston-Salem, NC','North Las Vegas, NV',
+    'Norfolk, VA','Chesapeake, VA','Garland, TX','Irving, TX','Hialeah, FL',
+    'Fremont, CA','Boise, ID','Richmond, VA','Baton Rouge, LA','Spokane, WA',
+    'Des Moines, IA','Tacoma, WA','San Bernardino, CA','Modesto, CA','Fontana, CA',
+    'Santa Clarita, CA','Birmingham, AL','Oxnard, CA','Fayetteville, NC','Moreno Valley, CA',
+    'Glendale, CA','Huntington Beach, CA','Salt Lake City, UT','Grand Rapids, MI','Amarillo, TX',
+    'Aurora, IL','Montgomery, AL','Akron, OH','Little Rock, AR','Huntsville, AL',
+    'Augusta, GA','Port St. Lucie, FL','Grand Prairie, TX','Columbus, GA','Tallahassee, FL',
+    'Overland Park, KS','Tempe, AZ','McKinney, TX','Mobile, AL','Cape Coral, FL',
+    'Shreveport, LA','Frisco, TX','Knoxville, TN','Worcester, MA','Brownsville, TX',
+    'Vancouver, WA','Fort Lauderdale, FL','Sioux Falls, SD','Ontario, CA','Chattanooga, TN',
+    'Providence, RI','Newport News, VA','Rancho Cucamonga, CA','Santa Rosa, CA','Peoria, AZ',
+    'Oceanside, CA','Elk Grove, CA','Salem, OR','Pembroke Pines, FL','Eugene, OR',
+    'Garden Grove, CA','Cary, NC','Fort Collins, CO','Corona, CA','Springfield, MO',
+    'Jackson, MS','Alexandria, VA','Hayward, CA','Clarksville, TN','Lakewood, CO',
+    'Lancaster, CA','Salinas, CA','Palmdale, CA','Hollywood, FL','Springfield, MA',
+    'Macon, GA','Kansas City, KS','Sunnyvale, CA','Pomona, CA','Killeen, TX',
+    'Escondido, CA','Pasadena, TX','Naperville, IL','Bellevue, WA','Joliet, IL',
+    'Murfreesboro, TN','Midland, TX','Rockford, IL','Savannah, GA','Torrance, CA',
+    'McAllen, TX','Surprise, AZ','Denton, TX','Roseville, CA','Thornton, CO',
+    'Miramar, FL','Pasadena, CA','Mesquite, TX','Olathe, KS','Dayton, OH',
+    'Carrollton, TX','Waco, TX','Orange, CA','Fullerton, CA','Charleston, SC',
+    'West Valley City, UT','Visalia, CA','Hampton, VA','Gainesville, FL','Warren, MI',
+    'Coral Springs, FL','Cedar Rapids, IA','Round Rock, TX','Sterling Heights, MI','Kent, WA',
+    'Columbia, SC','Santa Clara, CA','Concord, CA','Athens, GA','Thousand Oaks, CA',
+    'Lafayette, LA','Simi Valley, CA','Topeka, KS','Norman, OK','Fargo, ND',
+    'Wilmington, NC','Abilene, TX','Odessa, TX','Columbia, MO','Pearland, TX',
+    'Victorville, CA','Hartford, CT','Berkeley, CA','Arlington, VA','Palo Alto, CA'
+  ];
+
+  const searchCities = (query) => {
+    const q = query.toLowerCase().trim();
+    if (!q) return [];
+    const starts = [], contains = [];
+    for (const c of CITIES) {
+      const cL = c.toLowerCase();
+      if (cL.startsWith(q)) starts.push(c);
+      else if (cL.includes(q)) contains.push(c);
+      if (starts.length >= 8) break;
+    }
+    return [...starts, ...contains].slice(0, 6);
+  };
+
+  const STATE_ABBR = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','District of Columbia':'DC',
+    'Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL',
+    'Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA',
+    'Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN',
+    'Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV',
+    'New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY',
+    'North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR',
+    'Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',
+    'Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA',
+    'Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
+  };
+
+  const formatAddress = (a) => {
+    if (!a) return '';
+    const street = [a.house_number, a.road || a.pedestrian || a.footway].filter(Boolean).join(' ');
+    const city = a.city || a.town || a.village || a.suburb || a.borough || a.neighbourhood || a.municipality || '';
+    const state = STATE_ABBR[a.state] || a.state || '';
+    const zip = a.postcode || '';
+    const tail = [state, zip].filter(Boolean).join(' ');
+    return [street, city, tail].filter(Boolean).join(', ');
+  };
+
+  const searchAddresses = async (query, signal) => {
+    const q = query.trim();
+    if (q.length < 3) return [];
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=6&q=${encodeURIComponent(q)}`;
+    try {
+      const res = await fetch(url, { signal, headers: { 'Accept-Language': 'en' } });
+      if (!res.ok) throw new Error('net');
+      const data = await res.json();
+      const results = data
+        .map(r => ({ display: formatAddress(r.address), raw: r }))
+        .filter(x => x.display && x.display.length > 2);
+      // de-dupe by display
+      const seen = new Set();
+      return results.filter(r => {
+        if (seen.has(r.display)) return false;
+        seen.add(r.display);
+        return true;
+      });
+    } catch (e) {
+      if (e.name === 'AbortError') return null;
+      return null;
     }
   };
 
@@ -707,9 +827,9 @@
 
   /* Step config — text keys resolved at render time via t() */
   const steps = [
-    { key: 'from', botKey: 'chat_bot_from', type: 'text', placeholderKey: 'chat_ph_from',
+    { key: 'from', botKey: 'chat_bot_from', type: 'text', placeholderKey: 'chat_ph_from', autocomplete: 'address',
       validate: v => v.trim().length >= 2 || t('chat_err_origin') },
-    { key: 'to', botKey: 'chat_bot_to', type: 'text', placeholderKey: 'chat_ph_to',
+    { key: 'to', botKey: 'chat_bot_to', type: 'text', placeholderKey: 'chat_ph_to', autocomplete: 'address',
       validate: v => v.trim().length >= 2 || t('chat_err_dest') },
     { key: 'date', botKey: 'chat_bot_date', type: 'date',
       validate: v => !!v || t('chat_err_date') },
@@ -775,14 +895,146 @@
   };
 
   /* Input renderers ---------------------- */
+  const attachAddressAutocomplete = (input, wrap) => {
+    const sugg = document.createElement('ul');
+    sugg.className = 'chat-suggestions';
+    sugg.setAttribute('role', 'listbox');
+    wrap.appendChild(sugg);
+
+    let current = [];
+    let activeIdx = -1;
+    let debounceT = null;
+    let controller = null;
+    let loading = false;
+
+    const hl = (s, q) => {
+      if (!q) return s;
+      const i = s.toLowerCase().indexOf(q.toLowerCase());
+      if (i < 0) return s;
+      return s.slice(0, i) + '<mark>' + s.slice(i, i + q.length) + '</mark>' + s.slice(i + q.length);
+    };
+
+    const splitDisplay = (d) => {
+      const parts = d.split(', ');
+      if (parts.length <= 1) return { primary: d, secondary: '' };
+      return { primary: parts[0], secondary: parts.slice(1).join(', ') };
+    };
+
+    const render = () => {
+      sugg.innerHTML = '';
+      const q = input.value.trim();
+
+      if (loading) {
+        const li = document.createElement('li');
+        li.className = 'chat-suggestion sugg-loading';
+        li.innerHTML = `<span class="sugg-spinner" aria-hidden="true"></span><span class="sugg-text"><span class="sugg-name">${t('chat_searching')}</span></span>`;
+        sugg.appendChild(li);
+        sugg.classList.add('open');
+        return;
+      }
+
+      if (!current.length) {
+        sugg.classList.remove('open');
+        return;
+      }
+
+      current.forEach((item, i) => {
+        const { primary, secondary } = splitDisplay(item.display);
+        const li = document.createElement('li');
+        li.className = 'chat-suggestion' + (i === activeIdx ? ' active' : '');
+        li.setAttribute('role', 'option');
+        li.innerHTML = `
+          <svg class="sugg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="sugg-text">
+            <span class="sugg-name">${hl(primary, q)}</span>
+            ${secondary ? `<span class="sugg-sub">${secondary}</span>` : ''}
+          </span>
+        `;
+        li.addEventListener('mousedown', (e) => { e.preventDefault(); pick(item.display); });
+        sugg.appendChild(li);
+      });
+      sugg.classList.add('open');
+    };
+
+    const pick = (value) => {
+      input.value = value;
+      current = [];
+      activeIdx = -1;
+      loading = false;
+      if (controller) { controller.abort(); controller = null; }
+      sugg.classList.remove('open');
+      input.focus();
+    };
+
+    const runSearch = async (q) => {
+      if (controller) controller.abort();
+      controller = new AbortController();
+      const signal = controller.signal;
+      loading = true;
+      render();
+      let results = await searchAddresses(q, signal);
+      if (signal.aborted) return;
+      if (results === null) {
+        results = searchCities(q).map(c => ({ display: c, raw: null }));
+      }
+      current = results;
+      activeIdx = -1;
+      loading = false;
+      render();
+    };
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      if (debounceT) { clearTimeout(debounceT); debounceT = null; }
+      if (q.length < 3) {
+        if (controller) { controller.abort(); controller = null; }
+        loading = false;
+        current = searchCities(q).map(c => ({ display: c, raw: null }));
+        activeIdx = -1;
+        render();
+        return;
+      }
+      debounceT = setTimeout(() => runSearch(q), 350);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (loading || !current.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIdx = (activeIdx + 1) % current.length;
+        render();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIdx = (activeIdx - 1 + current.length) % current.length;
+        render();
+      } else if (e.key === 'Enter' && activeIdx >= 0) {
+        e.preventDefault();
+        pick(current[activeIdx].display);
+      } else if (e.key === 'Escape') {
+        current = [];
+        activeIdx = -1;
+        render();
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      setTimeout(() => { sugg.classList.remove('open'); }, 140);
+    });
+    input.addEventListener('focus', () => {
+      if (current.length || loading) sugg.classList.add('open');
+    });
+  };
+
   const renderTextInput = (step) => {
     clearInput();
     const wrap = document.createElement('form');
     wrap.className = 'chat-field';
+    if (step.autocomplete) wrap.classList.add('has-autocomplete');
     const placeholder = step.placeholderKey ? t(step.placeholderKey) : '';
     wrap.innerHTML = `
       <input type="${step.type === 'date' ? 'date' : 'text'}"
              placeholder="${placeholder}"
+             autocomplete="off"
              ${step.type === 'date' ? `min="${new Date().toISOString().split('T')[0]}"` : ''}
              aria-label="${t(step.botKey)}" />
       <button class="send-btn" type="submit">
@@ -792,6 +1044,7 @@
     `;
     chatInputWrap.appendChild(wrap);
     const input = wrap.querySelector('input');
+    if (step.autocomplete === 'address' || step.autocomplete === 'city') attachAddressAutocomplete(input, wrap);
     setTimeout(() => input.focus(), 50);
     wrap.addEventListener('submit', (e) => {
       e.preventDefault();

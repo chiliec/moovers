@@ -717,6 +717,105 @@ p { color: var(--text-2); }
   gap: 10px;
   width: 100%;
   align-items: stretch;
+  position: relative;
+}
+
+/* ---------- Chat address autocomplete ---------- */
+.chat-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 10px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-3);
+  padding: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 50;
+  list-style: none;
+  margin: 0;
+  display: none;
+  animation: sugg-in 160ms var(--ease);
+}
+@keyframes sugg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-suggestions.open { display: block; }
+.chat-suggestions::-webkit-scrollbar { width: 8px; }
+.chat-suggestions::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; }
+.chat-suggestion {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.94rem;
+  color: var(--text);
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.chat-suggestion:hover,
+.chat-suggestion.active {
+  background: var(--blue-100);
+  color: var(--blue);
+}
+.chat-suggestion .sugg-icon {
+  color: var(--blue);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.chat-suggestion .sugg-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.chat-suggestion .sugg-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-suggestion .sugg-sub {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-suggestion:hover .sugg-sub,
+.chat-suggestion.active .sugg-sub {
+  color: var(--blue);
+  opacity: 0.8;
+}
+.chat-suggestion .sugg-name mark {
+  background: transparent;
+  color: var(--blue);
+  font-weight: 700;
+}
+.chat-suggestion.active .sugg-name mark { color: var(--blue-700); }
+.chat-suggestion.sugg-loading {
+  cursor: default;
+  color: var(--text-2);
+  font-style: italic;
+}
+.chat-suggestion.sugg-loading:hover { background: transparent; }
+.sugg-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line-2);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: sugg-spin 700ms linear infinite;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+@keyframes sugg-spin {
+  to { transform: rotate(360deg); }
 }
 .chat-field input,
 .chat-field textarea {
