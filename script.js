@@ -76,6 +76,8 @@
       chat_bot_items: 'Any specialty items we should know about? Pick all that apply.',
       chat_ph_from: 'Street, City, State (e.g. 145 W 32nd St, New York, NY)',
       chat_ph_to: 'Street, City, State',
+      chat_ph_date: 'Select a date',
+      chat_today: 'Today',
       chat_searching: 'Searching addresses…',
       chat_home_studio: 'Studio',
       chat_home_1br: '1 bedroom',
@@ -247,6 +249,8 @@
       chat_bot_items: '¿Algún artículo especial que debamos saber? Elige todos los que apliquen.',
       chat_ph_from: 'Calle, Ciudad, Estado (ej. 145 W 32nd St, New York, NY)',
       chat_ph_to: 'Calle, Ciudad, Estado',
+      chat_ph_date: 'Elige una fecha',
+      chat_today: 'Hoy',
       chat_searching: 'Buscando direcciones…',
       chat_home_studio: 'Estudio',
       chat_home_1br: '1 habitación',
@@ -418,6 +422,8 @@
       chat_bot_items: 'Есть особые предметы, о которых стоит знать? Выберите всё, что подходит.',
       chat_ph_from: 'Улица, город, штат (напр. 145 W 32nd St, New York, NY)',
       chat_ph_to: 'Улица, город, штат',
+      chat_ph_date: 'Выберите дату',
+      chat_today: 'Сегодня',
       chat_searching: 'Ищу адреса…',
       chat_home_studio: 'Студия',
       chat_home_1br: '1 спальня',
@@ -1025,17 +1031,142 @@
     });
   };
 
+  const attachDatePicker = (input, wrap) => {
+    input.setAttribute('readonly', '');
+    wrap.classList.add('has-datepicker');
+
+    const cal = document.createElement('div');
+    cal.className = 'chat-datepicker';
+    wrap.appendChild(cal);
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let viewMonth = today.getMonth();
+    let viewYear = today.getFullYear();
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    const monthTitle = (y, m) => {
+      const loc = (I18N[currentLang] && I18N[currentLang].locale) || 'en-US';
+      const s = new Date(y, m, 1).toLocaleDateString(loc, { month: 'long', year: 'numeric' });
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
+    const weekdays = () => {
+      const loc = (I18N[currentLang] && I18N[currentLang].locale) || 'en-US';
+      // Jan 1 2024 = Monday; produce Mon..Sun
+      const arr = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(2024, 0, 1 + i);
+        arr.push(d.toLocaleDateString(loc, { weekday: 'short' }));
+      }
+      return arr;
+    };
+
+    const render = () => {
+      const first = new Date(viewYear, viewMonth, 1);
+      const firstDow = (first.getDay() + 6) % 7; // Monday-first
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      const prevDays = new Date(viewYear, viewMonth, 0).getDate();
+      const selected = input.dataset.iso || '';
+
+      let cells = '';
+      for (let i = firstDow - 1; i >= 0; i--) {
+        cells += `<button type="button" class="cal-day out" disabled>${prevDays - i}</button>`;
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dt = new Date(viewYear, viewMonth, d); dt.setHours(0, 0, 0, 0);
+        const iso = toISO(dt);
+        const isPast = dt < today;
+        const isToday = dt.getTime() === today.getTime();
+        const isSel = iso === selected;
+        const cls = ['cal-day'];
+        if (isPast) cls.push('past');
+        if (isToday) cls.push('today');
+        if (isSel) cls.push('sel');
+        cells += `<button type="button" class="${cls.join(' ')}" data-iso="${iso}" ${isPast ? 'disabled' : ''}>${d}</button>`;
+      }
+      const total = firstDow + daysInMonth;
+      const trailing = (7 - (total % 7)) % 7;
+      for (let i = 1; i <= trailing; i++) {
+        cells += `<button type="button" class="cal-day out" disabled>${i}</button>`;
+      }
+
+      const wd = weekdays().map(w => `<span class="cal-wd">${w}</span>`).join('');
+
+      cal.innerHTML = `
+        <div class="cal-head">
+          <button type="button" class="cal-nav" data-nav="-1" aria-label="Prev">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="cal-title">${monthTitle(viewYear, viewMonth)}</span>
+          <button type="button" class="cal-nav" data-nav="1" aria-label="Next">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="cal-wds">${wd}</div>
+        <div class="cal-grid">${cells}</div>
+        <div class="cal-foot">
+          <button type="button" class="cal-today-btn">${t('chat_today')}</button>
+        </div>
+      `;
+
+      cal.querySelectorAll('[data-nav]').forEach(b => {
+        b.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const d = parseInt(b.dataset.nav, 10);
+          viewMonth += d;
+          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+          render();
+        });
+      });
+      cal.querySelectorAll('.cal-day[data-iso]').forEach(b => {
+        b.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const iso = b.dataset.iso;
+          input.dataset.iso = iso;
+          input.value = fmtDate(iso);
+          close();
+        });
+      });
+      cal.querySelector('.cal-today-btn')?.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const iso = toISO(today);
+        viewMonth = today.getMonth();
+        viewYear = today.getFullYear();
+        input.dataset.iso = iso;
+        input.value = fmtDate(iso);
+        close();
+      });
+    };
+
+    const open = () => { cal.classList.add('open'); render(); };
+    const close = () => { cal.classList.remove('open'); };
+
+    input.addEventListener('focus', open);
+    input.addEventListener('click', open);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+      if (e.key === 'Enter') { e.preventDefault(); open(); }
+    });
+
+    const outside = (e) => { if (!wrap.contains(e.target)) close(); };
+    document.addEventListener('mousedown', outside, true);
+  };
+
   const renderTextInput = (step) => {
     clearInput();
     const wrap = document.createElement('form');
     wrap.className = 'chat-field';
     if (step.autocomplete) wrap.classList.add('has-autocomplete');
-    const placeholder = step.placeholderKey ? t(step.placeholderKey) : '';
+    const placeholder = step.placeholderKey
+      ? t(step.placeholderKey)
+      : (step.type === 'date' ? t('chat_ph_date') : '');
     wrap.innerHTML = `
-      <input type="${step.type === 'date' ? 'date' : 'text'}"
+      <input type="text"
              placeholder="${placeholder}"
              autocomplete="off"
-             ${step.type === 'date' ? `min="${new Date().toISOString().split('T')[0]}"` : ''}
              aria-label="${t(step.botKey)}" />
       <button class="send-btn" type="submit">
         <span>${t('chat_send')}</span>
@@ -1045,10 +1176,11 @@
     chatInputWrap.appendChild(wrap);
     const input = wrap.querySelector('input');
     if (step.autocomplete === 'address' || step.autocomplete === 'city') attachAddressAutocomplete(input, wrap);
+    if (step.type === 'date') attachDatePicker(input, wrap);
     setTimeout(() => input.focus(), 50);
     wrap.addEventListener('submit', (e) => {
       e.preventDefault();
-      const val = input.value.trim();
+      const val = step.type === 'date' ? (input.dataset.iso || '') : input.value.trim();
       const result = step.validate ? step.validate(val) : true;
       if (result !== true) { showToast(result, 'err'); return; }
       const display = step.type === 'date' ? fmtDate(val) : val;
