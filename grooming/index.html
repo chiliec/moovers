@@ -1,0 +1,1959 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atelier Canin — Ателье груминга породистых собак и кошек · Вашингтон</title>
+<meta name="description" content="Премиум-ателье груминга в Вашингтоне. Стрижка породистых собак и кошек по мировым стандартам. 15 лет. Обучение в Нью-Йорке.">
+<meta name="theme-color" content="#0a0908">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════════════ */
+:root{
+  --bg:        #0a0908;
+  --bg-2:      #121010;
+  --bg-3:      #1a1715;
+  --bone:      #f2ead7;
+  --bone-2:    #d9cfb8;
+  --dim:       #8b8272;
+  --muted:     #6a6252;
+  --gold:      #d4a355;
+  --gold-2:    #f0c978;
+  --oxblood:   #642423;
+  --line:      rgba(242,234,215,.12);
+  --line-2:    rgba(242,234,215,.25);
+
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --ease-out: cubic-bezier(.16,1,.3,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+section[id],header[id]{scroll-margin-top:80px}
+html,body{background:var(--bg);color:var(--bone)}
+body{
+  font-family:"Inter Tight",system-ui,sans-serif;
+  font-weight:300;font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  cursor:none;
+}
+@media (pointer:coarse){body{cursor:auto}}
+
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:none;background:none;border:0;color:inherit}
+@media (pointer:coarse){button,a{cursor:pointer}}
+
+/* focus */
+:focus{outline:none}
+:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+/* skip */
+.skip{
+  position:fixed;left:12px;top:-80px;z-index:999;
+  padding:12px 20px;background:var(--gold);color:var(--bg);
+  font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.12em;
+  transition:top .25s;
+}
+.skip:focus{top:12px}
+
+/* ═══════════════════════════════════════════════════════════════
+   FILM OVERLAYS
+══════════════════════════════════════════════════════════════ */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:90;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.84  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity:.55;mix-blend-mode:overlay;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:88;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.6) 100%);
+}
+
+/* scroll progress */
+.progress{
+  position:fixed;top:0;left:0;height:2px;background:var(--gold);z-index:200;
+  width:var(--w,0%);transition:width .08s linear;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CURSOR
+══════════════════════════════════════════════════════════════ */
+.cursor{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:10px;height:10px;border-radius:50%;background:var(--gold);
+  left:0;top:0;transform:translate(-50%,-50%);
+  transition:width .3s var(--ease),height .3s var(--ease),background .3s;
+  mix-blend-mode:difference;
+}
+.cursor.big{
+  width:40px;height:40px;background:var(--bone);mix-blend-mode:difference;
+}
+.cursor-label{
+  position:fixed;pointer-events:none;z-index:9998;
+  left:0;top:0;transform:translate(-50%,-50%);
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--bone);opacity:0;
+  transition:opacity .3s;mix-blend-mode:difference;
+}
+.cursor-label.on{opacity:1}
+@media (pointer:coarse){.cursor,.cursor-label{display:none}}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPE
+══════════════════════════════════════════════════════════════ */
+.display{
+  font-family:"Fraunces",serif;
+  font-weight:300;line-height:.86;letter-spacing:-.035em;
+  font-variation-settings:"opsz" 144,"SOFT" 0;
+}
+.display em, .italic{
+  font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;
+  letter-spacing:-.02em;
+}
+.mono{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:400}
+.lead{
+  font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;
+  font-size:clamp(20px,2.2vw,28px);line-height:1.35;letter-spacing:-.01em;
+  color:var(--bone-2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHAPTER SIDE LABEL
+══════════════════════════════════════════════════════════════ */
+.chapter-mark{
+  position:fixed;left:24px;top:50%;transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left center;
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--dim);z-index:60;
+  white-space:nowrap;
+  transition:opacity .4s;pointer-events:none;
+}
+.chapter-mark .n{color:var(--gold)}
+@media (max-width:900px){.chapter-mark{display:none}}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:70;
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,9,8,.42);
+  backdrop-filter:blur(20px) saturate(1.3);
+  -webkit-backdrop-filter:blur(20px) saturate(1.3);
+  border-bottom:1px solid rgba(242,234,215,.06);
+  transition:background .4s var(--ease), padding .35s var(--ease), border-color .4s;
+}
+.nav.scrolled{
+  background:rgba(10,9,8,.75);
+  padding-top:12px;padding-bottom:12px;
+  border-bottom-color:rgba(242,234,215,.12);
+}
+.nav-right{display:flex;align-items:center;gap:24px}
+
+.nav .brand{
+  font-family:"Fraunces",serif;font-weight:400;font-size:20px;letter-spacing:-.01em;
+  color:var(--bone);display:flex;align-items:center;gap:10px;
+  font-variation-settings:"opsz" 36;
+  position:relative;z-index:2;
+}
+.nav .brand em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+.nav .brand::before{
+  content:"";width:8px;height:8px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 12px var(--gold);
+}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{
+  font-family:"JetBrains Mono",monospace;font-size:11px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--bone);
+  transition:color .3s;position:relative;
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;
+  background:var(--gold);transform:scaleX(0);transform-origin:right;
+  transition:transform .4s var(--ease);
+}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);transform-origin:left}
+.nav-cta{
+  border:1px solid var(--bone);padding:10px 18px;border-radius:999px;
+  transition:all .3s;
+}
+.nav-cta:hover{background:var(--bone);color:var(--bg)}
+.nav-cta::after{display:none}
+
+/* WhatsApp pill in nav */
+.nav-wa{
+  display:inline-grid;place-items:center;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--gold);color:var(--bg);
+  transition:transform .3s var(--ease),box-shadow .3s;
+  box-shadow:0 8px 22px -6px rgba(212,163,85,.45);
+  cursor:none;
+}
+.nav-wa svg{width:18px;height:18px}
+.nav-wa:hover{transform:scale(1.08) rotate(-6deg)}
+@media (pointer:coarse){.nav-wa{cursor:pointer}}
+
+/* language toggle */
+.lang{
+  display:inline-flex;align-items:center;
+  border:1px solid var(--line-2);border-radius:999px;
+  padding:4px;gap:2px;height:42px;box-sizing:border-box;
+}
+.lang button{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;
+  padding:0 12px;height:32px;min-width:34px;border-radius:999px;color:var(--dim);
+  transition:color .3s, background .3s;
+  cursor:none;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.lang button.active{background:var(--gold);color:var(--bg)}
+.lang button:not(.active):hover{color:var(--bone)}
+@media (pointer:coarse){.lang button{cursor:pointer}}
+
+/* burger */
+.burger{
+  display:none;
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line-2);
+  padding:0;position:relative;
+  transition:border-color .3s,background .3s;
+  cursor:none;
+}
+.burger span{
+  position:absolute;left:50%;height:1.5px;width:16px;background:var(--bone);
+  transform-origin:center;transition:transform .4s var(--ease),top .3s, opacity .3s;
+}
+.burger span:nth-child(1){top:15px;transform:translateX(-50%)}
+.burger span:nth-child(2){top:25px;transform:translateX(-50%)}
+.burger.open span:nth-child(1){top:20px;transform:translateX(-50%) rotate(45deg)}
+.burger.open span:nth-child(2){top:20px;transform:translateX(-50%) rotate(-45deg)}
+.burger:hover{border-color:var(--gold)}
+@media (pointer:coarse){.burger{cursor:pointer}}
+
+@media (max-width:900px){
+  .nav-links{display:none}
+  .burger{display:block}
+}
+@media (max-width:720px){.nav{padding:12px 18px}}
+
+/* drawer */
+.drawer{
+  position:fixed;inset:0;z-index:68;
+  background:rgba(10,9,8,.82);
+  backdrop-filter:blur(28px) saturate(1.3);
+  -webkit-backdrop-filter:blur(28px) saturate(1.3);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:96px 28px 36px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .5s var(--ease),visibility .5s;
+}
+.drawer.open{opacity:1;visibility:visible;pointer-events:auto}
+.drawer-links{display:flex;flex-direction:column;gap:4px}
+.drawer-links a{
+  font-family:"Fraunces",serif;font-weight:300;
+  font-size:clamp(32px,7vw,48px);letter-spacing:-.02em;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+  color:var(--bone);
+  font-variation-settings:"opsz" 72;
+  display:flex;justify-content:space-between;align-items:center;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .5s var(--ease),transform .5s var(--ease),color .3s;
+}
+.drawer.open .drawer-links a{opacity:1;transform:none}
+.drawer.open .drawer-links a:nth-child(1){transition-delay:.08s}
+.drawer.open .drawer-links a:nth-child(2){transition-delay:.14s}
+.drawer.open .drawer-links a:nth-child(3){transition-delay:.2s}
+.drawer.open .drawer-links a:nth-child(4){transition-delay:.26s}
+.drawer.open .drawer-links a:nth-child(5){transition-delay:.32s}
+.drawer.open .drawer-links a:nth-child(6){transition-delay:.38s}
+.drawer-links a em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-family:"JetBrains Mono",monospace}
+.drawer-links a:hover{color:var(--gold)}
+.drawer-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid var(--line);
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;
+  color:var(--dim);text-transform:uppercase;
+}
+.drawer-foot a{color:var(--bone)}
+.drawer-foot a:hover{color:var(--gold)}
+body.nav-open{overflow:hidden}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding: 120px 32px 48px;
+}
+@media (max-width:900px){.hero{padding:88px 22px 40px;justify-content:center;gap:18px}}
+@media (max-width:720px){.hero{padding:76px 18px 96px}}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    linear-gradient(180deg, rgba(10,9,8,.5) 0%, rgba(10,9,8,.75) 60%, var(--bg) 100%),
+    url("https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=2400&q=85") center 55%/cover no-repeat;
+  transform:scale(1.20) translateX(8%);
+  transform-origin:center center;
+  animation: heroPush 1.6s var(--ease-out) .1s both;
+  filter:saturate(.85) contrast(1.02);
+}
+@keyframes heroPush{
+  from{transform:scale(1.30) translateX(8%);filter:blur(12px) saturate(.7)}
+  to{transform:scale(1.20) translateX(8%);filter:blur(0) saturate(.85) contrast(1.02)}
+}
+@media (max-width:720px){
+  .hero-bg{
+    background:
+      linear-gradient(180deg, rgba(10,9,8,.5) 0%, rgba(10,9,8,.75) 60%, var(--bg) 100%),
+      url("https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=1400&q=85") 47% 42%/cover no-repeat;
+    transform:scale(1.08) translateX(0);
+    animation:heroPushMobile 1.4s var(--ease-out) .1s both;
+  }
+  @keyframes heroPushMobile{
+    from{transform:scale(1.18) translateX(0);filter:blur(12px) saturate(.7)}
+    to{transform:scale(1.08) translateX(0);filter:blur(0) saturate(.85) contrast(1.02)}
+  }
+}
+.hero-ornament{
+  position:absolute;top:36%;right:4vw;z-index:1;
+  font-family:"Instrument Serif",serif;font-style:italic;font-size:clamp(14px,1.2vw,18px);
+  color:var(--gold);line-height:1.5;text-align:right;max-width:220px;
+  opacity:0;animation: fadeSlow 1.4s 1.2s forwards;
+}
+@keyframes fadeSlow{to{opacity:.85}}
+
+.hero-inner{position:relative;z-index:2;width:100%}
+
+.hero-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:60px;opacity:0;animation: fadeUp .9s .3s forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-meta .dot{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-right:10px;vertical-align:middle}
+
+.hero h1{
+  font-family:"Fraunces",serif;font-weight:300;line-height:.82;letter-spacing:-.04em;
+  font-size:clamp(52px, 11.2vw, 176px);
+  color:var(--bone);
+  font-variation-settings:"opsz" 144;
+  margin:0 0 40px;
+}
+.hero h1 .l{
+  display:block;overflow:hidden;padding-right:2vw;
+}
+.hero h1 .l span{
+  display:inline-block;transform:translateY(110%);
+  animation: lineUp 1.1s var(--ease-out) forwards;
+}
+.hero h1 .l:nth-child(1) span{animation-delay:.2s}
+.hero h1 .l:nth-child(2) span{animation-delay:.35s}
+.hero h1 .l:nth-child(3) span{animation-delay:.5s}
+@keyframes lineUp{to{transform:none}}
+.hero h1 em{
+  font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;
+  color:var(--gold);
+  letter-spacing:-.02em;
+}
+
+.hero-bottom{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:40px;align-items:end;
+  border-top:1px solid var(--line);padding-top:28px;
+  opacity:0;animation: fadeUp .9s 1s forwards;
+}
+@media (max-width:900px){.hero-bottom{grid-template-columns:1fr;gap:24px}}
+
+.hero-sub{max-width:420px;font-family:"Instrument Serif",serif;font-style:italic;font-size:22px;line-height:1.4;color:var(--bone-2)}
+
+.hero-cta-wrap{display:flex;align-items:center;gap:20px;justify-self:center;flex-wrap:wrap;justify-content:center}
+
+.cta-big{
+  position:relative;display:inline-grid;place-items:center;
+  width:180px;height:180px;border-radius:50%;
+  border:1px solid var(--gold);
+  color:var(--bone);
+  transition:transform .4s var(--ease),background .4s,color .4s;
+  will-change:transform;
+}
+.cta-big:hover{background:var(--gold);color:var(--bg)}
+.cta-big .inner{
+  text-align:center;line-height:1.1;
+  font-family:"Instrument Serif",serif;font-style:italic;font-size:22px;
+}
+.cta-big .inner small{display:block;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-top:6px}
+.cta-big:hover .inner small{color:var(--bg)}
+.cta-big svg.ring{
+  position:absolute;inset:-10px;animation: spin 22s linear infinite;
+  width:calc(100% + 20px);height:calc(100% + 20px);
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.hero-meta-right{justify-self:end;text-align:right}
+.hero-meta-right .mono{display:block;margin-bottom:8px}
+.hero-meta-right .v{
+  font-family:"Fraunces",serif;font-weight:300;font-size:44px;line-height:1;letter-spacing:-.02em;
+  font-variation-settings:"opsz" 144;
+}
+.hero-meta-right .v em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MARQUEE
+══════════════════════════════════════════════════════════════ */
+.marquee{
+  position:relative;
+  padding:28px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  background:var(--bg);
+}
+.marquee-track{
+  display:flex;white-space:nowrap;width:max-content;
+  animation: marq 40s linear infinite;
+  will-change:transform;backface-visibility:hidden;
+}
+.m-copy{display:flex;flex-shrink:0}
+.m-copy > span{margin-right:64px}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes marq{to{transform:translateX(-50%)}}
+.marquee span{
+  font-family:"Fraunces",serif;font-weight:300;font-size:38px;letter-spacing:-.02em;
+  font-variation-settings:"opsz" 72;
+  color:var(--bone);display:flex;align-items:center;gap:64px;
+}
+.marquee span em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+.marquee span::after{
+  content:"✦";color:var(--gold);font-size:14px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION base
+══════════════════════════════════════════════════════════════ */
+.section{position:relative;padding:140px 0}
+@media (max-width:720px){.section{padding:80px 0}}
+.wrap{max-width:1360px;margin:0 auto;padding:0 32px}
+@media (max-width:720px){.wrap{padding:0 20px}}
+
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:40px}
+.eyebrow::before{content:"";width:36px;height:1px;background:var(--gold)}
+.eyebrow .mono{color:var(--gold)}
+
+h2.section-title{
+  font-family:"Fraunces",serif;font-weight:300;
+  font-size:clamp(44px,7.5vw,120px);letter-spacing:-.03em;line-height:.92;
+  font-variation-settings:"opsz" 144;
+  margin-bottom:64px;max-width:1100px;
+}
+h2.section-title em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-weight:400}
+
+/* ═══════════════════════════════════════════════════════════════
+   CREDENTIALS
+══════════════════════════════════════════════════════════════ */
+.creds{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--line);
+}
+.cred{
+  padding:48px 40px;
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;
+  transition:background .4s;
+}
+.cred:hover{background:var(--bg-2)}
+.cred:first-child{padding-left:0}
+.cred:last-child{padding-right:0;border-right:0}
+.cred-n{
+  font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;
+  font-size:64px;line-height:.85;color:var(--gold);letter-spacing:-.02em;
+}
+.cred-t{font-family:"Fraunces",serif;font-weight:400;font-size:20px;line-height:1.25;margin-top:20px;font-variation-settings:"opsz" 36}
+.cred-d{color:var(--dim);font-size:13px;line-height:1.6}
+@media (max-width:900px){.creds{grid-template-columns:repeat(2,1fr)}.cred{border-bottom:1px solid var(--line);padding:40px 24px}.cred:nth-child(2n){border-right:0;padding-right:0}.cred:nth-child(2n+1){padding-left:0}}
+@media (max-width:540px){.creds{grid-template-columns:1fr}.cred{border-right:0!important;padding:32px 0!important}}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROBLEM — cinematic quote
+══════════════════════════════════════════════════════════════ */
+.problem{background:var(--bg-2);overflow:hidden;position:relative}
+.problem::before{
+  content:"“";position:absolute;top:-40px;left:-20px;
+  font-family:"Instrument Serif",serif;font-style:italic;
+  font-size:520px;line-height:1;color:var(--oxblood);opacity:.3;pointer-events:none;
+}
+.problem-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+  position:relative;z-index:2;
+}
+@media (max-width:980px){.problem-grid{grid-template-columns:1fr;gap:48px}}
+.problem ul{list-style:none;display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.problem li{
+  padding:28px 0;border-bottom:1px solid var(--line);
+  display:flex;gap:20px;align-items:flex-start;
+  font-family:"Fraunces",serif;font-weight:300;font-size:22px;line-height:1.35;
+  font-variation-settings:"opsz" 36;
+  color:var(--bone-2);
+  transition:color .3s, padding-left .4s var(--ease);
+}
+.problem li:hover{color:var(--bone);padding-left:12px}
+.problem li em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+.problem li::before{
+  content:"✕";color:var(--oxblood);font-family:"JetBrains Mono",monospace;font-size:16px;
+  margin-top:6px;flex-shrink:0;
+}
+.problem-aside{font-family:"Instrument Serif",serif;font-style:italic;font-size:clamp(28px,3.2vw,44px);line-height:1.2;color:var(--bone);letter-spacing:-.01em}
+.problem-aside em{color:var(--gold)}
+
+/* ═══════════════════════════════════════════════════════════════
+   METHOD — 3 pillars, big
+══════════════════════════════════════════════════════════════ */
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+.method{
+  padding:56px 48px;border-right:1px solid var(--line);
+  position:relative;transition:background .4s;
+  min-height:420px;display:flex;flex-direction:column;
+}
+.method:first-child{padding-left:0}
+.method:last-child{padding-right:0;border-right:0}
+.method:hover{background:var(--bg-2)}
+.method .num{
+  font-family:"Instrument Serif",serif;font-style:italic;font-size:120px;line-height:.8;
+  color:var(--bg-3);transition:color .6s;letter-spacing:-.03em;
+}
+.method:hover .num{color:var(--gold)}
+.method h3{
+  font-family:"Fraunces",serif;font-weight:400;font-size:32px;margin:36px 0 16px;
+  letter-spacing:-.01em;font-variation-settings:"opsz" 72;
+}
+.method h3 em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+.method p{color:var(--bone-2);font-size:15px;line-height:1.65;max-width:380px}
+.method .line{margin-top:auto;padding-top:28px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line)}
+.method .line .mono{color:var(--dim)}
+.method .line .arrow{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-size:24px;transition:transform .4s}
+.method:hover .line .arrow{transform:translateX(8px)}
+@media (max-width:900px){.method-grid{grid-template-columns:1fr}.method{border-right:0;border-bottom:1px solid var(--line);min-height:auto;padding:40px 0}}
+
+/* ═══════════════════════════════════════════════════════════════
+   SERVICES — huge list
+══════════════════════════════════════════════════════════════ */
+.srv{border-top:1px solid var(--line)}
+.srv-row{
+  display:grid;grid-template-columns: 60px 1fr auto 60px;gap:32px;
+  padding:36px 0;border-bottom:1px solid var(--line);
+  align-items:center;position:relative;
+  transition:padding .5s var(--ease);
+  cursor:none;
+}
+.srv-row:hover{padding-left:24px;padding-right:24px;background:var(--bg-2)}
+.srv-row .n{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--gold)}
+.srv-row .t{
+  font-family:"Fraunces",serif;font-weight:300;font-size:clamp(28px,4vw,56px);
+  letter-spacing:-.02em;line-height:1;
+  font-variation-settings:"opsz" 144;
+  transition:transform .5s var(--ease),color .3s;
+}
+.srv-row .t em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-weight:400}
+.srv-row:hover .t{transform:translateX(14px)}
+.srv-row .p{
+  font-family:"Fraunces",serif;font-weight:400;font-size:22px;color:var(--bone);white-space:nowrap;
+}
+.srv-row .p span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--dim);margin-right:8px;text-transform:uppercase}
+.srv-row .go{
+  justify-self:end;
+  width:40px;height:40px;border:1px solid var(--line);border-radius:50%;
+  display:grid;place-items:center;
+  transition:all .4s;
+  font-family:"Instrument Serif",serif;font-style:italic;color:var(--bone-2);font-size:18px;
+}
+.srv-row:hover .go{background:var(--gold);border-color:var(--gold);color:var(--bg);transform:rotate(-45deg) scale(1.1)}
+@media (max-width:720px){
+  .srv-row{grid-template-columns: 40px 1fr;gap:16px;padding:24px 0}
+  .srv-row .p{grid-column:2;font-size:16px}
+  .srv-row .go{display:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BEFORE / AFTER DRAG
+══════════════════════════════════════════════════════════════ */
+.beforeafter{
+  position:relative;aspect-ratio:16/9;max-width:1280px;margin:0 auto;
+  overflow:hidden;user-select:none;
+  border:1px solid var(--line);
+  cursor:ew-resize;
+}
+.beforeafter img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  pointer-events:none;
+}
+.beforeafter .after{clip-path: inset(0 0 0 var(--x,50%))}
+.beforeafter .handle{
+  position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;background:var(--gold);
+  box-shadow:0 0 24px rgba(212,163,85,.6);
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+.beforeafter .grip{
+  position:absolute;top:50%;left:var(--x,50%);transform:translate(-50%,-50%);
+  width:64px;height:64px;border-radius:50%;background:var(--bone);color:var(--bg);
+  display:grid;place-items:center;
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.15em;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  pointer-events:none;
+}
+.beforeafter .grip::before{content:"◂";margin-right:3px}
+.beforeafter .grip::after{content:"▸";margin-left:3px}
+.beforeafter .label{
+  position:absolute;top:24px;padding:6px 14px;
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;background:rgba(10,9,8,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--line);
+}
+.beforeafter .lb{left:24px;color:var(--dim)}
+.beforeafter .la{right:24px;color:var(--gold);border-color:var(--gold)}
+
+/* ═══════════════════════════════════════════════════════════════
+   PORTFOLIO — horizontal scroll
+══════════════════════════════════════════════════════════════ */
+.portfolio-head{display:flex;justify-content:space-between;align-items:flex-end;padding:0 32px;margin-bottom:48px}
+.portfolio-head .hint{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:10px}
+.portfolio-head .hint .k{border:1px solid var(--line);padding:4px 8px;color:var(--bone-2)}
+
+.hscroll{
+  display:flex;gap:24px;overflow-x:auto;overflow-y:hidden;
+  padding:0 32px 40px;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.hscroll::-webkit-scrollbar{display:none}
+.pf-nav{display:flex;gap:10px}
+.pf-btn{
+  width:46px;height:46px;border-radius:50%;
+  border:1px solid var(--line-2);background:transparent;color:var(--bone);
+  font-family:"JetBrains Mono",monospace;font-size:16px;
+  display:inline-grid;place-items:center;
+  transition:background .3s,color .3s,border-color .3s,opacity .3s;
+  cursor:none;
+}
+.pf-btn:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.pf-btn:disabled{opacity:.3;pointer-events:none}
+@media (pointer:coarse){.pf-btn{cursor:pointer}}
+.hcard{
+  flex:0 0 auto;width:min(520px,80vw);aspect-ratio:4/5;position:relative;overflow:hidden;
+  scroll-snap-align:start;background:var(--bg-3);
+}
+.hcard img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 1.4s var(--ease), filter .6s;
+  filter:grayscale(.15) saturate(.9);
+}
+.hcard:hover img{transform:scale(1.06);filter:none}
+.hcard .meta{
+  position:absolute;left:0;right:0;bottom:0;padding:28px;
+  background:linear-gradient(180deg,transparent 0%,rgba(10,9,8,.85) 70%);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+}
+.hcard .t{font-family:"Fraunces",serif;font-weight:400;font-size:24px;letter-spacing:-.01em;font-variation-settings:"opsz" 36}
+.hcard .t em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);display:block;font-size:14px;margin-top:4px}
+.hcard .n{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--dim)}
+
+/* ═══════════════════════════════════════════════════════════════
+   TESTIMONIAL full bleed
+══════════════════════════════════════════════════════════════ */
+.quote-block{touch-action:pan-y;user-select:none;
+  padding:140px 0;position:relative;text-align:center;
+}
+.quote-big{
+  font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;
+  font-size:clamp(32px,5vw,72px);line-height:1.15;letter-spacing:-.01em;
+  color:var(--bone);max-width:1200px;margin:0 auto 48px;padding:0 32px;
+  position:relative;
+}
+.quote-big::before,.quote-big::after{
+  content:""; font-family:"Instrument Serif",serif;font-size:clamp(60px,9vw,140px);
+  color:var(--gold);opacity:.4;line-height:0;position:relative;top:.3em;
+}
+.quote-big::before{content:"“";margin-right:.15em}
+.quote-big::after{content:"”";margin-left:.15em;top:.6em}
+.quote-author{display:flex;align-items:center;justify-content:center;gap:16px;color:var(--dim)}
+.quote-author img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.quote-author .n{font-family:"Fraunces",serif;font-weight:400;font-size:16px;color:var(--bone)}
+.quote-author .p{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-size:14px}
+#reviews{touch-action:pan-y;-webkit-user-select:none;user-select:none}
+#quoteDeck{transition:opacity .22s var(--ease),transform .28s var(--ease);--qdir:1}
+#quoteDeck.swap-out{opacity:0;transform:translateX(calc(var(--qdir) * -24px))}
+#quoteDeck.swap-in{animation:qIn .32s var(--ease) both}
+@keyframes qIn{
+  from{opacity:0;transform:translateX(calc(var(--qdir) * 24px))}
+  to{opacity:1;transform:none}
+}
+.quote-dots{display:flex;justify-content:center;gap:10px;margin-top:48px}
+.quote-dots button{
+  width:28px;height:3px;background:var(--line-2);transition:background .3s,width .3s;
+}
+.quote-dots button.active{background:var(--gold);width:48px}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOKING
+══════════════════════════════════════════════════════════════ */
+.book-section{
+  background:var(--bg-2);
+  position:relative;overflow:hidden;
+}
+.book-section::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 80%, rgba(212,163,85,.08), transparent 55%);
+  pointer-events:none;
+}
+.book-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2}
+@media (max-width:980px){.book-grid{grid-template-columns:1fr;gap:48px}}
+
+.book-side h2{margin-bottom:28px}
+.book-side .cta-row{display:flex;flex-wrap:wrap;gap:28px;margin-top:40px}
+.book-side .cta-row a{
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.25em;
+  text-transform:uppercase;padding-bottom:4px;
+  border-bottom:1px solid var(--line-2);transition:border-color .3s,color .3s;
+}
+.book-side .cta-row a:hover{border-color:var(--gold);color:var(--gold)}
+
+form.book{
+  background:var(--bg);border:1px solid var(--line-2);padding:48px;
+  display:flex;flex-direction:column;gap:24px;
+  box-shadow:0 40px 80px -20px rgba(0,0,0,.6);
+}
+form.book h3{
+  font-family:"Fraunces",serif;font-weight:300;font-size:36px;margin-bottom:4px;
+  letter-spacing:-.02em;font-variation-settings:"opsz" 72;
+}
+form.book h3 em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-weight:400}
+form.book .hint{color:var(--dim);font-size:13px}
+.field{display:flex;flex-direction:column;gap:8px;position:relative}
+.field label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.field input,.field select{
+  background:transparent;border:0;border-bottom:1px solid var(--line-2);
+  padding:12px 0;color:var(--bone);font-size:16px;font-family:inherit;
+  outline:none;transition:border-color .3s;
+  cursor:text;
+  color-scheme:dark;
+}
+.field select{cursor:pointer}
+.field input.datepick{cursor:pointer;background-image:linear-gradient(transparent,transparent);caret-color:transparent}
+.field input::placeholder{color:var(--muted)}
+.field input:focus,.field select:focus{border-bottom-color:var(--gold)}
+.field select option{background:var(--bg);color:var(--bone)}
+.field .cal-ico{
+  position:absolute;right:0;bottom:14px;width:18px;height:18px;pointer-events:none;
+  color:var(--gold);opacity:.75;
+}
+.cal-pop{
+  position:absolute;top:calc(100% + 10px);left:0;right:auto;z-index:60;
+  width:300px;padding:18px;border-radius:14px;
+  background:rgba(18,16,13,.96);
+  border:1px solid var(--line-2);
+  box-shadow:0 30px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(198,161,91,.06);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;
+  transition:opacity .22s var(--ease),transform .22s var(--ease);
+  font-family:"Inter Tight",sans-serif;
+}
+.cal-pop.open{opacity:1;transform:none;pointer-events:auto}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-head .cal-label{
+  font-family:"Fraunces",serif;font-weight:400;font-size:15px;letter-spacing:.01em;color:var(--bone);
+}
+.cal-head .cal-label em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-weight:400;margin-left:4px}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid var(--line-2);background:transparent;color:var(--bone);
+  display:grid;place-items:center;cursor:pointer;transition:border-color .25s,color .25s,background .25s;
+}
+.cal-nav button:hover{border-color:var(--gold);color:var(--gold)}
+.cal-nav button svg{width:12px;height:12px}
+.cal-dow{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px;
+  font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);
+  text-align:center;
+}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-grid button{
+  height:34px;border:0;background:transparent;color:var(--bone);
+  font-family:"Inter Tight",sans-serif;font-size:13px;font-weight:400;
+  border-radius:8px;cursor:pointer;
+  transition:background .2s,color .2s,transform .12s;
+  position:relative;
+}
+.cal-grid button:hover:not(:disabled){background:rgba(198,161,91,.12);color:var(--gold)}
+.cal-grid button:disabled{opacity:.22;cursor:not-allowed}
+.cal-grid button.other{color:var(--muted);opacity:.5}
+.cal-grid button.today{color:var(--gold)}
+.cal-grid button.today::after{
+  content:"";position:absolute;left:50%;bottom:5px;width:3px;height:3px;border-radius:50%;
+  background:var(--gold);transform:translateX(-50%);
+}
+.cal-grid button.selected{
+  background:var(--gold);color:var(--bg) !important;font-weight:500;
+}
+.cal-grid button.selected.today::after{background:var(--bg)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+
+.btn-submit{
+  position:relative;padding:22px 32px;margin-top:12px;
+  background:var(--bone);color:var(--bg);
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+  border-radius:999px;
+  overflow:hidden;
+  transition:transform .3s;
+}
+.btn-submit:hover{transform:translateY(-2px)}
+.btn-submit::before{
+  content:"";position:absolute;inset:0;background:var(--gold);
+  transform:translateY(101%);transition:transform .4s var(--ease);
+}
+.btn-submit:hover::before{transform:translateY(0)}
+.btn-submit span{position:relative;z-index:2}
+
+.book-status{min-height:18px;font-size:13px;color:var(--gold);font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTACTS
+══════════════════════════════════════════════════════════════ */
+.cnt-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+@media (max-width:900px){.cnt-grid{grid-template-columns:1fr;gap:40px}}
+.cnt-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.cnt-list > div{padding:28px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cnt-list .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.cnt-list .v{font-family:"Fraunces",serif;font-weight:400;font-size:24px;letter-spacing:-.01em;font-variation-settings:"opsz" 36}
+.cnt-list .v em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+
+.map{
+  aspect-ratio:4/3;background:var(--bg-3);position:relative;overflow:hidden;
+  border:1px solid var(--line);
+}
+.map::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(212,163,85,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,163,85,.06) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.map::after{
+  content:"";position:absolute;inset:0;
+  background: radial-gradient(ellipse at 42% 58%, rgba(212,163,85,.2), transparent 50%);
+}
+.map .pin{position:absolute;left:42%;top:58%;transform:translate(-50%,-100%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px}
+.map .pin .lbl{background:var(--bone);color:var(--bg);padding:6px 12px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+.map .pin .dot{
+  width:16px;height:16px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 0 6px rgba(212,163,85,.25),0 0 0 16px rgba(212,163,85,.12);
+  animation: mapPulse 2.4s ease-in-out infinite;
+}
+@keyframes mapPulse{50%{box-shadow:0 0 0 12px rgba(212,163,85,.3),0 0 0 24px rgba(212,163,85,.15)}}
+.map .coord{position:absolute;right:20px;bottom:16px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.15em;color:var(--gold)}
+.map .tag{position:absolute;left:20px;top:16px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+
+/* ═══════════════════════════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════════════════════════ */
+.faq-list{border-top:1px solid var(--line)}
+details.faq{border-bottom:1px solid var(--line);padding:28px 0;transition:padding .3s}
+details.faq[open]{padding-bottom:40px}
+details.faq summary{
+  list-style:none;cursor:none;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  transition:color .3s;
+}
+details.faq summary > span.q{
+  font-family:"Fraunces",serif;font-weight:300;font-size:clamp(22px,2.6vw,34px);
+  letter-spacing:-.01em;line-height:1.2;
+  font-variation-settings:"opsz" 72;
+  flex:1;
+}
+details.faq[open] summary{color:var(--gold)}
+details.faq summary em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold)}
+details.faq summary::-webkit-details-marker{display:none}
+.plus{
+  width:40px;height:40px;border:1px solid var(--line-2);border-radius:50%;
+  display:grid;place-items:center;flex-shrink:0;
+  font-family:"JetBrains Mono",monospace;font-weight:300;font-size:16px;
+  transition:transform .5s var(--ease),background .3s,border-color .3s,color .3s;
+}
+details.faq[open] .plus{transform:rotate(45deg);background:var(--gold);color:var(--bg);border-color:var(--gold)}
+details.faq p{margin-top:20px;color:var(--bone-2);font-size:15px;line-height:1.65;max-width:820px}
+@media (pointer:coarse){details.faq summary{cursor:pointer}}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════════ */
+footer{
+  padding:120px 32px 32px;
+  position:relative;
+  background:var(--bg);
+  overflow:hidden;
+}
+.ft-huge{
+  font-family:"Fraunces",serif;font-weight:200;
+  font-size:clamp(100px,22vw,360px);line-height:.82;letter-spacing:-.05em;
+  color:var(--bone);
+  font-variation-settings:"opsz" 144;
+  text-align:center;
+  margin-bottom:80px;
+}
+.ft-huge em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--gold);font-weight:400}
+.ft-base{
+  display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;
+  padding-top:28px;border-top:1px solid var(--line);
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
+}
+.ft-base a{color:var(--bone-2)}
+.ft-base a:hover{color:var(--gold)}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING
+══════════════════════════════════════════════════════════════ */
+.fab{display:none}
+.mobile-cta{display:none}
+@media (max-width:720px){
+  .mobile-cta{
+    display:block;position:fixed;left:16px;right:16px;bottom:16px;z-index:70;
+    background:var(--bone);color:var(--bg);
+    padding:16px;text-align:center;border-radius:999px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    opacity:0;transform:translateY(140%);pointer-events:none;
+    transition:opacity .45s var(--ease),transform .55s var(--ease);
+    box-shadow:0 12px 32px -8px rgba(0,0,0,.55);
+  }
+  .mobile-cta.show{opacity:1;transform:none;pointer-events:auto}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL
+══════════════════════════════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(32px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}.rv-d4{transition-delay:.32s}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .rv{opacity:1 !important;transform:none !important}
+  .marquee-track{animation:none !important}
+  .hero-bg{animation:none !important;transform:none !important;filter:none !important}
+  .hero h1 .l span{transform:none !important;animation:none !important}
+  .cursor,.cursor-label{display:none !important}
+  body{cursor:auto !important}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">К основному содержимому</a>
+
+<!-- cursor -->
+<div class="cursor" aria-hidden="true"></div>
+<div class="cursor-label" aria-hidden="true"></div>
+
+<!-- progress -->
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- chapter marker -->
+<div class="chapter-mark" id="chapter" aria-hidden="true"><span class="n">I.</span>&nbsp;&nbsp;Пролог</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Основная навигация">
+  <a href="#" class="brand">Atelier <em>Canin</em></a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#method" data-i18n="nav.method">Метод</a>
+      <a href="#services" data-i18n="nav.services">Услуги</a>
+      <a href="#portfolio" data-i18n="nav.portfolio">Работы</a>
+      <a href="#reviews" data-i18n="nav.reviews">Клиенты</a>
+      <a href="#book" class="nav-cta" data-i18n="nav.cta">Запись</a>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+      <button type="button" data-lang="en" class="active" aria-pressed="true">EN</button>
+    </div>
+    <a class="nav-wa" href="https://wa.me/12025550142" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.599 5.391l-.999 3.648 3.889-.738zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    </a>
+    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-links">
+    <a href="#method"><span data-i18n="nav.method">Метод</span><em>01</em></a>
+    <a href="#services"><span data-i18n="nav.services">Услуги</span><em>02</em></a>
+    <a href="#portfolio"><span data-i18n="nav.portfolio">Работы</span><em>03</em></a>
+    <a href="#reviews"><span data-i18n="nav.reviews">Клиенты</span><em>04</em></a>
+    <a href="#contacts"><span data-i18n="nav.contacts">Контакты</span><em>05</em></a>
+    <a href="#book"><span data-i18n="nav.cta">Запись</span><em>→</em></a>
+  </div>
+  <div class="drawer-foot">
+    <span>Georgetown · DC</span>
+    <a href="tel:+12025550142">+1 (202) 555-0142</a>
+  </div>
+</aside>
+
+<main id="main">
+
+<!-- ═══ HERO ═══ -->
+<header class="hero" id="hero" role="banner">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <p class="hero-ornament" aria-hidden="true">
+    est. MMXI<br>
+    <em>Georgetown, DC</em>
+  </p>
+
+  <div class="hero-inner">
+    <div class="hero-meta">
+      <span class="mono"><span class="dot"></span><span data-i18n="hero.loc">Вашингтон · 38.907°N</span></span>
+      <span class="mono" data-i18n="hero.no">№ 001 / Ателье</span>
+    </div>
+
+    <h1 class="display">
+      <span class="l"><span data-i18n="hero.l1">Ателье&nbsp;для</span></span>
+      <span class="l"><span data-i18n="hero.l2"><em>породистых</em></span></span>
+      <span class="l"><span data-i18n="hero.l3">создан.</span></span>
+    </h1>
+
+    <div class="hero-bottom">
+      <p class="hero-sub" data-i18n="hero.sub">
+        Груминг по&nbsp;мировым стандартам. Пятнадцать лет опыта.<br>
+        Обучение в&nbsp;<em style="color:var(--gold)">Нью-Йорке.</em>
+      </p>
+
+      <div class="hero-cta-wrap">
+        <a href="#book" class="cta-big" data-magnet data-cursor="запись">
+          <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <path id="circlePath" d="M 110,110 m -92,0 a 92,92 0 1,1 184,0 a 92,92 0 1,1 -184,0"></path>
+            </defs>
+            <text fill="var(--bone-2)" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="4">
+              <textPath xlink:href="#circlePath" data-i18n="hero.ring">· ЗАПИСАТЬСЯ · ОНЛАЙН · ATELIER CANIN · WASHINGTON · </textPath>
+            </text>
+          </svg>
+          <span class="inner">
+            <span class="italic" data-i18n="hero.cta">Записаться</span>
+            <small data-i18n="hero.ctaSmall">Tap / Click</small>
+          </span>
+        </a>
+      </div>
+
+      <div class="hero-meta-right">
+        <span class="mono" data-i18n="hero.master">Мастер</span>
+        <span class="v"><em>15</em><span data-i18n="hero.years">лет / NYC</span></span>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="m-copy">
+      <span data-i18n="mq.1">Пудель <em>standard</em></span>
+      <span data-i18n="mq.2">Йоркширский терьер</span>
+      <span data-i18n="mq.3">Бишон <em>frisé</em></span>
+      <span data-i18n="mq.4">Мейн-кун</span>
+      <span data-i18n="mq.5">Ши-тцу</span>
+      <span data-i18n="mq.6">Керри-блю</span>
+      <span data-i18n="mq.7">Персидская <em>кошка</em></span>
+      <span data-i18n="mq.8">Мальтезе</span>
+      <span data-i18n="mq.9">Шнауцер</span>
+      <span data-i18n="mq.10">Вест-хайленд</span>
+    </div>
+    <div class="m-copy" aria-hidden="true">
+      <span data-i18n="mq.1">Пудель <em>standard</em></span>
+      <span data-i18n="mq.2">Йоркширский терьер</span>
+      <span data-i18n="mq.3">Бишон <em>frisé</em></span>
+      <span data-i18n="mq.4">Мейн-кун</span>
+      <span data-i18n="mq.5">Ши-тцу</span>
+      <span data-i18n="mq.6">Керри-блю</span>
+      <span data-i18n="mq.7">Персидская <em>кошка</em></span>
+      <span data-i18n="mq.8">Мальтезе</span>
+      <span data-i18n="mq.9">Шнауцер</span>
+      <span data-i18n="mq.10">Вест-хайленд</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CREDENTIALS ═══ -->
+<section class="section" id="credentials" data-chapter="I. Регалии">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="cred.eye">(I) — Bona Fide</span></div>
+    <h2 class="section-title rv" data-i18n="cred.title">Те, кому <em>доверяют</em><br>выставочных победителей.</h2>
+
+    <div class="creds">
+      <div class="cred rv"><span class="cred-n italic">15</span><div class="cred-t" data-i18n="cred.1t">Лет ремесла</div><p class="cred-d" data-i18n="cred.1d">С&nbsp;2011 года. Более 12&nbsp;000 проведённых сеансов.</p></div>
+      <div class="cred rv rv-d1"><span class="cred-n italic">NYC</span><div class="cred-t" data-i18n="cred.2t">Нью-Йорк школа</div><p class="cred-d" data-i18n="cred.2d">Мастер-классы у&nbsp;грумеров мирового уровня.</p></div>
+      <div class="cred rv rv-d2"><span class="cred-n italic" data-i18n="cred.3n">№1</span><div class="cred-t" data-i18n="cred.3t">Сертификация</div><p class="cred-d" data-i18n="cred.3d">Победитель профессиональных конкурсов, судейство.</p></div>
+      <div class="cred rv rv-d3"><span class="cred-n italic">800+</span><div class="cred-t" data-i18n="cred.4t">Постоянных клиентов</div><p class="cred-d" data-i18n="cred.4d">Пятилетний горизонт удержания. Выставочные титулы.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROBLEM ═══ -->
+<section class="section problem" id="problem" data-chapter="II. Боль">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="prob.eye">(II) — Почему</span></div>
+    <h2 class="section-title rv" data-i18n="prob.title">Вы бывали там, <em>не&nbsp;так&nbsp;ли?</em></h2>
+
+    <div class="problem-grid">
+      <ul>
+        <li class="rv" data-i18n="prob.1">Грумер не&nbsp;знает <em>стандарт породы</em> — стрижёт «на&nbsp;глаз».</li>
+        <li class="rv rv-d1" data-i18n="prob.2">Питомец <em>стрессует</em>, после салона прячется весь день.</li>
+        <li class="rv rv-d2" data-i18n="prob.3">Результат неровный — <em>приходится переделывать.</em></li>
+        <li class="rv rv-d3" data-i18n="prob.4">Боитесь доверить <em>любимца</em> незнакомому мастеру.</li>
+      </ul>
+      <p class="problem-aside rv rv-d2" data-i18n="prob.aside">Каждое животное — <em>индивидуальность.</em> Мы&nbsp;не&nbsp;ставим на&nbsp;поток.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ METHOD ═══ -->
+<section class="section" id="method" data-chapter="III. Метод">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="method.eye">(III) — Метод</span></div>
+    <h2 class="section-title rv" data-i18n="method.title">Три <em>принципа,</em><br>которые меняют визит.</h2>
+
+    <div class="method-grid">
+      <div class="method rv">
+        <span class="num">01</span>
+        <h3 data-i18n="method.1h">Мягкий <em>подход</em></h3>
+        <p data-i18n="method.1p">Знакомство, адаптация, неспешный темп. Никакой фиксации. Никакого давления. Животное ведёт, мы&nbsp;следуем.</p>
+        <div class="line"><span class="mono">Rapport-first</span><span class="arrow">→</span></div>
+      </div>
+      <div class="method rv rv-d1">
+        <span class="num">02</span>
+        <h3 data-i18n="method.2h">По&nbsp;<em>стандарту</em> породы</h3>
+        <p data-i18n="method.2p">Шоу-кат, пет-кат, креатив. Знание анатомии породы, силуэта, текстуры шерсти. Как готовят к&nbsp;Вестминстеру.</p>
+        <div class="line"><span class="mono">Breed-standard</span><span class="arrow">→</span></div>
+      </div>
+      <div class="method rv rv-d2">
+        <span class="num">03</span>
+        <h3 data-i18n="method.3h"><em>Один</em> гость в&nbsp;моменте</h3>
+        <p data-i18n="method.3p">Один мастер — одно животное — один сеанс. Без параллельных клиентов. Без очередей. Приватность ателье.</p>
+        <div class="line"><span class="mono">By-appointment</span><span class="arrow">→</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BEFORE/AFTER ═══ -->
+<section class="section" id="transformation" style="background:var(--bg-2)" data-chapter="IV. Трансформация">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="ba.eye">(IV) — Трансформация</span></div>
+    <h2 class="section-title rv" data-i18n="ba.title">Тяните <em>за ручку.</em></h2>
+  </div>
+
+  <div class="beforeafter rv rv-d1" id="ba" data-cursor="drag">
+    <img class="before" src="https://images.unsplash.com/photo-1518155317743-a8ff43ea6a5f?w=1800&q=85" loading="lazy" width="1600" height="900" alt="Породистая собака до груминга">
+    <img class="after" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1800&q=85" loading="lazy" width="1600" height="900" alt="Та же собака после профессионального груминга">
+    <div class="label lb" data-i18n="ba.before">До</div>
+    <div class="label la" data-i18n="ba.after">После</div>
+    <div class="handle" aria-hidden="true"></div>
+    <div class="grip" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section class="section" id="services" data-chapter="V. Прейскурант">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="srv.eye">(V) — Прейскурант</span></div>
+    <h2 class="section-title rv" data-i18n="srv.title">Услуги&nbsp;<em>&amp;</em> цены.</h2>
+
+    <div class="srv">
+      <a href="#book" class="srv-row rv"><span class="n">01</span><span class="t" data-i18n="srv.1"><em>Шоу</em>-груминг</span><span class="p"><span data-i18n="srv.from">от</span>180&nbsp;$</span><span class="go">↗</span></a>
+      <a href="#book" class="srv-row rv rv-d1"><span class="n">02</span><span class="t" data-i18n="srv.2">Гигиеническая стрижка</span><span class="p"><span data-i18n="srv.from">от</span>120&nbsp;$</span><span class="go">↗</span></a>
+      <a href="#book" class="srv-row rv rv-d2"><span class="n">03</span><span class="t" data-i18n="srv.3">Груминг <em>кошки</em></span><span class="p"><span data-i18n="srv.from">от</span>140&nbsp;$</span><span class="go">↗</span></a>
+      <a href="#book" class="srv-row rv rv-d3"><span class="n">04</span><span class="t" data-i18n="srv.4"><em>Креативный</em> груминг</span><span class="p"><span data-i18n="srv.from">от</span>240&nbsp;$</span><span class="go">↗</span></a>
+      <a href="#book" class="srv-row rv"><span class="n">05</span><span class="t" data-i18n="srv.5">SPA-комплекс</span><span class="p"><span data-i18n="srv.from">от</span>90&nbsp;$</span><span class="go">↗</span></a>
+      <a href="#book" class="srv-row rv rv-d1"><span class="n">06</span><span class="t" data-i18n="srv.6">Экспресс <em>между визитами</em></span><span class="p"><span data-i18n="srv.from">от</span>60&nbsp;$</span><span class="go">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PORTFOLIO HSCROLL ═══ -->
+<section class="section" id="portfolio" data-chapter="VI. Работы" style="padding-left:0;padding-right:0">
+  <div class="portfolio-head">
+    <div>
+      <div class="eyebrow rv"><span class="mono" data-i18n="pf.eye">(VI) — Архив</span></div>
+      <h2 class="section-title rv" style="margin-bottom:0" data-i18n="pf.title">Недавние <em>работы.</em></h2>
+    </div>
+    <div class="pf-nav rv rv-d1">
+      <button type="button" class="pf-btn" id="pfPrev" aria-label="Предыдущая">←</button>
+      <button type="button" class="pf-btn" id="pfNext" aria-label="Следующая">→</button>
+    </div>
+  </div>
+
+  <div class="hscroll" id="hscroll">
+    <figure class="hcard rv"><img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Стрижка пуделя"><figcaption class="meta"><span class="t" data-i18n="pf.1">Пудель<em>standard · шоу-кат</em></span><span class="n">№ 01</span></figcaption></figure>
+    <figure class="hcard rv rv-d1"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Бишон фризе"><figcaption class="meta"><span class="t" data-i18n="pf.2">Бишон<em>frisé · выставка</em></span><span class="n">№ 02</span></figcaption></figure>
+    <figure class="hcard rv rv-d2"><img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Персидская кошка"><figcaption class="meta"><span class="t" data-i18n="pf.3">Персидская<em>груминг кошки</em></span><span class="n">№ 03</span></figcaption></figure>
+    <figure class="hcard rv rv-d3"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Йорк"><figcaption class="meta"><span class="t" data-i18n="pf.4">Йорк<em>пет-кат</em></span><span class="n">№ 04</span></figcaption></figure>
+    <figure class="hcard rv"><img src="https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Ши-тцу"><figcaption class="meta"><span class="t" data-i18n="pf.5">Ши-тцу<em>топ-нот</em></span><span class="n">№ 05</span></figcaption></figure>
+    <figure class="hcard rv rv-d1"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Мейн-кун"><figcaption class="meta"><span class="t" data-i18n="pf.6">Мейн-кун<em>SPA-уход</em></span><span class="n">№ 06</span></figcaption></figure>
+    <figure class="hcard rv rv-d2"><img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=1200&q=85" loading="lazy" width="1040" height="1300" alt="Кокер"><figcaption class="meta"><span class="t" data-i18n="pf.7">Кокер<em>породный стандарт</em></span><span class="n">№ 07</span></figcaption></figure>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIAL ═══ -->
+<section class="quote-block" id="reviews" data-chapter="VII. Клиенты">
+  <div class="wrap">
+    <div class="eyebrow rv" style="justify-content:center"><span class="mono" data-i18n="q.eye">(VII) — Слово клиента</span></div>
+
+    <div id="quoteDeck">
+      <blockquote class="quote-big rv">Четвёртый год стрижём нашу Холли только здесь. На&nbsp;выставку едем после&nbsp;Atelier Canin — судьи всегда отмечают подготовку шерсти отдельно.</blockquote>
+      <div class="quote-author rv rv-d1">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=85" loading="lazy" width="48" height="48" alt="Анна В.">
+        <div>
+          <div class="n">Анна В.</div>
+          <div class="p">Холли · стандартный пудель</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-dots" role="tablist" aria-label="Отзывы">
+      <button class="active" data-q="0" aria-label="Отзыв 1"></button>
+      <button data-q="1" aria-label="Отзыв 2"></button>
+      <button data-q="2" aria-label="Отзыв 3"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOOKING ═══ -->
+<section class="section book-section" id="book" data-chapter="VIII. Запись">
+  <div class="wrap">
+    <div class="book-grid">
+      <div class="book-side">
+        <div class="eyebrow rv"><span class="mono" data-i18n="book.eye">(VIII) — Запись</span></div>
+        <h2 class="section-title rv" style="margin-bottom:20px" data-i18n="book.title">Ваш визит<br><em>начинается здесь.</em></h2>
+        <p class="lead rv rv-d1" style="max-width:520px" data-i18n="book.lead">Ограниченное число записей в&nbsp;неделю. Мы&nbsp;перезвоним в&nbsp;течение пятнадцати минут, чтобы подтвердить визит и&nbsp;уточнить особенности породы.</p>
+
+        <div class="cta-row rv rv-d2">
+          <a href="https://wa.me/12025550142" target="_blank" rel="noopener">WhatsApp ↗</a>
+          <a href="https://t.me/atelier_canin" target="_blank" rel="noopener">Telegram ↗</a>
+          <a href="tel:+12025550142">+1 (202) 555-0142</a>
+        </div>
+      </div>
+
+      <form class="book rv rv-d1" id="bookForm" novalidate>
+        <h3 data-i18n="book.h3">Онлайн-<em>запись</em></h3>
+        <p class="hint" data-i18n="book.hint">Подберём уход именно для вашей породы.</p>
+
+        <div class="field">
+          <label for="f-name" data-i18n="book.name">Имя</label>
+          <input id="f-name" type="text" required autocomplete="name" placeholder="Как к вам обращаться" data-i18n-ph="book.nameP">
+        </div>
+        <div class="field">
+          <label for="f-phone" data-i18n="book.phone">Телефон</label>
+          <input id="f-phone" type="tel" required autocomplete="tel" placeholder="+1 (___) ___-____">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-breed" data-i18n="book.breed">Порода</label>
+            <input id="f-breed" type="text" required placeholder="напр. Пудель" data-i18n-ph="book.breedP">
+          </div>
+          <div class="field" id="dateField">
+            <label for="f-date" data-i18n="book.date">Дата</label>
+            <input id="f-date" class="datepick" type="text" required readonly autocomplete="off" placeholder="Select date" data-i18n-ph="book.dateP">
+            <svg class="cal-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9h17M8 3v4M16 3v4"/></svg>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-svc" data-i18n="book.service">Услуга</label>
+          <select id="f-svc" data-i18n-opts="book.opts">
+            <option>Шоу-груминг по стандарту</option>
+            <option>Гигиеническая стрижка</option>
+            <option>Груминг кошки</option>
+            <option>Креативный груминг</option>
+            <option>SPA-комплекс</option>
+          </select>
+        </div>
+        <div class="book-status" id="bookStatus" role="status" aria-live="polite"></div>
+        <button type="submit" class="btn-submit" data-magnet><span data-i18n="book.submit">Записаться →</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACTS ═══ -->
+<section class="section" id="contacts" data-chapter="IX. Ателье">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="cnt.eye">(IX) — Локация</span></div>
+    <h2 class="section-title rv" data-i18n="cnt.title">Ателье в&nbsp;<em>Джорджтауне.</em></h2>
+
+    <div class="cnt-grid">
+      <div class="cnt-list">
+        <div class="rv"><span class="k" data-i18n="cnt.k1">Адрес</span><span class="v" data-i18n="cnt.v1">3251 Prospect St NW, <em>Georgetown</em>, Washington DC</span></div>
+        <div class="rv rv-d1"><span class="k" data-i18n="cnt.k2">Часы</span><span class="v" data-i18n="cnt.v2">Пн–Сб · 10 — 21 <em>/</em> Вс по записи</span></div>
+        <div class="rv rv-d2"><span class="k" data-i18n="cnt.k3">Телефон</span><a class="v" href="tel:+12025550142">+1 <em>(202)</em> 555-0142</a></div>
+        <div class="rv rv-d3"><span class="k" data-i18n="cnt.k4">Мессенджеры</span><span class="v"><a href="https://wa.me/12025550142" target="_blank" rel="noopener">WhatsApp</a> <em>·</em> <a href="https://t.me/atelier_canin" target="_blank" rel="noopener">Telegram</a></span></div>
+        <div class="rv"><span class="k" data-i18n="cnt.k5">Парковка</span><span class="v" data-i18n="cnt.v5"><em>Собственная</em> · метро Foggy Bottom</span></div>
+      </div>
+
+      <div class="map rv rv-d1" aria-label="Карта — Джорджтаун, Вашингтон">
+        <span class="tag">Georgetown · Washington DC</span>
+        <div class="pin"><span class="lbl">Atelier Canin</span><span class="dot"></span></div>
+        <span class="coord">38.9072°N / 77.0369°W</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section" id="faq" data-chapter="X. Вопросы" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="mono" data-i18n="faq.eye">(X) — FAQ</span></div>
+    <h2 class="section-title rv" data-i18n="faq.title">Частые <em>вопросы.</em></h2>
+
+    <div class="faq-list">
+      <details class="faq rv"><summary><span class="q" data-i18n="faq.q1">Сколько длится <em>визит?</em></span><span class="plus">+</span></summary><p data-i18n="faq.a1">В&nbsp;среднем от&nbsp;двух до&nbsp;четырёх часов в&nbsp;зависимости от&nbsp;породы, состояния шерсти и&nbsp;типа стрижки. Выставочная подготовка может занимать до&nbsp;шести часов. Мы&nbsp;не&nbsp;торопим животное — это принципиально.</p></details>
+      <details class="faq rv rv-d1"><summary><span class="q" data-i18n="faq.q2">Работаете&nbsp;ли с&nbsp;<em>агрессивными</em> или пугливыми?</span><span class="plus">+</span></summary><p data-i18n="faq.a2">Да. Для тревожных предлагаем ознакомительный визит без стрижки, чтобы животное привыкло. Без фиксации и&nbsp;без работы через сопротивление.</p></details>
+      <details class="faq rv rv-d2"><summary><span class="q" data-i18n="faq.q3">Можно&nbsp;ли <em>присутствовать</em>?</span><span class="plus">+</span></summary><p data-i18n="faq.a3">В&nbsp;первый визит мы&nbsp;приветствуем присутствие владельца. С&nbsp;некоторыми животными процесс проходит спокойнее без&nbsp;хозяина — обсудим индивидуально.</p></details>
+      <details class="faq rv rv-d3"><summary><span class="q" data-i18n="faq.q4">Готовите&nbsp;ли к&nbsp;<em>выставке</em>?</span><span class="plus">+</span></summary><p data-i18n="faq.a4">Готовим к&nbsp;AKC, FCI и&nbsp;международному уровню. Мастер — обладатель судейской сертификации.</p></details>
+      <details class="faq rv"><summary><span class="q" data-i18n="faq.q5">Оплата и&nbsp;<em>лояльность</em>?</span><span class="plus">+</span></summary><p data-i18n="faq.a5">Карта, наличные, Apple Pay. Каждый пятый визит — со&nbsp;скидкой для постоянных клиентов.</p></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer role="contentinfo">
+  <div class="ft-huge" aria-hidden="true">Atelier<br><em>Canin</em></div>
+  <div class="ft-base">
+    <span data-i18n="ft.1">© 2026 · Atelier Canin</span>
+    <span data-i18n="ft.2">est. MMXI · Georgetown, Washington DC</span>
+    <span><a href="#hero" data-i18n="ft.3">К началу ↑</a></span>
+  </div>
+</footer>
+
+<a href="https://wa.me/12025550142" class="fab" aria-label="WhatsApp" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.599 5.391l-.999 3.648 3.889-.738zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+<a href="#book" class="mobile-cta" data-i18n="mcta">Записаться онлайн →</a>
+
+<script>
+(() => {
+  const prm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(pointer:coarse)').matches;
+
+  /* ─────────── I18N DICTIONARY ─────────── */
+  const DICT = {
+    ru: {
+      'nav.method':'Метод','nav.services':'Услуги','nav.portfolio':'Работы','nav.reviews':'Клиенты','nav.contacts':'Контакты','nav.cta':'Запись',
+      'hero.loc':'Вашингтон · 38.907°N','hero.no':'№ 001 / Ателье',
+      'hero.l1':'Ателье&nbsp;для','hero.l2':'<em>породистых</em>','hero.l3':'создан.',
+      'hero.sub':'Груминг по&nbsp;мировым стандартам. Пятнадцать лет опыта.<br>Обучение в&nbsp;<em style="color:var(--gold)">Нью-Йорке.</em>',
+      'hero.ring':'· ЗАПИСАТЬСЯ · ОНЛАЙН · ATELIER CANIN · WASHINGTON · ',
+      'hero.cta':'Записаться','hero.ctaSmall':'Tap / Click','hero.master':'Мастер','hero.years':'лет / NYC','hero.scroll':'Scroll',
+      'cred.eye':'(I) — Bona Fide','cred.title':'Те, кому <em>доверяют</em><br>выставочных победителей.',
+      'cred.1t':'Лет ремесла','cred.1d':'С&nbsp;2011 года. Более 12&nbsp;000 проведённых сеансов.',
+      'cred.2t':'Нью-Йорк школа','cred.2d':'Мастер-классы у&nbsp;грумеров мирового уровня.',
+      'cred.3n':'№1','cred.3t':'Сертификация','cred.3d':'Победитель профессиональных конкурсов, судейство.',
+      'cred.4t':'Постоянных клиентов','cred.4d':'Пятилетний горизонт удержания. Выставочные титулы.',
+      'prob.eye':'(II) — Почему','prob.title':'Вы бывали там, <em>не&nbsp;так&nbsp;ли?</em>',
+      'prob.1':'Грумер не&nbsp;знает <em>стандарт породы</em> — стрижёт «на&nbsp;глаз».',
+      'prob.2':'Питомец <em>стрессует</em>, после салона прячется весь день.',
+      'prob.3':'Результат неровный — <em>приходится переделывать.</em>',
+      'prob.4':'Боитесь доверить <em>любимца</em> незнакомому мастеру.',
+      'prob.aside':'Каждое животное — <em>индивидуальность.</em> Мы&nbsp;не&nbsp;ставим на&nbsp;поток.',
+      'method.eye':'(III) — Метод','method.title':'Три <em>принципа,</em><br>которые меняют визит.',
+      'method.1h':'Мягкий <em>подход</em>','method.1p':'Знакомство, адаптация, неспешный темп. Никакой фиксации. Никакого давления. Животное ведёт, мы&nbsp;следуем.',
+      'method.2h':'По&nbsp;<em>стандарту</em> породы','method.2p':'Шоу-кат, пет-кат, креатив. Знание анатомии породы, силуэта, текстуры шерсти. Как готовят к&nbsp;Вестминстеру.',
+      'method.3h':'<em>Один</em> гость в&nbsp;моменте','method.3p':'Один мастер — одно животное — один сеанс. Без параллельных клиентов. Без очередей. Приватность ателье.',
+      'ba.eye':'(IV) — Трансформация','ba.title':'Тяните <em>за ручку.</em>','ba.before':'До','ba.after':'После',
+      'srv.eye':'(V) — Прейскурант','srv.title':'Услуги&nbsp;<em>&amp;</em> цены.','srv.from':'от',
+      'srv.1':'<em>Шоу</em>-груминг','srv.2':'Гигиеническая стрижка','srv.3':'Груминг <em>кошки</em>',
+      'srv.4':'<em>Креативный</em> груминг','srv.5':'SPA-комплекс','srv.6':'Экспресс <em>между визитами</em>',
+      'pf.eye':'(VI) — Архив','pf.title':'Недавние <em>работы.</em>','pf.scroll':'Скролл',
+      'pf.1':'Пудель<em>standard · шоу-кат</em>','pf.2':'Бишон<em>frisé · выставка</em>','pf.3':'Персидская<em>груминг кошки</em>',
+      'pf.4':'Йорк<em>пет-кат</em>','pf.5':'Ши-тцу<em>топ-нот</em>','pf.6':'Мейн-кун<em>SPA-уход</em>','pf.7':'Кокер<em>породный стандарт</em>',
+      'q.eye':'(VII) — Слово клиента',
+      'book.eye':'(VIII) — Запись','book.title':'Ваш визит<br><em>начинается здесь.</em>',
+      'book.lead':'Ограниченное число записей в&nbsp;неделю. Мы&nbsp;перезвоним в&nbsp;течение пятнадцати минут, чтобы подтвердить визит и&nbsp;уточнить особенности породы.',
+      'book.h3':'Онлайн-<em>запись</em>','book.hint':'Подберём уход именно для вашей породы.',
+      'book.name':'Имя','book.phone':'Телефон','book.breed':'Порода','book.date':'Дата','book.service':'Услуга','book.submit':'Записаться →',
+      'book.nameP':'Как к вам обращаться','book.breedP':'напр. Пудель','book.dateP':'Выберите дату',
+      'cal.months':['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+      'cal.dow':['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+      'book.opts':['Шоу-груминг по стандарту','Гигиеническая стрижка','Груминг кошки','Креативный груминг','SPA-комплекс','Экспресс'],
+      'book.ok':'✓ Заявка принята — перезвоним в течение 15 минут','book.err':'→ Заполните отмеченные поля',
+      'cnt.eye':'(IX) — Локация','cnt.title':'Ателье в&nbsp;<em>Джорджтауне.</em>',
+      'cnt.k1':'Адрес','cnt.v1':'3251 Prospect St NW, <em>Georgetown</em>, Washington DC',
+      'cnt.k2':'Часы','cnt.v2':'Пн–Сб · 10 — 21 <em>/</em> Вс по записи',
+      'cnt.k3':'Телефон','cnt.k4':'Мессенджеры',
+      'cnt.k5':'Парковка','cnt.v5':'<em>Собственная</em> · метро Foggy Bottom',
+      'faq.eye':'(X) — FAQ','faq.title':'Частые <em>вопросы.</em>',
+      'faq.q1':'Сколько длится <em>визит?</em>',
+      'faq.a1':'В&nbsp;среднем от&nbsp;двух до&nbsp;четырёх часов в&nbsp;зависимости от&nbsp;породы, состояния шерсти и&nbsp;типа стрижки. Выставочная подготовка может занимать до&nbsp;шести часов. Мы&nbsp;не&nbsp;торопим животное — это принципиально.',
+      'faq.q2':'Работаете&nbsp;ли с&nbsp;<em>агрессивными</em> или пугливыми?',
+      'faq.a2':'Да. Для тревожных предлагаем ознакомительный визит без стрижки, чтобы животное привыкло. Без фиксации и&nbsp;без работы через сопротивление.',
+      'faq.q3':'Можно&nbsp;ли <em>присутствовать</em>?',
+      'faq.a3':'В&nbsp;первый визит мы&nbsp;приветствуем присутствие владельца. С&nbsp;некоторыми животными процесс проходит спокойнее без&nbsp;хозяина — обсудим индивидуально.',
+      'faq.q4':'Готовите&nbsp;ли к&nbsp;<em>выставке</em>?',
+      'faq.a4':'Готовим к&nbsp;AKC, FCI и&nbsp;международному уровню. Мастер — обладатель судейской сертификации.',
+      'faq.q5':'Оплата и&nbsp;<em>лояльность</em>?',
+      'faq.a5':'Карта, наличные, Apple Pay. Каждый пятый визит — со&nbsp;скидкой для постоянных клиентов.',
+      'ft.1':'© 2026 · Atelier Canin','ft.2':'est. MMXI · Georgetown, Washington DC','ft.3':'К началу ↑',
+      'mcta':'Записаться онлайн →',
+      'mq.1':'Пудель <em>standard</em>','mq.2':'Йоркширский терьер','mq.3':'Бишон <em>frisé</em>','mq.4':'Мейн-кун','mq.5':'Ши-тцу','mq.6':'Керри-блю','mq.7':'Персидская <em>кошка</em>','mq.8':'Мальтезе','mq.9':'Шнауцер','mq.10':'Вест-хайленд'
+    },
+    en: {
+      'nav.method':'Method','nav.services':'Services','nav.portfolio':'Work','nav.reviews':'Clients','nav.contacts':'Contact','nav.cta':'Book',
+      'hero.loc':'Washington · 38.907°N','hero.no':'№ 001 / Atelier',
+      'hero.l1':'An atelier for','hero.l2':'<em>pedigree</em>','hero.l3':'companions.',
+      'hero.sub':'Grooming to international standards. Fifteen years of craft.<br>Trained in&nbsp;<em style="color:var(--gold)">New&nbsp;York.</em>',
+      'hero.ring':'· BOOK · ONLINE · ATELIER CANIN · WASHINGTON · ',
+      'hero.cta':'Book','hero.ctaSmall':'Tap / Click','hero.master':'Master','hero.years':'yrs / NYC','hero.scroll':'Scroll',
+      'cred.eye':'(I) — Bona Fide','cred.title':'Trusted with <em>champions</em><br>of the show ring.',
+      'cred.1t':'Years of craft','cred.1d':'Since 2011. Over 12,000 sessions completed.',
+      'cred.2t':'New York school','cred.2d':'Mentored by world-class groomers.',
+      'cred.3n':'No.1','cred.3t':'Certified','cred.3d':'Award-winning, judging credentials.',
+      'cred.4t':'Returning clients','cred.4d':'Five-year retention horizon. Show titles.',
+      'prob.eye':'(II) — Why','prob.title':'You\u2019ve been there, <em>haven\u2019t you?</em>',
+      'prob.1':'Groomer ignores the <em>breed standard</em> — cuts by guesswork.',
+      'prob.2':'Your pet <em>gets stressed</em> and hides for the rest of the day.',
+      'prob.3':'Uneven result — <em>you end up touching it up.</em>',
+      'prob.4':'Afraid to trust <em>your companion</em> to a stranger.',
+      'prob.aside':'Every animal is an <em>individual.</em> We don\u2019t run a conveyor belt.',
+      'method.eye':'(III) — Method','method.title':'Three <em>principles</em><br>that change the visit.',
+      'method.1h':'Gentle <em>approach</em>','method.1p':'Introduction, acclimation, unhurried pace. No restraint. No pressure. The animal leads — we follow.',
+      'method.2h':'To the <em>breed</em> standard','method.2p':'Show cut, pet trim, creative. Deep knowledge of anatomy, silhouette, coat texture. The Westminster way.',
+      'method.3h':'<em>One</em> guest at a time','method.3p':'One master — one animal — one session. No overlapping clients. No queues. The privacy of an atelier.',
+      'ba.eye':'(IV) — Transformation','ba.title':'Pull the <em>handle.</em>','ba.before':'Before','ba.after':'After',
+      'srv.eye':'(V) — Price list','srv.title':'Services&nbsp;<em>&amp;</em> prices.','srv.from':'from',
+      'srv.1':'<em>Show</em> grooming','srv.2':'Hygiene trim','srv.3':'Cat <em>grooming</em>',
+      'srv.4':'<em>Creative</em> grooming','srv.5':'SPA package','srv.6':'Express <em>between visits</em>',
+      'pf.eye':'(VI) — Archive','pf.title':'Recent <em>work.</em>','pf.scroll':'Scroll',
+      'pf.1':'Poodle<em>standard · show cut</em>','pf.2':'Bichon<em>frisé · show</em>','pf.3':'Persian<em>cat grooming</em>',
+      'pf.4':'Yorkie<em>pet cut</em>','pf.5':'Shih Tzu<em>top-knot</em>','pf.6':'Maine Coon<em>SPA care</em>','pf.7':'Cocker<em>breed standard</em>',
+      'q.eye':'(VII) — In their words',
+      'book.eye':'(VIII) — Booking','book.title':'Your visit<br><em>begins here.</em>',
+      'book.lead':'A limited number of bookings each week. We\u2019ll call back within fifteen minutes to confirm and discuss your breed.',
+      'book.h3':'Online <em>booking</em>','book.hint':'We\u2019ll tailor the care to your breed.',
+      'book.name':'Name','book.phone':'Phone','book.breed':'Breed','book.date':'Date','book.service':'Service','book.submit':'Book →',
+      'book.nameP':'How shall we address you','book.breedP':'e.g. Poodle','book.dateP':'Select a date',
+      'cal.months':['January','February','March','April','May','June','July','August','September','October','November','December'],
+      'cal.dow':['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      'book.opts':['Show grooming to standard','Hygiene trim','Cat grooming','Creative grooming','SPA package','Express'],
+      'book.ok':'✓ Request received — we\u2019ll call back within 15 minutes','book.err':'→ Please fill the highlighted fields',
+      'cnt.eye':'(IX) — Location','cnt.title':'An atelier in&nbsp;<em>Georgetown.</em>',
+      'cnt.k1':'Address','cnt.v1':'3251 Prospect St NW, <em>Georgetown</em>, Washington DC',
+      'cnt.k2':'Hours','cnt.v2':'Mon–Sat · 10 — 21 <em>/</em> Sun by appointment',
+      'cnt.k3':'Phone','cnt.k4':'Messengers',
+      'cnt.k5':'Parking','cnt.v5':'<em>On-site</em> · Foggy Bottom Metro',
+      'faq.eye':'(X) — FAQ','faq.title':'Frequently asked <em>questions.</em>',
+      'faq.q1':'How long does a <em>visit</em> take?',
+      'faq.a1':'Usually two to four hours depending on the breed, coat condition, and type of cut. Show preparation can take up to six hours. We never rush the animal — that\u2019s a principle.',
+      'faq.q2':'Do you work with <em>aggressive</em> or nervous pets?',
+      'faq.a2':'Yes. For anxious animals we offer an introductory visit without cutting so they can settle in. No restraint, no forcing through resistance.',
+      'faq.q3':'Can I <em>be present</em>?',
+      'faq.a3':'On the first visit we welcome the owner. With some animals the process is calmer without them — we decide case by case.',
+      'faq.q4':'Do you prepare for <em>shows</em>?',
+      'faq.a4':'We prepare for AKC, FCI and international level. The master holds judging certification.',
+      'faq.q5':'Payment and <em>loyalty</em>?',
+      'faq.a5':'Card, cash, Apple Pay. Every fifth visit comes with a regular-client discount.',
+      'ft.1':'© 2026 · Atelier Canin','ft.2':'est. MMXI · Georgetown, Washington DC','ft.3':'Back to top ↑',
+      'mcta':'Book online →',
+      'mq.1':'Poodle <em>standard</em>','mq.2':'Yorkshire Terrier','mq.3':'Bichon <em>frisé</em>','mq.4':'Maine Coon','mq.5':'Shih Tzu','mq.6':'Kerry Blue','mq.7':'Persian <em>cat</em>','mq.8':'Maltese','mq.9':'Schnauzer','mq.10':'West Highland'
+    }
+  };
+
+  let currentLang = 'en';
+  let renderQuote = null;
+  let renderCal = null;
+  const applyLang = (lang) => {
+    currentLang = lang;
+    const d = DICT[lang] || DICT.ru;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const v = d[el.getAttribute('data-i18n')];
+      if (typeof v === 'string') el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const v = d[el.getAttribute('data-i18n-ph')];
+      if (typeof v === 'string') el.placeholder = v;
+    });
+    document.querySelectorAll('[data-i18n-opts]').forEach(sel => {
+      const v = d[sel.getAttribute('data-i18n-opts')];
+      if (Array.isArray(v)) {
+        [...sel.options].forEach((o, i) => { if (v[i] != null) o.textContent = v[i]; });
+      }
+    });
+    document.querySelectorAll('.lang button').forEach(b => {
+      const on = b.dataset.lang === lang;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (renderQuote) renderQuote();
+    if (currentChapter) paintChapter(currentChapter);
+    if (renderCal) renderCal();
+  };
+  const t = (k) => (DICT[currentLang] && DICT[currentLang][k]) || (DICT.ru[k] || k);
+  document.querySelectorAll('.lang button').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.lang));
+  });
+
+  /* ─────────── NAV: scroll glass + burger drawer ─────────── */
+  const navEl = document.getElementById('nav');
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  const mcta = document.querySelector('.mobile-cta');
+  const heroEl = document.querySelector('.hero');
+  const onScroll = () => {
+    if (navEl) navEl.classList.toggle('scrolled', scrollY > 40);
+    if (mcta && heroEl) {
+      const threshold = heroEl.offsetHeight * 0.75;
+      mcta.classList.toggle('show', scrollY > threshold);
+    }
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const closeDrawer = () => {
+    if (!drawer) return;
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-open');
+  };
+  const openDrawer = () => {
+    if (!drawer) return;
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    burger.classList.add('open');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-open');
+  };
+  if (burger) {
+    burger.addEventListener('click', () => {
+      if (drawer.classList.contains('open')) closeDrawer(); else openDrawer();
+    });
+  }
+  if (drawer) {
+    drawer.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', closeDrawer));
+  }
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  /* ─────────── CUSTOM CURSOR ─────────── */
+  if (!coarse && !prm) {
+    const cur = document.querySelector('.cursor');
+    const lbl = document.querySelector('.cursor-label');
+    let x = 0, y = 0, cx = 0, cy = 0;
+    addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; });
+    const tick = () => {
+      cx += (x - cx) * .22;
+      cy += (y - cy) * .22;
+      cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+      lbl.style.transform = `translate(${cx}px, ${cy + 30}px) translate(-50%,-50%)`;
+      requestAnimationFrame(tick);
+    };
+    tick();
+    const targets = document.querySelectorAll('a, button, summary, [data-cursor], .srv-row, .cta-big, .beforeafter');
+    targets.forEach(t => {
+      t.addEventListener('mouseenter', () => {
+        cur.classList.add('big');
+        const l = t.dataset.cursor;
+        if (l) { lbl.textContent = l; lbl.classList.add('on'); }
+      });
+      t.addEventListener('mouseleave', () => {
+        cur.classList.remove('big');
+        lbl.classList.remove('on');
+      });
+    });
+  }
+
+  /* ─────────── MAGNETIC BUTTONS ─────────── */
+  if (!coarse && !prm) {
+    document.querySelectorAll('[data-magnet]').forEach(el => {
+      const strength = 22;
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const mx = e.clientX - (r.left + r.width / 2);
+        const my = e.clientY - (r.top + r.height / 2);
+        el.style.transform = `translate(${mx / r.width * strength}px, ${my / r.height * strength}px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+
+  /* ─────────── REVEAL ─────────── */
+  if (prm) {
+    document.querySelectorAll('.rv').forEach(e => e.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .14, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.rv').forEach(e => io.observe(e));
+  }
+
+  /* ─────────── SCROLL PROGRESS + CHAPTER ─────────── */
+  const progress = document.getElementById('progress');
+  const chapter = document.getElementById('chapter');
+  const chapters = [...document.querySelectorAll('[data-chapter]')];
+  const updateProgress = () => {
+    const h = document.documentElement;
+    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progress.style.setProperty('--w', (p * 100) + '%');
+  };
+  addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  const CHAPTER_TR = {
+    'Регалии':'Credentials','Боль':'Why','Метод':'Method','Трансформация':'Transformation',
+    'Прейскурант':'Prices','Работы':'Work','Клиенты':'Clients','Запись':'Booking',
+    'Ателье':'Atelier','Вопросы':'FAQ'
+  };
+  let currentChapter = '';
+  const paintChapter = (c) => {
+    if (!c) return;
+    currentChapter = c;
+    const [num, ...rest] = c.split(' ');
+    let label = rest.join(' ');
+    if (currentLang === 'en' && CHAPTER_TR[label]) label = CHAPTER_TR[label];
+    chapter.innerHTML = `<span class="n">${num}</span>&nbsp;&nbsp;${label}`;
+  };
+  const chIo = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) paintChapter(e.target.dataset.chapter); });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  chapters.forEach(c => chIo.observe(c));
+
+  /* ─────────── NAV ACTIVE ─────────── */
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sections = ['method', 'services', 'portfolio', 'reviews', 'book'].map(id => document.getElementById(id)).filter(Boolean);
+  const navIo = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => navIo.observe(s));
+
+  /* ─────────── BEFORE / AFTER ─────────── */
+  const ba = document.getElementById('ba');
+  if (ba) {
+    let down = false;
+    const setX = clientX => {
+      const r = ba.getBoundingClientRect();
+      let pct = ((clientX - r.left) / r.width) * 100;
+      pct = Math.max(2, Math.min(98, pct));
+      ba.style.setProperty('--x', pct + '%');
+    };
+    ba.addEventListener('mousedown', e => { down = true; setX(e.clientX); });
+    addEventListener('mousemove', e => { if (down) setX(e.clientX); });
+    addEventListener('mouseup', () => down = false);
+    ba.addEventListener('touchstart', e => { down = true; setX(e.touches[0].clientX); }, { passive: true });
+    ba.addEventListener('touchmove', e => { if (down) setX(e.touches[0].clientX); }, { passive: true });
+    ba.addEventListener('touchend', () => down = false);
+
+    // auto-demo nudge on view
+    const demo = new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting && !prm) {
+          let t = 50, dir = 1;
+          const anim = setInterval(() => {
+            t += dir * 1.5;
+            if (t > 78 || t < 22) { dir *= -1; }
+            ba.style.setProperty('--x', t + '%');
+          }, 30);
+          setTimeout(() => clearInterval(anim), 1800);
+          demo.unobserve(e.target);
+        }
+      });
+    }, { threshold: .3 });
+    demo.observe(ba);
+  }
+
+  /* ─────────── H-SCROLL drag + shift-wheel ─────────── */
+  const hs = document.getElementById('hscroll');
+  if (hs && !coarse) {
+    // shift+wheel horizontal; vertical wheel passes through to page
+    hs.addEventListener('wheel', e => {
+      if (e.shiftKey) { e.preventDefault(); hs.scrollLeft += e.deltaY; }
+    }, { passive: false });
+
+    const prev = document.getElementById('pfPrev');
+    const next = document.getElementById('pfNext');
+    const card = hs.querySelector('.hcard');
+    const cardStep = () => (card ? card.getBoundingClientRect().width + 24 : 400);
+    const updateBtns = () => {
+      if (!prev || !next) return;
+      prev.disabled = hs.scrollLeft <= 2;
+      next.disabled = hs.scrollLeft >= hs.scrollWidth - hs.clientWidth - 2;
+    };
+    prev && prev.addEventListener('click', () => { hs.scrollBy({ left: -cardStep(), behavior: 'smooth' }); });
+    next && next.addEventListener('click', () => { hs.scrollBy({ left: cardStep(), behavior: 'smooth' }); });
+    hs.addEventListener('scroll', updateBtns, { passive: true });
+    updateBtns();
+
+  }
+
+  /* ─────────── QUOTES ROTATE ─────────── */
+  const quotesByLang = {
+    ru: [
+      { t: 'Четвёртый год стрижём нашу Холли только здесь. На выставку едем после Atelier Canin — судьи всегда отмечают подготовку шерсти отдельно.', n: 'Анна В.', p: 'Холли · стандартный пудель', a: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=85' },
+      { t: 'Наш кот всю жизнь ненавидел грумеров. Тут его сначала час гладили и угощали, потом только начали работу. Впервые вышел — не пятился от меня.', n: 'Дмитрий К.', p: 'Феликс · персидский', a: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=85' },
+      { t: 'Перепробовали пять салонов в Вашингтоне. Это единственное место, где знают, как правильно стричь керри-блю. Результат безупречный.', n: 'Мария Т.', p: 'Оскар · керри-блю-терьер', a: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=85' }
+    ],
+    en: [
+      { t: 'Four years of grooming our Holly only here. Before a show we always stop by Atelier Canin — judges single out the coat preparation every time.', n: 'Anna V.', p: 'Holly · standard poodle', a: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=85' },
+      { t: 'Our cat has hated every groomer his whole life. Here they spent an hour just petting and treating him before starting the work. For the first time he walked out — and didn\u2019t back away from me.', n: 'Dmitry K.', p: 'Felix · persian', a: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=85' },
+      { t: 'We tried five salons in Washington. This is the only place that knows how to cut a Kerry Blue properly. Flawless result.', n: 'Maria T.', p: 'Oscar · kerry blue terrier', a: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=85' }
+    ]
+  };
+  const deck = document.getElementById('quoteDeck');
+  const dots = document.querySelectorAll('.quote-dots button');
+  let qi = 0;
+  let qSwap = null;
+  const render = i => {
+    const arr = quotesByLang[currentLang] || quotesByLang.ru;
+    const q = arr[i];
+    deck.innerHTML = `
+      <blockquote class="quote-big in">${q.t}</blockquote>
+      <div class="quote-author in">
+        <img src="${q.a}" loading="lazy" width="48" height="48" alt="${q.n}">
+        <div><div class="n">${q.n}</div><div class="p">${q.p}</div></div>
+      </div>`;
+  };
+  const setQ = (i, dir) => {
+    if (i === qi && deck.children.length) return;
+    const n = quotesByLang.ru.length;
+    if (dir == null) dir = (i - qi + n) % n === n - 1 ? -1 : 1;
+    qi = i;
+    dots.forEach((d, j) => d.classList.toggle('active', j === i));
+    clearTimeout(qSwap);
+    deck.style.setProperty('--qdir', dir);
+    deck.classList.remove('swap-in');
+    deck.classList.add('swap-out');
+    qSwap = setTimeout(() => {
+      render(i);
+      deck.classList.remove('swap-out');
+      deck.classList.add('swap-in');
+    }, 220);
+  };
+  render(0);
+  renderQuote = () => setQ(qi);
+  dots.forEach(d => d.addEventListener('click', () => setQ(parseInt(d.dataset.q))));
+  if (!prm) setInterval(() => setQ((qi + 1) % quotesByLang.ru.length, 1), 6000);
+
+  /* swipe / drag / wheel on reviews */
+  const qBlock = document.getElementById('reviews');
+  if (qBlock) {
+    const step = d => {
+      const n = quotesByLang.ru.length;
+      const dir = d > 0 ? 1 : -1;
+      setQ((qi + dir + n) % n, dir);
+    };
+    let px = 0, pid = null, moved = 0;
+    qBlock.addEventListener('pointerdown', e => {
+      if (e.target.closest('.quote-dots')) return;
+      pid = e.pointerId; px = e.clientX; moved = 0;
+      qBlock.setPointerCapture(pid);
+    });
+    qBlock.addEventListener('pointermove', e => {
+      if (pid !== e.pointerId) return;
+      moved = e.clientX - px;
+    });
+    const end = e => {
+      if (pid !== e.pointerId) return;
+      if (Math.abs(moved) > 40) step(-moved);
+      pid = null; moved = 0;
+    };
+    qBlock.addEventListener('pointerup', end);
+    qBlock.addEventListener('pointercancel', end);
+
+    let wheelLock = 0;
+    qBlock.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaX) < 20) return;
+      e.preventDefault();
+      const now = performance.now();
+      if (now - wheelLock < 500) return;
+      wheelLock = now;
+      step(e.deltaX);
+    }, { passive: false });
+  }
+
+  /* ─────────── DATE PICKER ─────────── */
+  const dateField = document.getElementById('dateField');
+  const dateInput = document.getElementById('f-date');
+  if (dateField && dateInput) {
+    const pop = document.createElement('div');
+    pop.className = 'cal-pop';
+    dateField.appendChild(pop);
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    let view = new Date(today.getFullYear(), today.getMonth(), 1);
+    let selected = null;
+
+    const fmt = (d) => {
+      const mo = (DICT[currentLang] && DICT[currentLang]['cal.months']) || DICT.ru['cal.months'];
+      return `${d.getDate()} ${mo[d.getMonth()]} ${d.getFullYear()}`;
+    };
+    const iso = (d) => {
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${d.getFullYear()}-${m}-${day}`;
+    };
+
+    const build = () => {
+      const months = (DICT[currentLang] && DICT[currentLang]['cal.months']) || DICT.ru['cal.months'];
+      const dows = (DICT[currentLang] && DICT[currentLang]['cal.dow']) || DICT.ru['cal.dow'];
+      const y = view.getFullYear(), m = view.getMonth();
+      const first = new Date(y, m, 1);
+      const startDow = (first.getDay() + 6) % 7;
+      const daysInMonth = new Date(y, m+1, 0).getDate();
+      const prevDays = new Date(y, m, 0).getDate();
+
+      let html = `
+        <div class="cal-head">
+          <div class="cal-label">${months[m]}<em>${y}</em></div>
+          <div class="cal-nav">
+            <button type="button" data-nav="-1" aria-label="Prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button type="button" data-nav="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div class="cal-dow">${dows.map(d=>`<span>${d}</span>`).join('')}</div>
+        <div class="cal-grid">`;
+
+      for (let i = startDow; i > 0; i--) {
+        html += `<button type="button" class="other" disabled>${prevDays - i + 1}</button>`;
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(y, m, d);
+        const past = date < today;
+        const isToday = date.getTime() === today.getTime();
+        const isSel = selected && date.getTime() === selected.getTime();
+        const cls = [];
+        if (isToday) cls.push('today');
+        if (isSel) cls.push('selected');
+        html += `<button type="button" class="${cls.join(' ')}" data-d="${d}"${past?' disabled':''}>${d}</button>`;
+      }
+      const used = startDow + daysInMonth;
+      const trail = (7 - (used % 7)) % 7;
+      for (let i = 1; i <= trail; i++) {
+        html += `<button type="button" class="other" disabled>${i}</button>`;
+      }
+      html += `</div>`;
+      pop.innerHTML = html;
+
+      pop.querySelectorAll('[data-nav]').forEach(b => {
+        b.addEventListener('click', e => {
+          e.stopPropagation();
+          view = new Date(view.getFullYear(), view.getMonth() + parseInt(b.dataset.nav), 1);
+          build();
+        });
+      });
+      pop.querySelectorAll('[data-d]').forEach(b => {
+        b.addEventListener('click', () => {
+          selected = new Date(view.getFullYear(), view.getMonth(), parseInt(b.dataset.d));
+          dateInput.value = fmt(selected);
+          dateInput.dataset.iso = iso(selected);
+          dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+          close();
+        });
+      });
+    };
+
+    const open = () => { if (selected) view = new Date(selected.getFullYear(), selected.getMonth(), 1); build(); pop.classList.add('open'); };
+    const close = () => pop.classList.remove('open');
+    const toggle = () => pop.classList.contains('open') ? close() : open();
+
+    pop.addEventListener('mousedown', e => e.stopPropagation());
+    pop.addEventListener('click', e => e.stopPropagation());
+    dateInput.addEventListener('click', e => { e.stopPropagation(); toggle(); });
+    dateInput.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    document.addEventListener('click', e => {
+      if (!dateField.contains(e.target)) close();
+    });
+
+    renderCal = () => {
+      if (selected) dateInput.value = fmt(selected);
+      if (pop.classList.contains('open')) build();
+    };
+  }
+
+  /* ─────────── PHONE MASK ─────────── */
+  const phone = document.getElementById('f-phone');
+  if (phone) {
+    phone.addEventListener('input', e => {
+      const d = phone.value.replace(/\D/g, '').slice(0, 11);
+      let out = '';
+      if (d.length === 0) { phone.value = ''; return; }
+      // assume +1 country code
+      const rest = d.length === 11 && d[0] === '1' ? d.slice(1) : d.slice(0, 10);
+      if (rest.length > 0) out = '+1 (' + rest.slice(0, 3);
+      if (rest.length >= 4) out += ') ' + rest.slice(3, 6);
+      if (rest.length >= 7) out += '-' + rest.slice(6, 10);
+      phone.value = out;
+    });
+  }
+
+  /* ─────────── BOOKING FORM ─────────── */
+  const form = document.getElementById('bookForm');
+  const status = document.getElementById('bookStatus');
+  if (form) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      status.style.color = 'var(--gold)';
+      status.textContent = '';
+      const required = form.querySelectorAll('[required]');
+      let first = null;
+      required.forEach(f => {
+        if (!f.value.trim()) {
+          f.setAttribute('aria-invalid', 'true');
+          f.style.borderBottomColor = '#c45a48';
+          if (!first) first = f;
+        } else {
+          f.removeAttribute('aria-invalid');
+          f.style.borderBottomColor = '';
+        }
+      });
+      if (first) {
+        status.style.color = '#c45a48';
+        status.textContent = t('book.err');
+        first.focus();
+        return;
+      }
+      status.textContent = t('book.ok');
+      form.reset();
+    });
+    form.querySelectorAll('input,select').forEach(el => {
+      el.addEventListener('input', () => {
+        if (el.getAttribute('aria-invalid') && el.value.trim()) {
+          el.removeAttribute('aria-invalid');
+          el.style.borderBottomColor = '';
+        }
+      });
+    });
+  }
+
+  applyLang('en');
+})();
+</script>
+</body>
+</html>

@@ -39,6 +39,7 @@ jobs:
           cp index.html script.js styles.css _site/
           cp -r assets _site/
           cp -r old _site/
+          cp -r grooming _site/
 
       - uses: actions/configure-pages@v5
 
