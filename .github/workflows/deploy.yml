@@ -40,6 +40,7 @@ jobs:
           cp -r assets _site/
           cp -r old _site/
           cp -r grooming _site/
+          cp -r bali _site/
 
       - uses: actions/configure-pages@v5
 

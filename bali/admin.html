@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Maxx's Group International</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#2d6a4f;--green-l:#e8f5ee;--green-d:#1a3d2e;--gold:#c8a96e;
+  --text:#1a1a1a;--muted:#666;--light:#aaa;--border:#e8e2d9;
+  --cream:#faf7f2;--warn:#f4a261;--r:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:#f0f2f1;color:var(--text);display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--green-d);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh}
+.sb-logo{padding:28px 24px 24px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-logo-name{font-size:14px;font-weight:800;color:white}
+.sb-logo-sub{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.sb-admin{padding:14px 24px;background:rgba(200,169,110,.15);border-bottom:1px solid rgba(255,255,255,.1);font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.5px}
+.sb-nav{padding:16px 0;flex:1}
+.sb-sec{padding:8px 24px 4px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:8px}
+.sb-item{padding:11px 24px;font-size:13px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
+.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05)}
+.sb-item.on{color:white;background:rgba(255,255,255,.1);border-left-color:var(--gold)}
+.sb-item .icon{font-size:15px;width:20px;text-align:center}
+.sb-count{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:auto}
+.sb-count.red{background:#e63946;color:white}
+.sb-bottom{padding:20px 24px;border-top:1px solid rgba(255,255,255,.1)}
+.sb-back{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none}
+.sb-back:hover{color:rgba(255,255,255,.65)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto}
+.topbar{background:white;border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:18px;font-weight:800}
+.search-box{display:flex;align-items:center;gap:10px;background:#f5f5f5;border-radius:8px;padding:9px 16px;width:260px}
+.search-box input{background:none;border:none;outline:none;font-family:inherit;font-size:14px;color:var(--text);width:100%}
+.content{padding:32px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+.stat{background:white;border:1px solid var(--border);border-radius:12px;padding:20px 22px}
+.stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.stat-val{font-size:26px;font-weight:800;line-height:1}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.stat.hl{background:var(--green);border-color:var(--green)}
+.stat.hl .stat-label{color:rgba(255,255,255,.6)}
+.stat.hl .stat-val{color:white}
+.stat.hl .stat-sub{color:rgba(255,255,255,.55)}
+.stat.warn{background:#fff8f0;border-color:#fde8cc}
+.stat.warn .stat-val{color:#c05c00}
+
+/* TABLE */
+.card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px}
+.card-hdr{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-hdr h3{font-size:15px;font-weight:700}
+.btn-sm{background:var(--green);color:white;border:none;padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-sm:hover{background:var(--green-d)}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 20px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);background:#fafafa;border-bottom:1px solid var(--border)}
+td{padding:14px 20px;font-size:14px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafcfb}
+.badge{padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;display:inline-block;white-space:nowrap}
+.b-prog{background:#e8f5ee;color:#2d6a4f}
+.b-docs{background:#fff3e0;color:#c05c00}
+.b-pend{background:#f0f0f0;color:#777}
+.b-done{background:#e8f5ee;color:#2d6a4f}
+.b-new{background:#e8f0ff;color:#3657d9}
+select.status-sel{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;outline:none;background:white;color:var(--text)}
+.avatar-sm{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0}
+.client-cell{display:flex;align-items:center;gap:10px}
+.client-info{display:flex;flex-direction:column}
+.client-name{font-weight:600;font-size:14px}
+.client-email{font-size:11px;color:var(--muted)}
+.doc-row{display:flex;align-items:center;gap:10px}
+.doc-icon{font-size:18px}
+.doc-name{font-size:13px;font-weight:500}
+.doc-meta{font-size:11px;color:var(--muted)}
+.action-btns{display:flex;gap:6px}
+.btn-xs{border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-xs.approve{background:var(--green-l);color:var(--green)}
+.btn-xs.approve:hover{background:#d4eddf}
+.btn-xs.reject{background:#fff0f0;color:#c0392b}
+.btn-xs.reject:hover{background:#ffdede}
+.btn-xs.view{background:#f0f0f0;color:#333}
+.priority-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.p-high{background:#e63946}
+.p-med{background:var(--warn)}
+.p-low{background:#28c840}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">MAXX'S GROUP</div>
+    <div class="sb-logo-sub">Admin Panel</div>
+  </div>
+  <div class="sb-admin">⚙️ &nbsp;Staff Access</div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Overview</div>
+    <a class="sb-item on" onclick="showView('dashboard')" href="#"><span class="icon">📊</span> Dashboard</a>
+
+    <div class="sb-sec">Management</div>
+    <a class="sb-item" onclick="showView('applications')" href="#"><span class="icon">📁</span> Applications <span class="sb-count red">3</span></a>
+    <a class="sb-item" onclick="showView('clients')" href="#"><span class="icon">👥</span> Clients <span class="sb-count">24</span></a>
+    <a class="sb-item" onclick="showView('documents')" href="#"><span class="icon">📎</span> Documents <span class="sb-count red">5</span></a>
+    <a class="sb-item" onclick="showView('messages')" href="#"><span class="icon">💬</span> Messages <span class="sb-count red">7</span></a>
+  </nav>
+  <div class="sb-bottom">
+    <a href="index.html" class="sb-back">← Back to website</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:18px;font-weight:800" id="page-title">Dashboard</div>
+    <div class="search-box"><span style="color:#aaa">🔍</span><input placeholder="Search clients, applications…"></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">🔔</button>
+      <div style="width:36px;height:36px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--green-d)">DS</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard">
+      <div class="stats">
+        <div class="stat hl"><div class="stat-label">Active Cases</div><div class="stat-val">18</div><div class="stat-sub">this month</div></div>
+        <div class="stat warn"><div class="stat-label">Action Needed</div><div class="stat-val">3</div><div class="stat-sub">awaiting docs</div></div>
+        <div class="stat"><div class="stat-label">Clients</div><div class="stat-val">24</div><div class="stat-sub">active</div></div>
+        <div class="stat"><div class="stat-label">Completed</div><div class="stat-val">47</div><div class="stat-sub">total this year</div></div>
+        <div class="stat"><div class="stat-label">Unread Msgs</div><div class="stat-val">7</div><div class="stat-sub">from clients</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Recent Applications</h3><a class="btn-sm" href="#" onclick="showView('applications')">View all</a></div>
+        <table>
+          <thead><tr><th>Client</th><th>Service</th><th>Office</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="client-cell"><div class="avatar-sm" style="background:#2d6a4f">AM</div><div class="client-info"><span class="client-name">Alex Müller</span><span class="client-email">alex@example.com</span></div></div></td>
+              <td>⚖️ KITAS — Work Permit</td>
+              <td>Bali — Ubud</td>
+              <td>Apr 14, 2025</td>
+              <td><span class="badge b-prog">● In Progress</span></td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Consultation</option><option>Docs Received</option><option selected>In Progress</option><option>With Authority</option><option>Done</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="client-cell"><div class="avatar-sm" style="background:#7c3aed">SJ</div><div class="client-info"><span class="client-name">Sarah Johnson</span><span class="client-email">sarah@co.uk</span></div></div></td>
+              <td>🏢 PT PMA Setup</td>
+              <td>Jakarta HQ</td>
+              <td>Apr 2, 2025</td>
+              <td><span class="badge b-docs">⚠ Docs Needed</span></td>
+              <td>
+                <select class="status-sel" style="border-color:var(--warn)" onchange="updateStatus(this)">
+                  <option>Consultation</option><option selected>Docs Needed</option><option>In Progress</option><option>With Authority</option><option>Done</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="client-cell"><div class="avatar-sm" style="background:#0891b2">LT</div><div class="client-info"><span class="client-name">Luca Tanaka</span><span class="client-email">luca@gmail.com</span></div></div></td>
+              <td>🔄 KITAP Renewal</td>
+              <td>Bali — Denpasar</td>
+              <td>Apr 18, 2025</td>
+              <td><span class="badge b-new">● New</span></td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option selected>Consultation</option><option>Docs Needed</option><option>In Progress</option><option>With Authority</option><option>Done</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="client-cell"><div class="avatar-sm" style="background:#b45309">MK</div><div class="client-info"><span class="client-name">Marie Kowalski</span><span class="client-email">marie@de.com</span></div></div></td>
+              <td>🏠 Property Purchase</td>
+              <td>Bali — Ubud</td>
+              <td>Mar 28, 2025</td>
+              <td><span class="badge b-prog">● In Progress</span></td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Consultation</option><option>Docs Needed</option><option selected>In Progress</option><option>With Authority</option><option>Done</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="client-cell"><div class="avatar-sm" style="background:#059669">RB</div><div class="client-info"><span class="client-name">Robert Banks</span><span class="client-email">rob@xyz.io</span></div></div></td>
+              <td>⚖️ Business Visa B211A</td>
+              <td>Jakarta HQ</td>
+              <td>Mar 10, 2025</td>
+              <td><span class="badge b-done">✓ Done</span></td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Consultation</option><option>Docs Needed</option><option>In Progress</option><option>With Authority</option><option selected>Done</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Docs pending review -->
+      <div class="card">
+        <div class="card-hdr"><h3>Documents Pending Review</h3><a class="btn-sm" href="#" onclick="showView('documents')">View all</a></div>
+        <table>
+          <thead><tr><th>Document</th><th>Client</th><th>Application</th><th>Uploaded</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">passport_scan.pdf</div><div class="doc-meta">2.4 MB</div></div></div></td>
+              <td>Alex Müller</td><td>KITAS Bali</td><td>Apr 14, 2025</td>
+              <td><div class="action-btns"><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">work_contract.pdf</div><div class="doc-meta">3.2 MB</div></div></div></td>
+              <td>Alex Müller</td><td>KITAS Bali</td><td>Apr 14, 2025</td>
+              <td><div class="action-btns"><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="doc-row"><span class="doc-icon">🖼️</span><div><div class="doc-name">photo_4x6.jpg</div><div class="doc-meta">0.8 MB</div></div></div></td>
+              <td>Alex Müller</td><td>KITAS Bali</td><td>Apr 14, 2025</td>
+              <td><div class="action-btns"><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">company_charter.pdf</div><div class="doc-meta">5.1 MB</div></div></div></td>
+              <td>Marie Kowalski</td><td>Property Purchase</td><td>Apr 16, 2025</td>
+              <td><div class="action-btns"><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">bank_statement.pdf</div><div class="doc-meta">1.2 MB</div></div></div></td>
+              <td>Marie Kowalski</td><td>Property Purchase</td><td>Apr 16, 2025</td>
+              <td><div class="action-btns"><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- APPLICATIONS VIEW -->
+    <div id="view-applications" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:800">All Applications</h2>
+        <button class="btn-sm">+ New Application</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Priority</th><th>Client</th><th>Service</th><th>Office</th><th>Manager</th><th>Submitted</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><span class="priority-dot p-high"></span>High</td><td><div class="client-cell"><div class="avatar-sm" style="background:#7c3aed">SJ</div><div class="client-info"><span class="client-name">Sarah Johnson</span></div></div></td><td>PT PMA Setup</td><td>Jakarta</td><td>Rudi H.</td><td>Apr 2</td><td><span class="badge b-docs">⚠ Docs Needed</span></td></tr>
+            <tr><td><span class="priority-dot p-high"></span>High</td><td><div class="client-cell"><div class="avatar-sm" style="background:#0891b2">LT</div><div class="client-info"><span class="client-name">Luca Tanaka</span></div></div></td><td>KITAP Renewal</td><td>Denpasar</td><td>Dewi S.</td><td>Apr 18</td><td><span class="badge b-new">● New</span></td></tr>
+            <tr><td><span class="priority-dot p-med"></span>Med</td><td><div class="client-cell"><div class="avatar-sm" style="background:#2d6a4f">AM</div><div class="client-info"><span class="client-name">Alex Müller</span></div></div></td><td>KITAS Bali</td><td>Ubud</td><td>Dewi S.</td><td>Apr 14</td><td><span class="badge b-prog">● In Progress</span></td></tr>
+            <tr><td><span class="priority-dot p-med"></span>Med</td><td><div class="client-cell"><div class="avatar-sm" style="background:#b45309">MK</div><div class="client-info"><span class="client-name">Marie Kowalski</span></div></div></td><td>Property Purchase</td><td>Ubud</td><td>Ayu P.</td><td>Mar 28</td><td><span class="badge b-prog">● In Progress</span></td></tr>
+            <tr><td><span class="priority-dot p-low"></span>Low</td><td><div class="client-cell"><div class="avatar-sm" style="background:#059669">RB</div><div class="client-info"><span class="client-name">Robert Banks</span></div></div></td><td>B211A Visa</td><td>Jakarta</td><td>Rudi H.</td><td>Mar 10</td><td><span class="badge b-done">✓ Done</span></td></tr>
+            <tr><td><span class="priority-dot p-low"></span>Low</td><td><div class="client-cell"><div class="avatar-sm" style="background:#e11d48">EV</div><div class="client-info"><span class="client-name">Elena Volkov</span></div></div></td><td>KITAS Social</td><td>Lombok</td><td>Budi R.</td><td>Mar 5</td><td><span class="badge b-done">✓ Done</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CLIENTS VIEW -->
+    <div id="view-clients" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:800">Clients</h2>
+        <button class="btn-sm">+ Add Client</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Client</th><th>Nationality</th><th>Active Cases</th><th>Total Cases</th><th>Since</th><th>Manager</th></tr></thead>
+          <tbody>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#2d6a4f">AM</div><div class="client-info"><span class="client-name">Alex Müller</span><span class="client-email">alex@example.com</span></div></div></td><td>🇩🇪 German</td><td>3</td><td>5</td><td>Jan 2024</td><td>Dewi Sari</td></tr>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#7c3aed">SJ</div><div class="client-info"><span class="client-name">Sarah Johnson</span><span class="client-email">sarah@co.uk</span></div></div></td><td>🇬🇧 British</td><td>1</td><td>2</td><td>Feb 2025</td><td>Rudi H.</td></tr>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#0891b2">LT</div><div class="client-info"><span class="client-name">Luca Tanaka</span><span class="client-email">luca@gmail.com</span></div></div></td><td>🇮🇹 Italian</td><td>1</td><td>1</td><td>Apr 2025</td><td>Dewi Sari</td></tr>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#b45309">MK</div><div class="client-info"><span class="client-name">Marie Kowalski</span><span class="client-email">marie@de.com</span></div></div></td><td>🇵🇱 Polish</td><td>1</td><td>3</td><td>Oct 2023</td><td>Ayu P.</td></tr>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#059669">RB</div><div class="client-info"><span class="client-name">Robert Banks</span><span class="client-email">rob@xyz.io</span></div></div></td><td>🇺🇸 American</td><td>0</td><td>4</td><td>Mar 2022</td><td>Rudi H.</td></tr>
+            <tr><td><div class="client-cell"><div class="avatar-sm" style="background:#e11d48">EV</div><div class="client-info"><span class="client-name">Elena Volkov</span><span class="client-email">elena@ru.com</span></div></div></td><td>🇷🇺 Russian</td><td>0</td><td>2</td><td>Nov 2024</td><td>Budi R.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS VIEW -->
+    <div id="view-documents" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:800">Documents</h2>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>Pending Review (5)</h3></div>
+        <table>
+          <thead><tr><th>Document</th><th>Client</th><th>Application</th><th>Size</th><th>Uploaded</th><th>Action</th></tr></thead>
+          <tbody id="doc-table">
+            <tr><td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">passport_scan.pdf</div></div></div></td><td>Alex Müller</td><td>KITAS Bali</td><td>2.4 MB</td><td>Apr 14</td><td><div class="action-btns"><button class="btn-xs view">👁 View</button><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕ Reject</button></div></td></tr>
+            <tr><td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">work_contract.pdf</div></div></div></td><td>Alex Müller</td><td>KITAS Bali</td><td>3.2 MB</td><td>Apr 14</td><td><div class="action-btns"><button class="btn-xs view">👁 View</button><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕ Reject</button></div></td></tr>
+            <tr><td><div class="doc-row"><span class="doc-icon">🖼️</span><div><div class="doc-name">photo_4x6.jpg</div></div></div></td><td>Alex Müller</td><td>KITAS Bali</td><td>0.8 MB</td><td>Apr 14</td><td><div class="action-btns"><button class="btn-xs view">👁 View</button><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕ Reject</button></div></td></tr>
+            <tr><td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">company_charter.pdf</div></div></div></td><td>Marie Kowalski</td><td>Property Purchase</td><td>5.1 MB</td><td>Apr 16</td><td><div class="action-btns"><button class="btn-xs view">👁 View</button><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕ Reject</button></div></td></tr>
+            <tr><td><div class="doc-row"><span class="doc-icon">📄</span><div><div class="doc-name">bank_statement.pdf</div></div></div></td><td>Marie Kowalski</td><td>Property Purchase</td><td>1.2 MB</td><td>Apr 16</td><td><div class="action-btns"><button class="btn-xs view">👁 View</button><button class="btn-xs approve" onclick="approveDoc(this)">✓ Approve</button><button class="btn-xs reject">✕ Reject</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MESSAGES VIEW -->
+    <div id="view-messages" style="display:none">
+      <div style="margin-bottom:20px"><h2 style="font-size:20px;font-weight:800">Messages</h2></div>
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:16px">
+        <div class="card" style="overflow-y:auto;max-height:600px">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--muted)">CONVERSATIONS</div>
+          <div id="conv-list"></div>
+        </div>
+        <div class="card" style="padding:24px">
+          <div style="font-size:16px;font-weight:800;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">Alex Müller — KITAS</div>
+          <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;min-height:200px">
+            <div style="display:flex;gap:12px"><div class="avatar-sm" style="background:#2d6a4f">AM</div><div style="background:#f5f5f5;border-radius:0 10px 10px 10px;padding:12px 16px;font-size:13px;max-width:70%">Hi, can you give me an update on my KITAS application? How long will it take?<div style="font-size:10px;color:#aaa;margin-top:6px">Apr 16, 11:02 AM</div></div></div>
+            <div style="display:flex;gap:12px;justify-content:flex-end"><div style="background:var(--green);color:white;border-radius:10px 0 10px 10px;padding:12px 16px;font-size:13px;max-width:70%">Your application is at stage 3 — submitted to immigration. Expected 10–15 business days from submission date (Apr 14).<div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:6px">Apr 16, 11:45 AM</div></div><div class="avatar-sm" style="background:var(--gold);color:var(--green-d)">DS</div></div>
+            <div style="display:flex;gap:12px"><div class="avatar-sm" style="background:#2d6a4f">AM</div><div style="background:#f5f5f5;border-radius:0 10px 10px 10px;padding:12px 16px;font-size:13px;max-width:70%">Thank you Dewi! I'll wait for your update.<div style="font-size:10px;color:#aaa;margin-top:6px">Apr 16, 11:50 AM</div></div></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <input style="flex:1;border:1px solid var(--border);border-radius:8px;padding:11px 16px;font-family:inherit;font-size:14px;outline:none" placeholder="Type a message…">
+            <button style="background:var(--green);color:white;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const convs = [
+  {init:'AM',name:'Alex Müller',app:'KITAS Bali',msg:'Thank you Dewi!',time:'11:50 AM',unread:false,color:'#2d6a4f'},
+  {init:'SJ',name:'Sarah Johnson',app:'PT PMA',msg:'When do you need the deed?',time:'Yesterday',unread:true,color:'#7c3aed'},
+  {init:'MK',name:'Marie Kowalski',app:'Property',msg:'Uploaded bank statement',time:'Apr 16',unread:true,color:'#b45309'},
+  {init:'LT',name:'Luca Tanaka',app:'KITAP',msg:'Just registered, hello!',time:'Apr 18',unread:true,color:'#0891b2'},
+  {init:'RB',name:'Robert Banks',app:'B211A',msg:'Thanks for everything!',time:'Mar 11',unread:false,color:'#059669'},
+];
+const cl = document.getElementById('conv-list');
+if (cl) cl.innerHTML = convs.map(c => `
+  <div style="padding:14px 18px;border-bottom:1px solid #f5f5f5;display:flex;gap:12px;cursor:pointer;${c.unread?'background:#fafcfb':''}" onmouseover="this.style.background='#f8faf9'" onmouseout="this.style.background='${c.unread?'#fafcfb':'white'}'">
+    <div class="avatar-sm" style="background:${c.color}">${c.init}</div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <span style="font-size:13px;font-weight:${c.unread?700:600}">${c.name}</span>
+        <span style="font-size:10px;color:var(--light)">${c.time}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.app} · ${c.msg}</div>
+    </div>
+    ${c.unread?'<div style="width:8px;height:8px;background:#e63946;border-radius:50%;margin-top:4px;flex-shrink:0"></div>':''}
+  </div>`).join('');
+
+const views=['dashboard','applications','clients','documents','messages'];
+function showView(v){
+  views.forEach(id=>document.getElementById('view-'+id).style.display=id===v?'block':'none');
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-title').textContent=v.charAt(0).toUpperCase()+v.slice(1);
+  event&&event.preventDefault();
+}
+document.querySelectorAll('.sb-item').forEach(el=>{
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+
+function updateStatus(sel){
+  const row=sel.closest('tr');
+  const badge=row.querySelector('.badge');
+  const map={
+    'Consultation':'<span class="badge b-pend">○ Consultation</span>',
+    'Docs Needed':'<span class="badge b-docs">⚠ Docs Needed</span>',
+    'In Progress':'<span class="badge b-prog">● In Progress</span>',
+    'With Authority':'<span class="badge b-prog">● With Authority</span>',
+    'Done':'<span class="badge b-done">✓ Done</span>'
+  };
+  badge.outerHTML=map[sel.value]||badge.outerHTML;
+  sel.style.borderColor=sel.value==='Docs Needed'?'var(--warn)':'var(--border)';
+}
+
+function approveDoc(btn){
+  const row=btn.closest('tr');
+  const btns=row.querySelector('.action-btns');
+  btns.innerHTML='<span style="font-size:12px;font-weight:600;color:var(--green)">✓ Approved</span>';
+  row.style.opacity='.5';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxx's Group International — Visa & Legal Services Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --cream2: #f2ece2;
+  --green: #2d6a4f;
+  --green-l: #e8f5ee;
+  --green-d: #1a3d2e;
+  --gold: #c8a96e;
+  --text: #1a1a1a;
+  --muted: #666;
+  --light: #999;
+  --wa: #25d366;
+  --border: #e8e2d9;
+  --warn: #f4a261;
+  --r: 8px;
+  --sh: 0 2px 16px rgba(0,0,0,.08);
+  --sh-lg: 0 8px 40px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--cream);color:var(--text);line-height:1.6}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;flex-direction:column;gap:1px}
+.nav-logo-name{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.nav-logo-sub{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--green)}
+.btn-nav{background:var(--green)!important;color:white!important;padding:9px 20px;border-radius:var(--r);font-weight:700!important;font-size:13px!important;transition:background .2s!important}
+.btn-nav:hover{background:var(--green-d)!important}
+
+/* HERO */
+.hero{padding:88px 32px 80px;max-width:1120px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--green-l);color:var(--green);font-size:12px;font-weight:600;padding:6px 16px;border-radius:100px;margin-bottom:28px}
+.hero-badge::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%}
+.hero h1{font-size:clamp(38px,5.5vw,64px);font-weight:800;line-height:1.08;color:var(--text);letter-spacing:-2px;margin-bottom:24px;max-width:720px}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero-sub{font-size:18px;color:var(--muted);max-width:560px;margin-bottom:40px;line-height:1.75}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:56px}
+.btn-p{background:var(--green);color:white;padding:15px 30px;border-radius:var(--r);font-weight:700;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;border:none;cursor:pointer}
+.btn-p:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 20px rgba(45,106,79,.3)}
+.btn-wa{background:var(--wa);color:white;padding:15px 30px;border-radius:var(--r);font-weight:700;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-wa:hover{background:#1da851;transform:translateY(-1px)}
+.trust-bar{display:flex;gap:44px;padding-top:40px;border-top:1px solid var(--border);flex-wrap:wrap}
+.trust-num{font-size:36px;font-weight:800;color:var(--green);line-height:1;letter-spacing:-1.5px}
+.trust-label{font-size:13px;color:var(--muted);margin-top:5px}
+
+/* SECTIONS */
+.sec{padding:88px 32px}
+.sec-inner{max-width:1120px;margin:0 auto}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:16px}
+.sec h2{font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.15;letter-spacing:-1px;margin-bottom:20px;max-width:620px}
+.sec-sub{font-size:17px;color:var(--muted);max-width:580px;line-height:1.75;margin-bottom:52px}
+
+/* PROBLEM */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.prob-card{background:white;border:1px solid var(--border);border-radius:14px;padding:28px}
+.prob-icon{font-size:32px;margin-bottom:14px}
+.prob-card h3{font-size:17px;font-weight:700;margin-bottom:9px}
+.prob-card p{font-size:14px;color:var(--muted);line-height:1.65}
+
+/* SERVICES */
+.sec-dark{background:var(--green-d)}
+.sec-dark .sec-tag{color:rgba(255,255,255,.45)}
+.sec-dark h2,.sec-dark .sec-sub{color:white}
+.sec-dark .sec-sub{color:rgba(255,255,255,.65)}
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.svc-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:30px 26px;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
+.svc-card:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
+.svc-icon{font-size:36px;margin-bottom:18px}
+.svc-card h3{font-size:18px;font-weight:700;color:white;margin-bottom:9px}
+.svc-card p{font-size:13px;color:rgba(255,255,255,.58);line-height:1.65}
+.svc-link{display:inline-block;margin-top:18px;font-size:12px;color:var(--gold);font-weight:600}
+
+/* HOW */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px}
+.step-num{width:52px;height:52px;background:var(--green);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:22px}
+.step h3{font-size:19px;font-weight:700;margin-bottom:11px}
+.step p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* CABINET PREVIEW */
+.cab-bg{background:var(--cream2)}
+.cab-mock{background:white;border-radius:18px;box-shadow:var(--sh-lg);overflow:hidden;max-width:880px;margin:0 auto;border:1px solid var(--border)}
+.cab-bar{background:#f0f0f0;padding:11px 18px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #e5e5e5}
+.dot{width:12px;height:12px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
+.cab-url{flex:1;background:white;border-radius:6px;padding:4px 14px;font-size:12px;color:#aaa;margin-left:10px}
+.cab-body{display:flex;min-height:320px}
+.cab-side{width:210px;background:var(--green-d);padding:20px 0;flex-shrink:0}
+.cab-side-logo{padding:0 22px 20px;font-size:13px;font-weight:800;color:white;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px}
+.cab-side-item{padding:11px 22px;font-size:13px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:10px;cursor:pointer}
+.cab-side-item.on{color:white;background:rgba(255,255,255,.1);border-left:3px solid var(--gold)}
+.cab-main{flex:1;padding:28px;background:#f7f9f8}
+.cab-title{font-size:19px;font-weight:800;color:var(--text);margin-bottom:22px}
+.app-row{background:white;border:1px solid var(--border);border-radius:11px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.app-row h4{font-size:14px;font-weight:700;margin-bottom:3px}
+.app-row p{font-size:12px;color:var(--muted)}
+.badge{padding:5px 13px;border-radius:100px;font-size:11px;font-weight:600}
+.b-prog{background:#e8f5ee;color:#2d6a4f}
+.b-docs{background:#fff3e0;color:#c05c00}
+.b-pend{background:#f5f5f5;color:#777}
+.b-done{background:#e8f5ee;color:#2d6a4f}
+
+/* OFFICES */
+.sec-white{background:white}
+.off-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.off-card{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:26px;transition:box-shadow .2s}
+.off-card:hover{box-shadow:var(--sh)}
+.off-icon{font-size:28px;margin-bottom:13px}
+.off-city{font-size:16px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.hq-badge{background:var(--green-l);color:var(--green);font-size:10px;font-weight:700;padding:2px 9px;border-radius:5px}
+.off-phone{font-size:13px;color:var(--muted);line-height:1.9}
+
+/* FAQ */
+.faq-wrap{max-width:740px}
+.faq-item{border-bottom:1px solid var(--border);padding:22px 0}
+.faq-q{font-size:16px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.faq-q span{font-size:22px;font-weight:400;color:var(--muted);flex-shrink:0;transition:transform .2s}
+.faq-a{font-size:15px;color:var(--muted);line-height:1.75;margin-top:14px;display:none}
+
+/* FINAL CTA */
+.cta-sec{background:var(--green);padding:88px 32px;text-align:center}
+.cta-sec h2{font-size:clamp(30px,4vw,48px);font-weight:800;color:white;margin-bottom:18px;letter-spacing:-1.5px}
+.cta-sec p{font-size:18px;color:rgba(255,255,255,.8);margin-bottom:40px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-white{background:white;color:var(--green);padding:15px 30px;border-radius:var(--r);font-weight:700;font-size:15px;text-decoration:none;transition:all .2s}
+.btn-white:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.btn-outline{background:transparent;color:white;border:2px solid rgba(255,255,255,.5);padding:15px 30px;border-radius:var(--r);font-weight:700;font-size:15px;text-decoration:none;transition:all .2s}
+.btn-outline:hover{border-color:white;background:rgba(255,255,255,.1)}
+
+/* FOOTER */
+footer{background:var(--green-d);padding:56px 32px 32px;color:rgba(255,255,255,.65)}
+.foot-inner{max-width:1120px;margin:0 auto}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.foot-brand{font-size:16px;font-weight:800;color:white;margin-bottom:14px}
+.foot-desc{font-size:13px;line-height:1.75;color:rgba(255,255,255,.45)}
+.foot-col h4{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:18px}
+.foot-col a{display:block;font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.foot-col a:hover{color:white}
+.foot-bottom{padding-top:28px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;font-size:12px;flex-wrap:wrap;gap:8px}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:28px;right:28px;background:var(--wa);color:white;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.45);text-decoration:none;transition:all .2s;z-index:999}
+.wa-float:hover{transform:scale(1.1)}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .hero{padding:56px 20px 64px}
+  .sec{padding:64px 20px}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .trust-bar{gap:28px}
+  .svc-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="nav-logo-name">MAXX'S GROUP</span>
+    <span class="nav-logo-sub">International · Since 2007</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#offices">Offices</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="cabinet.html" class="btn-nav">My Cabinet</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Trusted &amp; Reliable · Indonesia</div>
+  <h1>We handle Indonesia's bureaucracy so you <em>don't have to.</em></h1>
+  <p class="hero-sub">Visas, residency, company setup and property — all in one place. Track your documents online in your personal dashboard.</p>
+  <div class="hero-ctas">
+    <a href="#contact" class="btn-p">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      Free Consultation
+    </a>
+    <a href="https://wa.me/6281228229384" class="btn-wa" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+  <div class="trust-bar">
+    <div><div class="trust-num">17</div><div class="trust-label">Years in Indonesia</div></div>
+    <div><div class="trust-num">5+</div><div class="trust-label">Offices Nationwide</div></div>
+    <div><div class="trust-num">5</div><div class="trust-label">Services Under One Roof</div></div>
+    <div><div class="trust-num">1000+</div><div class="trust-label">Clients Served</div></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="sec sec-white">
+  <div class="sec-inner">
+    <div class="sec-tag">The Problem</div>
+    <h2>Indonesia's bureaucracy is a maze.</h2>
+    <p class="sec-sub">Moving to or doing business in Indonesia shouldn't mean months of confusion, wrong paperwork, and costly mistakes.</p>
+    <div class="prob-grid">
+      <div class="prob-card"><div class="prob-icon">📄</div><h3>Wrong visa type</h3><p>With 15+ visa categories, foreigners regularly pick the wrong one — facing fines or deportation.</p></div>
+      <div class="prob-card"><div class="prob-icon">⏰</div><h3>Missed deadlines</h3><p>Indonesian immigration has strict timelines. Overstaying or missing renewals means penalties and blacklisting.</p></div>
+      <div class="prob-card"><div class="prob-icon">🌐</div><h3>Language barrier</h3><p>All government processes are in Bahasa Indonesia. One mistranslation can invalidate your entire application.</p></div>
+      <div class="prob-card"><div class="prob-icon">🏃</div><h3>Running between agencies</h3><p>Visa, company, property — typically requires 3–5 separate agencies with no coordination between them.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec sec-dark" id="services">
+  <div class="sec-inner">
+    <div class="sec-tag">Our Services</div>
+    <h2>Everything you need. One team.</h2>
+    <p class="sec-sub">From your first visa to opening a company and buying property — we handle it all.</p>
+    <div class="svc-grid">
+      <a href="#" class="svc-card"><div class="svc-icon">⚖️</div><h3>Legal</h3><p>KITAS, KITAP, working visas, PT PMA setup, BPOM/SNI/Halal licenses, document legalization.</p><span class="svc-link">Most popular →</span></a>
+      <a href="#" class="svc-card"><div class="svc-icon">🏠</div><h3>Property</h3><p>Real estate transactions for foreigners — purchase, lease, legal due diligence, ownership structures.</p><span class="svc-link">Learn more →</span></a>
+      <a href="#" class="svc-card"><div class="svc-icon">📦</div><h3>Export / Import</h3><p>Customs clearance, trade facilitation, product certification — SNI, BPOM, Halal, import licenses.</p><span class="svc-link">Learn more →</span></a>
+      <a href="#" class="svc-card"><div class="svc-icon">🌴</div><h3>Hospitality</h3><p>Travel services, tourism consulting, and hospitality business support across Indonesia.</p><span class="svc-link">Learn more →</span></a>
+      <a href="#" class="svc-card"><div class="svc-icon">👥</div><h3>Recruitment</h3><p>Local and international talent acquisition for companies operating in Indonesia.</p><span class="svc-link">Learn more →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="sec-inner">
+    <div class="sec-tag">How It Works</div>
+    <h2>Three steps to legal peace of mind.</h2>
+    <p class="sec-sub">We've designed the process to be as frictionless as possible — no office visits required for most cases.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Consult</h3><p>Tell us your situation — visa, company, property or all of the above. Free consultation via WhatsApp or call. We assess and recommend the right path.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Upload Documents</h3><p>Access your personal cabinet online. Upload required documents securely from anywhere in the world. Your dedicated manager reviews immediately.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Track &amp; Relax</h3><p>We handle everything with Indonesian authorities. Watch real-time status updates in your dashboard. We notify you when action is needed.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CABINET PREVIEW -->
+<section class="sec cab-bg">
+  <div class="sec-inner">
+    <div class="sec-tag">Personal Cabinet</div>
+    <h2>Your applications. Always visible.</h2>
+    <p class="sec-sub" style="margin-bottom:44px">Upload documents once, track every application in real time. No more "what's the status?" calls.</p>
+    <div class="cab-mock">
+      <div class="cab-bar">
+        <span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span>
+        <span class="cab-url">maxxsgroup.com/cabinet</span>
+      </div>
+      <div class="cab-body">
+        <div class="cab-side">
+          <div class="cab-side-logo">MAXX'S GROUP</div>
+          <div class="cab-side-item on">📊 &nbsp;Dashboard</div>
+          <div class="cab-side-item">📁 &nbsp;Applications</div>
+          <div class="cab-side-item">📎 &nbsp;Documents</div>
+          <div class="cab-side-item">💬 &nbsp;Messages</div>
+          <div class="cab-side-item">👤 &nbsp;Profile</div>
+        </div>
+        <div class="cab-main">
+          <div class="cab-title">My Applications</div>
+          <div class="app-row"><div><h4>KITAS — Work Permit · Bali</h4><p>Submitted 14 Apr 2025 · Manager: Dewi Sari</p></div><span class="badge b-prog">● In Progress</span></div>
+          <div class="app-row"><div><h4>PT PMA Setup · Jakarta</h4><p>Submitted 2 Apr 2025 · Waiting for documents</p></div><span class="badge b-docs">⚠ Docs Needed</span></div>
+          <div class="app-row"><div><h4>KITAP Renewal · Bali</h4><p>Expires 15 Sep 2025 · Not yet started</p></div><span class="badge b-pend">○ Pending</span></div>
+          <div class="app-row"><div><h4>Business Visa B211A</h4><p>Completed 10 Mar 2025</p></div><span class="badge b-done">✓ Done</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px">
+      <a href="cabinet.html" class="btn-p">View Full Cabinet Demo →</a>
+    </div>
+  </div>
+</section>
+
+<!-- OFFICES -->
+<section class="sec sec-white" id="offices">
+  <div class="sec-inner">
+    <div class="sec-tag">Our Offices</div>
+    <h2>We're where you are.</h2>
+    <p class="sec-sub">Five offices across Indonesia — Jakarta, Bali, Surabaya, Lombok. Local expertise, everywhere you need it.</p>
+    <div class="off-grid">
+      <div class="off-card"><div class="off-icon">🏙️</div><div class="off-city">Jakarta <span class="hq-badge">HQ</span></div><div class="off-phone">+62 812-2822-9384<br>+62 813-8687-6886<br><small style="color:#bbb">Lippo Kuningan Bldg, 19F</small></div></div>
+      <div class="off-card"><div class="off-icon">🌿</div><div class="off-city">Bali — Ubud</div><div class="off-phone">+62 812-3776-2007<br>+62 853-3721-3413</div></div>
+      <div class="off-card"><div class="off-icon">🏖️</div><div class="off-city">Bali — Denpasar</div><div class="off-phone">+62 812-3600-5884<br>+62 878-6543-3591</div></div>
+      <div class="off-card"><div class="off-icon">🌊</div><div class="off-city">Surabaya</div><div class="off-phone">+62 895-3267-68860</div></div>
+      <div class="off-card"><div class="off-icon">🏝️</div><div class="off-city">Lombok</div><div class="off-phone">+62 895-1047-3432</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="sec-inner">
+    <div class="sec-tag">FAQ</div>
+    <h2>Common questions.</h2>
+    <div class="faq-wrap">
+      <div class="faq-item"><div class="faq-q">What's the difference between KITAS and KITAP? <span>+</span></div><div class="faq-a">KITAS is a temporary stay permit (1–2 years, renewable). KITAP is a permanent stay permit available after holding KITAS for 5 consecutive years. We help you get the right one for your situation and timeline.</div></div>
+      <div class="faq-item"><div class="faq-q">How long does PT PMA company setup take? <span>+</span></div><div class="faq-a">Typically 4–8 weeks depending on the business sector and completeness of documents. We handle all government submissions and follow up on your behalf.</div></div>
+      <div class="faq-item"><div class="faq-q">Can foreigners own property in Indonesia? <span>+</span></div><div class="faq-a">Foreigners cannot hold freehold (Hak Milik) title directly. However, there are legal structures — Hak Pakai, leasehold, nominee arrangements via PT PMA — that our property team can advise on for your specific situation.</div></div>
+      <div class="faq-item"><div class="faq-q">Do I need to visit your office in person? <span>+</span></div><div class="faq-a">For most services, no. Start remotely via WhatsApp, upload documents in your personal cabinet online. Some immigration procedures require in-person attendance — we'll tell you exactly when and where.</div></div>
+      <div class="faq-item"><div class="faq-q">How do I track my application status? <span>+</span></div><div class="faq-a">Through your personal cabinet at maxxsgroup.com/cabinet. Real-time status updates, pending document requests, and direct messaging with your dedicated manager — all in one place.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-sec" id="contact">
+  <h2>Ready to make Indonesia simple?</h2>
+  <p>Book a free consultation — our team across Jakarta, Bali, Surabaya and Lombok is ready.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-white">Book Free Consultation</a>
+    <a href="https://wa.me/6281228229384" class="btn-outline" target="_blank">WhatsApp Us Now</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-grid">
+      <div><div class="foot-brand">MAXX'S GROUP INTERNATIONAL</div><p class="foot-desc">Indonesia's trusted one-stop service for foreigners since 2007. Visas, residency, company setup, property and more.</p></div>
+      <div class="foot-col"><h4>Services</h4><a href="#">Legal &amp; Visas</a><a href="#">Property</a><a href="#">Export / Import</a><a href="#">Hospitality</a><a href="#">Recruitment</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Offices</a><a href="#">Careers</a><a href="#">Contact</a></div>
+      <div class="foot-col"><h4>Follow</h4><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Facebook</a><a href="#" target="_blank">LinkedIn</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2025 Maxx's Group International. All rights reserved.</span><span>maxxsgroup.com</span></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/6281228229384" class="wa-float" title="WhatsApp" target="_blank">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const a = item.querySelector('.faq-a');
+    const open = a.style.display === 'block';
+    document.querySelectorAll('.faq-a').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.faq-q span').forEach(el => { el.textContent = '+'; el.style.transform = ''; });
+    if (!open) { a.style.display = 'block'; q.querySelector('span').textContent = '−'; }
+  });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
