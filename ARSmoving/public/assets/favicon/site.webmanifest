@@ -1,0 +1,21 @@
+{
+  "name": "ARS Moving",
+  "short_name": "ARS Moving",
+  "icons": [
+    {
+      "src": "/assets/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#243E65",
+  "background_color": "#F3F0EB",
+  "display": "standalone"
+}
