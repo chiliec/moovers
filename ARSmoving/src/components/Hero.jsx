@@ -51,7 +51,7 @@ export default function Hero({ onCTA }) {
           </div>
           <TrustBar />
         </div>
-        <div style={{ display: 'flex', justifyContent: isCompact ? 'stretch' : 'flex-end' }}>
+        <div id="moving-assistant" style={{ display: 'flex', justifyContent: isCompact ? 'stretch' : 'flex-end' }}>
           <ChatQuoteAssistant />
         </div>
       </div>

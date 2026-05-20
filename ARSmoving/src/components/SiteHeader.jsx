@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Icon from './Icon';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import arsLogo from '/assets/ars-logo.svg';
+import { asset } from '../lib/asset';
 
 const NAV_ITEMS = [
   { label: 'Services', href: '#services' },
@@ -39,7 +40,7 @@ export default function SiteHeader({ onCTA }) {
         transition: 'background 240ms var(--ease), border-color 240ms var(--ease)',
       }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', height: 72 }}>
-          <a href="#" style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>
+          <a href={asset('/')} style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>
             <img src={arsLogo} alt="ARS Moving" style={{ height: 36, width: 'auto', display: 'block' }} />
           </a>
 
@@ -111,7 +112,7 @@ export default function SiteHeader({ onCTA }) {
                   }}
                 >{n.label}</a>
               ))}
-              <button className="btn btn--primary" onClick={() => { setMenuOpen(false); onCTA(); }}
+              <button className="btn btn--primary" onClick={() => { setMenuOpen(false); setTimeout(onCTA, 150); }}
                 style={{ marginTop: 16, width: '100%' }}>
                 Get my free quote
               </button>

@@ -146,7 +146,7 @@ export default function SiteFooter() {
           <div>© 2026 ARS Moving LLC. All rights reserved.</div>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
             <span>DOT Licensed · BBB Accredited · Fully Insured</span>
-            <a href={`${import.meta.env.BASE_URL}?page=privacy`} style={{ color: 'var(--cream-56)', textDecoration: 'none' }}
+            <a href={asset('/?page=privacy')} style={{ color: 'var(--cream-56)', textDecoration: 'none' }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--ars-cream)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--cream-56)'}>
               Privacy Policy

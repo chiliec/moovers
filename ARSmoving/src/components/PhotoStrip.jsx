@@ -14,25 +14,7 @@ const TRACK = [...PHOTOS, ...PHOTOS];
 
 export default function PhotoStrip() {
   return (
-    <>
-      <style>{`
-        @keyframes photo-scroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .photo-strip-track {
-          animation: photo-scroll 30s linear infinite;
-          will-change: transform;
-        }
-        .photo-strip-track:hover {
-          animation-play-state: paused;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .photo-strip-track { animation-play-state: paused; }
-        }
-      `}</style>
-
-      <div style={{
+    <div style={{
         overflow: 'hidden',
         WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
         maskImage:        'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
@@ -46,6 +28,5 @@ export default function PhotoStrip() {
           ))}
         </div>
       </div>
-    </>
   );
 }

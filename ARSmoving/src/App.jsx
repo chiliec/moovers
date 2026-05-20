@@ -19,15 +19,17 @@ export default function App() {
   if (page === 'privacy') return <PrivacyPolicy />;
 
   const scrollToWidget = () => {
-    const el = document.getElementById('quote-anchor');
-    if (el) window.scrollTo({ top: 0, behavior: 'smooth' });
+    const el = document.getElementById('moving-assistant');
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
   };
 
   return (
     <>
       <SiteHeader onCTA={scrollToWidget} />
       <main>
-        <span id="quote-anchor" />
         <Hero onCTA={scrollToWidget} />
         <StatsBar />
         <HowItWorks />

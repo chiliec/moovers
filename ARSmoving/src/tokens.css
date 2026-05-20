@@ -291,79 +291,20 @@ a { color: inherit; }
   40% { transform: translateY(-4px); opacity: .9; }
 }
 
-/* ChatQuoteAssistant address autocomplete */
-.cqa-suggestions {
-  position: absolute;
-  left: 0; right: 0;
-  bottom: calc(100% + 10px);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-3);
-  padding: 6px;
-  max-height: 260px;
-  overflow-y: auto;
-  z-index: 50;
-  list-style: none;
-  margin: 0;
-  animation: cqa-sugg-in 160ms var(--ease);
+@keyframes photo-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-@keyframes cqa-sugg-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+.photo-strip-track {
+  animation: photo-scroll 30s linear infinite;
+  will-change: transform;
 }
-.cqa-suggestions::-webkit-scrollbar { width: 8px; }
-.cqa-suggestions::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
-.cqa-suggestion {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13.5px;
-  color: var(--ars-deep-navy);
-  transition: background 120ms var(--ease), color 120ms var(--ease);
+.photo-strip-track:hover {
+  animation-play-state: paused;
 }
-.cqa-suggestion:hover,
-.cqa-suggestion.active {
-  background: rgba(48,165,216,.10);
-  color: var(--ars-cyan);
+@media (prefers-reduced-motion: reduce) {
+  .photo-strip-track { animation-play-state: paused; }
 }
-.cqa-suggestion svg { color: var(--ars-cyan); flex-shrink: 0; margin-top: 2px; }
-.cqa-sugg-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.cqa-sugg-name {
-  font-weight: 600;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.cqa-sugg-sub {
-  font-size: 11.5px;
-  color: var(--fg-muted);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.cqa-suggestion:hover .cqa-sugg-sub,
-.cqa-suggestion.active .cqa-sugg-sub { color: var(--ars-cyan); opacity: .8; }
-.cqa-sugg-name mark {
-  background: transparent;
-  color: var(--ars-cyan);
-  font-weight: 700;
-}
-.cqa-suggestion.cqa-loading {
-  cursor: default;
-  color: var(--fg-muted);
-  font-style: italic;
-}
-.cqa-suggestion.cqa-loading:hover { background: transparent; }
-.cqa-spinner {
-  width: 14px; height: 14px;
-  border: 2px solid var(--border-strong);
-  border-top-color: var(--ars-cyan);
-  border-radius: 50%;
-  animation: cqa-spin 700ms linear infinite;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-@keyframes cqa-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 768px) {
   .container { padding: 0 24px; }

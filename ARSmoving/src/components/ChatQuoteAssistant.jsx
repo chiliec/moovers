@@ -1,300 +1,128 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Icon from './Icon';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const WDAYS  = ['Mo','Tu','We','Th','Fr','Sa','Su'];
 
 const QUESTIONS = [
-  { key:'from', prompt:"Hey there — I'm your ARS moving assistant. Let's get a ballpark in about a minute. Where are you moving from?", type:'address', placeholder:'Address, city, or zip' },
-  { key:'to',   prompt:"Got it. And where to?", type:'address', placeholder:'Address, city, or zip' },
-  { key:'date', prompt:"When are you hoping to move? Pick a date below.", type:'calendar' },
-  { key:'size', prompt:"How big is the place you're moving out of?", type:'chips', chips:['Studio','1 BR','2 BR','3 BR','House'] },
-  { key:'items', prompt:"Any specialty items? Pick everything that applies.", type:'multi' },
+  { key:'from', prompt:"Hey there — I'm your moving assistant at ARS. Let's get a ballpark in about a minute. Where are you moving from?", placeholder:'City or zip (e.g. Herndon 20170)' },
+  { key:'to',   prompt:"Got it. And where to?", placeholder:'City, state, or zip' },
+  { key:'type', prompt:"What kind of move is it?", chips:['Local','Long-distance','Office','Specialty'] },
+  { key:'size',      prompt:"How big is the place you're moving out of?", chips:['Studio','1 BR','2 BR','3 BR','4+ BR'] },
+  { key:'specialty', prompt:"Any specialty items we should know about? Pick all that apply.", type:'multiselect', chips:['Piano','Antiques','Fine art','Gym equipment','Safe / heavy','Lots of fragile','None of these'] },
+  { key:'date',      prompt:"When are you hoping to move? Pick a date below.", type:'calendar' },
 ];
 
-const BASE_BY_SIZE = {
-  'Studio': 2200, '1 BR': 2800, '2 BR': 3800, '3 BR': 4800, 'House': 6800,
+const BASE_RANGES = {
+  Studio:[550,850], '1 BR':[800,1200], '2 BR':[1100,1700],
+  '3 BR':[1500,2400], '4+ BR':[2200,3600],
 };
-
-const ITEM_OPTIONS = [
-  { label:'Piano',          add:650 },
-  { label:'Antiques',       add:350 },
-  { label:'Art',            add:300 },
-  { label:'Gym equipment',  add:400 },
-  { label:'Safe',           add:450 },
-  { label:'Fragile',        add:250 },
-  { label:'None',           add:0   },
-];
+const TYPE_MULT = { Local:1, 'Long-distance':1.8, Office:1.4, Specialty:1.5 };
 
 function calcRange(a) {
-  const base = BASE_BY_SIZE[a.size] || 3000;
-  const itemsAdd = (a.items || []).reduce((s, i) => s + (i.add || 0), 0);
-  const subtotal = base + itemsAdd;
-  return [
-    Math.round((subtotal * 0.92) / 50) * 50,
-    Math.round((subtotal * 1.12) / 50) * 50,
-  ];
+  const [lo,hi] = BASE_RANGES[a.size] || [900,1800];
+  const m = TYPE_MULT[a.type] || 1;
+  return [Math.round(lo*m/50)*50, Math.round(hi*m/50)*50];
 }
 
 function fmtDate(d) {
-  return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 }
-
-/* ---------- Address autocomplete: cities fallback + Nominatim ---------- */
-
-const STATE_ABBR = {
-  'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
-  'Colorado':'CO','Connecticut':'CT','Delaware':'DE','District of Columbia':'DC',
-  'Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL',
-  'Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA',
-  'Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN',
-  'Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV',
-  'New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY',
-  'North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR',
-  'Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',
-  'Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA',
-  'Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
-};
-
-const CITIES = [
-  'Herndon, VA','Reston, VA','Sterling, VA','Ashburn, VA','Leesburg, VA','Chantilly, VA',
-  'Fairfax, VA','Vienna, VA','Arlington, VA','Alexandria, VA','McLean, VA','Manassas, VA',
-  'Falls Church, VA','Springfield, VA','Annandale, VA','Burke, VA','Centreville, VA',
-  'Woodbridge, VA','Lorton, VA','Tysons, VA','Great Falls, VA','Oakton, VA',
-  'Washington, DC','Bethesda, MD','Silver Spring, MD','Rockville, MD','Gaithersburg, MD',
-  'Frederick, MD','Germantown, MD','Hyattsville, MD','College Park, MD','Bowie, MD',
-  'Baltimore, MD','Annapolis, MD','Columbia, MD','Towson, MD',
-  'New York, NY','Brooklyn, NY','Manhattan, NY','Queens, NY','Bronx, NY','Staten Island, NY',
-  'Jersey City, NJ','Hoboken, NJ','Newark, NJ','Philadelphia, PA','Pittsburgh, PA',
-  'Boston, MA','Hartford, CT','New Haven, CT','Stamford, CT',
-  'Los Angeles, CA','San Francisco, CA','San Diego, CA','San Jose, CA','Sacramento, CA',
-  'Seattle, WA','Portland, OR','Denver, CO','Salt Lake City, UT','Phoenix, AZ','Las Vegas, NV',
-  'Chicago, IL','Detroit, MI','Cleveland, OH','Columbus, OH','Cincinnati, OH','Indianapolis, IN',
-  'Houston, TX','Dallas, TX','Austin, TX','San Antonio, TX','Fort Worth, TX','El Paso, TX',
-  'Miami, FL','Orlando, FL','Tampa, FL','Jacksonville, FL','Fort Lauderdale, FL',
-  'Atlanta, GA','Charlotte, NC','Raleigh, NC','Durham, NC','Nashville, TN','Memphis, TN',
-  'New Orleans, LA','Birmingham, AL','Louisville, KY','St. Louis, MO','Kansas City, MO',
-  'Minneapolis, MN','Saint Paul, MN','Milwaukee, WI','Madison, WI','Omaha, NE',
-];
-
-function searchCities(query) {
-  const q = query.toLowerCase().trim();
-  if (!q) return [];
-  const starts = [], contains = [];
-  for (const c of CITIES) {
-    const cL = c.toLowerCase();
-    if (cL.startsWith(q)) starts.push(c);
-    else if (cL.includes(q)) contains.push(c);
-    if (starts.length >= 8) break;
-  }
-  return [...starts, ...contains].slice(0, 6);
-}
-
-function formatAddress(a) {
-  if (!a) return '';
-  const street = [a.house_number, a.road || a.pedestrian || a.footway].filter(Boolean).join(' ');
-  const city = a.city || a.town || a.village || a.suburb || a.borough || a.neighbourhood || a.municipality || '';
-  const state = STATE_ABBR[a.state] || a.state || '';
-  const zip = a.postcode || '';
-  const tail = [state, zip].filter(Boolean).join(' ');
-  return [street, city, tail].filter(Boolean).join(', ');
-}
-
-async function searchAddresses(query, signal) {
-  const q = query.trim();
-  if (q.length < 3) return [];
-  const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=6&q=${encodeURIComponent(q)}`;
-  try {
-    const res = await fetch(url, { signal, headers: { 'Accept-Language': 'en' } });
-    if (!res.ok) throw new Error('net');
-    const data = await res.json();
-    const results = data
-      .map(r => ({ display: formatAddress(r.address), raw: r }))
-      .filter(x => x.display && x.display.length > 2);
-    const seen = new Set();
-    return results.filter(r => {
-      if (seen.has(r.display)) return false;
-      seen.add(r.display);
-      return true;
-    });
-  } catch (e) {
-    if (e.name === 'AbortError') return null;
-    return null;
-  }
-}
-
-function splitDisplay(d) {
-  const parts = d.split(', ');
-  if (parts.length <= 1) return { primary: d, secondary: '' };
-  return { primary: parts[0], secondary: parts.slice(1).join(', ') };
-}
-
-function highlight(text, q) {
-  if (!q) return text;
-  const i = text.toLowerCase().indexOf(q.toLowerCase());
-  if (i < 0) return text;
-  return (
-    <>
-      {text.slice(0, i)}
-      <mark>{text.slice(i, i + q.length)}</mark>
-      {text.slice(i + q.length)}
-    </>
-  );
-}
-
-/* ---------- AddressInput component ---------- */
-
-function AddressInput({ value, onChange, placeholder, onEnterSubmit, disabled, autoFocus }) {
-  const [items, setItems]   = useState([]);
-  const [activeIdx, setActiveIdx] = useState(-1);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen]   = useState(false);
-  const debounceRef = useRef(null);
-  const ctrlRef     = useRef(null);
-  const inputRef    = useRef(null);
-  const blurTimer   = useRef(null);
-
-  useEffect(() => () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (ctrlRef.current) ctrlRef.current.abort();
-    if (blurTimer.current) clearTimeout(blurTimer.current);
-  }, []);
-
-  const runRemote = useCallback(async (q) => {
-    if (ctrlRef.current) ctrlRef.current.abort();
-    const ctrl = new AbortController();
-    ctrlRef.current = ctrl;
-    setLoading(true);
-    let results = await searchAddresses(q, ctrl.signal);
-    if (ctrl.signal.aborted) return;
-    if (results === null) {
-      results = searchCities(q).map(c => ({ display: c, raw: null }));
-    }
-    setItems(results);
-    setActiveIdx(-1);
-    setLoading(false);
-  }, []);
-
-  const handleChange = (e) => {
-    const v = e.target.value;
-    onChange(v);
-    const q = v.trim();
-    if (debounceRef.current) { clearTimeout(debounceRef.current); debounceRef.current = null; }
-    if (q.length < 3) {
-      if (ctrlRef.current) { ctrlRef.current.abort(); ctrlRef.current = null; }
-      setLoading(false);
-      setItems(searchCities(q).map(c => ({ display: c, raw: null })));
-      setActiveIdx(-1);
-      setOpen(true);
-      return;
-    }
-    setOpen(true);
-    debounceRef.current = setTimeout(() => runRemote(q), 350);
-  };
-
-  const pick = (val) => {
-    onChange(val);
-    setItems([]);
-    setActiveIdx(-1);
-    setLoading(false);
-    setOpen(false);
-    if (ctrlRef.current) { ctrlRef.current.abort(); ctrlRef.current = null; }
-    inputRef.current?.focus();
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (activeIdx >= 0 && items[activeIdx]) {
-        e.preventDefault();
-        pick(items[activeIdx].display);
-        return;
-      }
-      if (onEnterSubmit) {
-        e.preventDefault();
-        onEnterSubmit(value);
-      }
-      return;
-    }
-    if (loading || !items.length) return;
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setActiveIdx(i => (i + 1) % items.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActiveIdx(i => (i - 1 + items.length) % items.length);
-    } else if (e.key === 'Escape') {
-      setOpen(false);
-    }
-  };
-
-  const showList = open && (loading || items.length > 0);
-  const q = value.trim();
-
-  return (
-    <div className="cqa-addr" style={{ position:'relative', flex:1, minWidth:0 }}>
-      <input
-        ref={inputRef}
-        autoFocus={autoFocus}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onFocus={(e) => {
-          if (items.length || loading) setOpen(true);
-          e.target.style.borderColor='var(--ars-cyan)';
-          e.target.style.boxShadow='var(--focus-ring)';
-        }}
-        onBlur={(e) => {
-          blurTimer.current = setTimeout(() => setOpen(false), 140);
-          e.target.style.borderColor='var(--border-strong)';
-          e.target.style.boxShadow='none';
-        }}
-        placeholder={placeholder}
-        disabled={disabled}
-        autoComplete="off"
-        style={{
-          width:'100%', padding:'12px 14px', fontSize:15,
-          background:'var(--ars-cream)', border:'1px solid var(--border-strong)',
-          borderRadius:'var(--r-md)', fontFamily:'var(--font-sans)',
-          color:'var(--ars-deep-navy)', outline:'none', minWidth:0,
-          transition:'border-color 150ms var(--ease), box-shadow 150ms var(--ease)',
-          boxSizing:'border-box',
-        }}
-      />
-      {showList && (
-        <ul className="cqa-suggestions" role="listbox">
-          {loading ? (
-            <li className="cqa-suggestion cqa-loading">
-              <span className="cqa-spinner" aria-hidden="true"/>
-              <span className="cqa-sugg-text"><span className="cqa-sugg-name">Searching…</span></span>
-            </li>
-          ) : items.map((it, i) => {
-            const { primary, secondary } = splitDisplay(it.display);
-            return (
-              <li
-                key={it.display + i}
-                role="option"
-                className={'cqa-suggestion' + (i === activeIdx ? ' active' : '')}
-                onMouseDown={(e) => { e.preventDefault(); pick(it.display); }}
-                onMouseEnter={() => setActiveIdx(i)}
-              >
-                <Icon name="map-pin" size={16}/>
-                <span className="cqa-sugg-text">
-                  <span className="cqa-sugg-name">{highlight(primary, q)}</span>
-                  {secondary && <span className="cqa-sugg-sub">{secondary}</span>}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-/* ---------- Misc UI ---------- */
 
 function TypingDots() {
   return <div className="cqa-typing" aria-label="Assistant is typing"><span/><span/><span/></div>;
+}
+
+function AddressInput({ value, onChange, onSubmit, placeholder, disabled }) {
+  const [suggs, setSuggs] = useState([]);
+  const [open,  setOpen]  = useState(false);
+  const timer = useRef(null);
+
+  const parseSugg = (r) => {
+    const a = r.address;
+    const main = [
+      a.house_number && a.road ? `${a.house_number} ${a.road}` : a.road,
+      !a.road && (a.city || a.town || a.village || a.hamlet) ? (a.city || a.town || a.village || a.hamlet) : null,
+    ].filter(Boolean).join(' ') || r.display_name.split(',')[0];
+    const city  = a.city || a.town || a.village || a.suburb || a.hamlet || '';
+    const state = a.state || '';
+    const zip   = a.postcode || '';
+    const sub   = [city, [state, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    const full  = [main, sub].filter(Boolean).join(', ');
+    return { main, sub, full };
+  };
+
+  const fetchSuggs = (q) => {
+    clearTimeout(timer.current);
+    if (q.length < 3) { setSuggs([]); setOpen(false); return; }
+    timer.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1&countrycodes=us`,
+          { headers: { 'Accept': 'application/json', 'Accept-Language': 'en' } }
+        );
+        const data = await res.json();
+        const seen = new Set();
+        const items = data.map(parseSugg).filter(s => {
+          if (!s.full || seen.has(s.full)) return false;
+          seen.add(s.full); return true;
+        });
+        setSuggs(items);
+        setOpen(items.length > 0);
+      } catch { setSuggs([]); setOpen(false); }
+    }, 500);
+  };
+
+  const pick = (s) => { onChange(s.full); setOpen(false); setSuggs([]); };
+
+  return (
+    <div style={{ flex:1, position:'relative', minWidth:0 }}>
+      <input
+        value={value}
+        onChange={e => { onChange(e.target.value); fetchSuggs(e.target.value); }}
+        onKeyDown={e => { if (e.key==='Escape') setOpen(false); }}
+        placeholder={placeholder}
+        disabled={disabled}
+        style={{
+          width:'100%', padding:'12px 14px', fontSize:15, boxSizing:'border-box',
+          background:'var(--ars-cream)', border:'1px solid var(--border-strong)',
+          borderRadius:'var(--r-md)', fontFamily:'var(--font-sans)',
+          color:'var(--ars-deep-navy)', outline:'none',
+          transition:'border-color 150ms var(--ease), box-shadow 150ms var(--ease)',
+        }}
+        onFocus={e => { e.target.style.borderColor='var(--ars-cyan)'; e.target.style.boxShadow='var(--focus-ring)'; }}
+        onBlur={e => { e.target.style.borderColor='var(--border-strong)'; e.target.style.boxShadow='none'; setTimeout(() => setOpen(false), 150); }}
+      />
+      {open && suggs.length > 0 && (
+        <div style={{
+          position:'absolute', bottom:'calc(100% + 6px)', left:0, right:0,
+          background:'#fff', border:'1px solid var(--border)',
+          borderRadius:'var(--r-lg)', boxShadow:'var(--shadow-3)', zIndex:200, overflow:'hidden',
+        }}>
+          {suggs.map((s,i) => (
+            <button key={i} type="button" onMouseDown={() => pick(s)}
+              style={{
+                display:'flex', alignItems:'center', gap:12, width:'100%', textAlign:'left',
+                padding:'12px 16px', background:'transparent', border:'none', cursor:'pointer',
+                fontFamily:'var(--font-sans)',
+                borderBottom: i < suggs.length-1 ? '1px solid var(--border)' : 'none',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background='var(--ars-cream)'}
+              onMouseLeave={e => e.currentTarget.style.background='transparent'}
+            >
+              <span style={{ color:'var(--ars-cyan)', flexShrink:0, marginTop:1 }}>
+                <Icon name="map-pin" size={16}/>
+              </span>
+              <span>
+                <div style={{ fontSize:14, fontWeight:600, color:'var(--ars-deep-navy)', lineHeight:1.3 }}>{s.main}</div>
+                {s.sub && <div style={{ fontSize:12, color:'var(--fg-quiet)', marginTop:2, lineHeight:1.2 }}>{s.sub}</div>}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function Bubble({ from, children }) {
@@ -387,67 +215,18 @@ function MiniCalendar({ onSelect }) {
   );
 }
 
-/* ---------- Multi-select specialty items ---------- */
-
-function MultiSelect({ onConfirm }) {
-  const [chosen, setChosen] = useState(new Set());
-
-  const toggle = (label) => {
-    setChosen(prev => {
-      const next = new Set(prev);
-      if (label === 'None') {
-        next.clear();
-        next.add('None');
-        return next;
-      }
-      next.delete('None');
-      if (next.has(label)) next.delete(label); else next.add(label);
-      return next;
-    });
-  };
-
-  const confirm = () => {
-    if (chosen.size === 0) return;
-    const picked = ITEM_OPTIONS.filter(o => chosen.has(o.label));
-    onConfirm(picked);
-  };
-
+function MultiSelectChips({ items, selected, onToggle }) {
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-      <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-        {ITEM_OPTIONS.map(opt => {
-          const isOn = chosen.has(opt.label);
-          return (
-            <button
-              key={opt.label}
-              type="button"
-              onClick={() => toggle(opt.label)}
-              className="cqa-chip"
-              style={isOn ? {
-                borderColor:'var(--ars-cyan)',
-                background:'var(--ars-cyan)',
-                color:'#fff',
-              } : undefined}
-            >
-              {opt.label}
-            </button>
-          );
-        })}
-      </div>
-      <button
-        type="button"
-        className="btn btn--primary"
-        onClick={confirm}
-        disabled={chosen.size === 0}
-        style={{ alignSelf:'flex-start', height:36, padding:'0 16px', fontSize:13 }}
-      >
-        Confirm
-      </button>
+    <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginTop:4, marginBottom:4 }}>
+      {items.map(c => (
+        <button key={c} type="button" className="cqa-chip"
+          style={selected.includes(c) ? { background:'var(--ars-deep-navy)', color:'#fff', borderColor:'var(--ars-deep-navy)' } : {}}
+          onClick={() => onToggle(c)}
+        >{c}</button>
+      ))}
     </div>
   );
 }
-
-/* ---------- Price card ---------- */
 
 function PriceCard({ answers, onSubmit }) {
   const [name,setName]   = useState('');
@@ -484,10 +263,6 @@ function PriceCard({ answers, onSubmit }) {
     </div>
   );
 
-  const itemsLabel = (answers.items && answers.items.length)
-    ? answers.items.map(i => i.label).join(', ')
-    : '—';
-
   return (
     <div>
       {/* Price range */}
@@ -509,8 +284,9 @@ function PriceCard({ answers, onSubmit }) {
           ['Route',     `${answers.from} → ${answers.to}`],
           ['Move date', answers.date],
           ['Home size', answers.size],
-          ['Specialty', itemsLabel],
-        ].map(([label,val]) => (
+          ['Move type', answers.type],
+          answers.specialty && answers.specialty !== 'None' ? ['Specialty', answers.specialty] : null,
+        ].filter(Boolean).map(([label,val]) => (
           <div key={label} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:8, lineHeight:1.85 }}>
             <span style={{ color:'var(--fg-quiet)', fontWeight:600, flexShrink:0 }}>{label}</span>
             <span style={{ color:'var(--ars-deep-navy)', fontWeight:600, textAlign:'right' }}>{val}</span>
@@ -533,8 +309,6 @@ function PriceCard({ answers, onSubmit }) {
   );
 }
 
-/* ---------- Main widget ---------- */
-
 export default function ChatQuoteAssistant({ onSubmit }) {
   const [history,  setHistory]  = useState([{ from:'bot', text:QUESTIONS[0].prompt }]);
   const [step,     setStep]     = useState(0);
@@ -542,26 +316,30 @@ export default function ChatQuoteAssistant({ onSubmit }) {
   const [input,    setInput]    = useState('');
   const [busy,     setBusy]     = useState(false);
   const [done,     setDone]     = useState(false);
+  const [multiSel, setMultiSel] = useState([]);
   const scrollerRef = useRef(null);
+  const priceRef    = useRef(null);
 
   const cur = QUESTIONS[step];
 
   useEffect(() => {
     const el = scrollerRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    const last = history[history.length - 1];
+    if (last?.type === 'price' && priceRef.current) {
+      el.scrollTop = priceRef.current.offsetTop;
+    } else {
+      el.scrollTop = el.scrollHeight;
+    }
   }, [history, busy]);
 
-  const sendUser = (val, displayText) => {
-    if (val === undefined || val === null || busy || done) return;
-    // For multi-select, val is an array of item objects.
-    const valForAnswer = val;
-    const text = displayText ?? (typeof val === 'string' ? val : '');
-    if (typeof val === 'string' && !val.trim()) return;
-
-    const updated = { ...answers, [cur.key]: valForAnswer };
+  const sendUser = (val) => {
+    if (!val || busy || done) return;
+    const updated = { ...answers, [cur.key]: val };
     setAnswers(updated);
-    setHistory(h => [...h, { from:'user', text }]);
+    setHistory(h => [...h, { from:'user', text:val }]);
     setInput('');
+    setMultiSel([]);
     setBusy(true);
 
     setTimeout(() => {
@@ -571,12 +349,9 @@ export default function ChatQuoteAssistant({ onSubmit }) {
         setStep(nextStep);
         setBusy(false);
       } else {
-        setHistory(h => [...h, { from:'bot', text:"Crunching the numbers…" }]);
+        setHistory(h => [...h, { from:'bot', type:'price', answers:updated }]);
         setBusy(false);
-        setTimeout(() => {
-          setHistory(h => [...h, { from:'bot', type:'price', answers:updated }]);
-          setDone(true);
-        }, 600);
+        setDone(true);
       }
     }, 650);
   };
@@ -586,10 +361,9 @@ export default function ChatQuoteAssistant({ onSubmit }) {
     setAnswers({}); setStep(0); setDone(false); setInput('');
   };
 
-  const isCalendar = !done && !busy && cur?.type === 'calendar';
-  const isChips    = !done && !busy && cur?.type === 'chips';
-  const isMulti    = !done && !busy && cur?.type === 'multi';
-  const isAddress  = !done && !busy && cur?.type === 'address';
+  const isCalendar   = !done && !busy && cur?.type === 'calendar';
+  const isMulti      = !done && !busy && cur?.type === 'multiselect';
+  const showChips    = !done && !busy && cur?.chips && !isMulti;
 
   return (
     <div style={{
@@ -617,24 +391,12 @@ export default function ChatQuoteAssistant({ onSubmit }) {
         )}
       </div>
 
-      {/* Progress bar */}
-      {!done && (
-        <div style={{ height:3, background:'rgba(48,165,216,.12)', position:'relative' }}>
-          <div style={{
-            position:'absolute', left:0, top:0, bottom:0,
-            width: `${(step / QUESTIONS.length) * 100}%`,
-            background:'var(--ars-cyan)',
-            transition:'width 300ms var(--ease)',
-          }}/>
-        </div>
-      )}
-
       {/* Chat body */}
       <div ref={scrollerRef} style={{ flex:1, overflowY:'auto', padding:'18px 18px 8px', background:'var(--ars-cream)' }}>
         {history.map((m,i) => {
           if (m.type==='price') {
             return (
-              <div key={i} style={{ display:'flex', justifyContent:'flex-start', marginBottom:10 }}>
+              <div key={i} ref={priceRef} style={{ display:'flex', justifyContent:'flex-start', marginBottom:10 }}>
                 <div style={{ maxWidth:'92%', padding:'16px 18px', borderRadius:'4px 16px 16px 16px', background:'#fff', border:'1px solid var(--border)', boxShadow:'0 1px 2px rgba(32,30,31,.04)' }}>
                   <PriceCard answers={m.answers} onSubmit={onSubmit}/>
                 </div>
@@ -652,29 +414,29 @@ export default function ChatQuoteAssistant({ onSubmit }) {
           </div>
         )}
 
-        {isChips && (
+        {showChips && (
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginTop:4, marginBottom:4 }}>
-            {cur.chips.map(c => <button key={c} className="cqa-chip" onClick={() => sendUser(c, c)}>{c}</button>)}
+            {cur.chips.map(c => <button key={c} className="cqa-chip" onClick={() => sendUser(c)}>{c}</button>)}
           </div>
         )}
 
         {isMulti && (
-          <div style={{ display:'flex', justifyContent:'flex-start', marginBottom:10 }}>
-            <div style={{ maxWidth:'92%', padding:'14px 16px', borderRadius:'4px 16px 16px 16px', background:'#fff', border:'1px solid var(--border)', boxShadow:'0 1px 2px rgba(32,30,31,.04)' }}>
-              <MultiSelect
-                onConfirm={(picked) => {
-                  const label = picked.map(p => p.label).join(', ');
-                  sendUser(picked, label);
-                }}
-              />
-            </div>
-          </div>
+          <MultiSelectChips
+            items={cur.chips}
+            selected={multiSel}
+            onToggle={item => {
+              if (item === 'None of these') { sendUser('None'); return; }
+              setMultiSel(prev =>
+                prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]
+              );
+            }}
+          />
         )}
 
         {isCalendar && (
           <div style={{ display:'flex', justifyContent:'flex-start', marginBottom:10 }}>
             <div style={{ borderRadius:'4px 16px 16px 16px', overflow:'hidden', border:'1px solid var(--border)', background:'#fff', boxShadow:'0 1px 2px rgba(32,30,31,.04)', minWidth:240 }}>
-              <MiniCalendar onSelect={d => { const s = fmtDate(d); sendUser(s, s); }}/>
+              <MiniCalendar onSelect={d => sendUser(fmtDate(d))}/>
             </div>
           </div>
         )}
@@ -682,47 +444,56 @@ export default function ChatQuoteAssistant({ onSubmit }) {
 
       {/* Input bar */}
       <form
-        onSubmit={e => { e.preventDefault(); if (typeof input === 'string') sendUser(input.trim(), input.trim()); }}
+        onSubmit={e => { e.preventDefault(); sendUser(input.trim()); }}
         style={{ padding:14, background:'#fff', borderTop:'1px solid var(--border)', display:'flex', gap:8 }}
       >
         {!done ? (
           <>
-            {isAddress ? (
-              <AddressInput
-                value={input}
-                onChange={setInput}
-                placeholder={cur.placeholder}
-                autoFocus
-                disabled={busy}
-                onEnterSubmit={(v) => sendUser(v.trim(), v.trim())}
-              />
+            {cur?.key === 'from' || cur?.key === 'to' ? (
+              <>
+                <AddressInput
+                  value={input}
+                  onChange={setInput}
+                  placeholder={cur.placeholder}
+                  disabled={busy}
+                  onSubmit={() => sendUser(input.trim())}
+                />
+                <button type="submit" className="btn btn--primary" disabled={busy||!input.trim()}
+                  style={{ padding:'0 16px', flex:'0 0 auto' }} aria-label="Send">
+                  <Icon name="send" size={16}/>
+                </button>
+              </>
             ) : (
               <input
-                autoFocus={!isCalendar && !isMulti && !isChips}
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 placeholder={
                   isCalendar ? 'or type a date, e.g. June 14' :
-                  isMulti ? 'Pick items above…' :
-                  isChips ? 'Pick one above, or type…' :
-                  'Type your answer…'
+                  isMulti    ? 'Select items above, then click Confirm' :
+                  cur && !cur.chips ? cur.placeholder : 'Pick one above, or type…'
                 }
-                disabled={busy}
+                disabled={busy || isMulti}
                 style={{
                   flex:1, padding:'12px 14px', fontSize:15,
                   background:'var(--ars-cream)', border:'1px solid var(--border-strong)',
                   borderRadius:'var(--r-md)', fontFamily:'var(--font-sans)',
                   color:'var(--ars-deep-navy)', outline:'none', minWidth:0,
                   transition:'border-color 150ms var(--ease), box-shadow 150ms var(--ease)',
+                  opacity: isMulti ? 0.5 : 1,
                 }}
                 onFocus={e=>{e.target.style.borderColor='var(--ars-cyan)';e.target.style.boxShadow='var(--focus-ring)';}}
                 onBlur={e=>{e.target.style.borderColor='var(--border-strong)';e.target.style.boxShadow='none';}}
               />
             )}
-            <button type="submit" className="btn btn--primary" disabled={busy||!input.trim()}
-              style={{ padding:'0 16px', flex:'0 0 auto' }} aria-label="Send">
-              <Icon name="send" size={16}/>
-            </button>
+            {!(cur?.key === 'from' || cur?.key === 'to') && (
+              <button type="button" className="btn btn--primary"
+                disabled={busy || (isMulti ? multiSel.length === 0 : !input.trim())}
+                style={{ padding:'0 16px', flex:'0 0 auto' }} aria-label="Send"
+                onClick={() => isMulti ? sendUser(multiSel.join(', ')) : sendUser(input.trim())}
+              >
+                <Icon name="send" size={16}/>
+              </button>
+            )}
           </>
         ) : (
           <>
