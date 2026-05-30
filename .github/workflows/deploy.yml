@@ -15,16 +15,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '22'
-  #     - name: Run pricing engine tests
-  #       run: node --test pricing.test.mjs
-
   deploy:
     environment:
       name: github-pages
@@ -33,29 +23,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Build ARSmoving
-        working-directory: ARSmoving
-        run: |
-          npm ci
-          npm run build
-
       - name: Stage site
+        # moovers root, ARSmoving, grooming, and bali landings all live at
+        # *.axveer.io now. ARSmoving + grooming source moved into their own
+        # repos; bali source remains here for future Kamal deploy. Pages
+        # only hosts redirect stubs at those four paths plus archived /old/.
         run: |
           mkdir _site
-          cp index.html script.js styles.css _site/
-          cp -r assets _site/
           cp -r old _site/
-          cp -r grooming _site/
-          cp -r bali _site/
-          cp -r ARSmoving/dist _site/ARSmoving
 
-      - name: Replace landing pages with redirects to production *.axveer.io
-        # Real source stays canonical on main (Kamal will serve it per-subdomain).
-        # Pages only hosts redirect stubs at the four landing paths; /old/ stays as-is.
+      - name: Write redirects to production *.axveer.io
         run: |
           write_redirect() {
             local dir="$1"
