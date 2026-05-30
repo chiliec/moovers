@@ -1,0 +1,28 @@
+# Kamal deploy config for moovers.axveer.io — plain static site (nginx).
+
+service: moovers-axveer-io
+image:   chiliec/moovers-axveer-io    # Docker Hub (registry.username below)
+
+servers:
+  web:
+    hosts:
+      - 5.223.75.86             # axveer VPS public IPv4 (inventory.yml); IP, not the
+                                # apex, so SSH works before/independent of DNS cutover
+
+ssh:
+  user: deploy                  # ssh_user from inventory.yml
+  port: 666                     # ssh_port from inventory.yml (hardened sshd; default root:22 is locked out)
+
+proxy:
+  hosts:
+    - moovers.axveer.io         # TLS issued here — requires DNS → 5.223.75.86 at deploy time
+  app_port: 80
+  ssl: true
+
+registry:
+  username: chiliec
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
