@@ -53,6 +53,32 @@ jobs:
           cp -r bali _site/
           cp -r ARSmoving/dist _site/ARSmoving
 
+      - name: Replace landing pages with redirects to production *.axveer.io
+        # Real source stays canonical on main (Kamal will serve it per-subdomain).
+        # Pages only hosts redirect stubs at the four landing paths; /old/ stays as-is.
+        run: |
+          write_redirect() {
+            local dir="$1"
+            local target="$2"
+            mkdir -p "_site/${dir}"
+            cat > "_site/${dir}/index.html" <<HTML
+          <!DOCTYPE html>
+          <html lang="en"><head>
+          <meta charset="UTF-8">
+          <meta http-equiv="refresh" content="0; url=${target}">
+          <link rel="canonical" href="${target}">
+          <title>Moved to ${target}</title>
+          </head><body>
+          <p>This page has moved. Redirecting to <a href="${target}">${target}</a>.</p>
+          <script>window.location.replace("${target}");</script>
+          </body></html>
+          HTML
+          }
+          write_redirect ""          "https://moovers.axveer.io/"
+          write_redirect "ARSmoving" "https://arsmoving.axveer.io/"
+          write_redirect "grooming"  "https://grooming.axveer.io/"
+          write_redirect "bali"      "https://bali.axveer.io/"
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
