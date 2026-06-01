@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Static sites don't need platform_net (no DB). This hook is a no-op stub —
+# kept so the file exists and can be edited if persistent volumes are added later.
+exit 0
