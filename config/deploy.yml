@@ -1,7 +1,7 @@
 # Kamal deploy config for moovers.axveer.io — plain static site (nginx).
 
 service: moovers-axveer-io
-image:   chiliec/moovers-axveer-io    # Docker Hub (registry.username below)
+image:   chiliec/moovers-axveer-io    # GHCR (registry.server below composes the full ghcr.io path)
 
 servers:
   web:
@@ -20,6 +20,7 @@ proxy:
   ssl: true
 
 registry:
+  server: ghcr.io               # GitHub Container Registry
   username: chiliec
   password:
     - KAMAL_REGISTRY_PASSWORD
